@@ -1,51 +1,40 @@
-package com.vikey.webserve.model;
+package com.vikey.webserve.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
-import com.vikey.webserve.Constant;
-
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import java.time.LocalDateTime;
 import java.io.Serializable;
-import java.util.Date;
 
 /**
- * 快速翻译任务实体类
+ * <p>
+ * 
+ * </p>
+ *
+ * @author wkw
+ * @since 2020-05-18
  */
+public class Fast_task implements Serializable {
 
-@TableName("fast_task")
-public class FastTask implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @TableField(value = "discard")
-    @TableLogic(value = Constant.NOT_DELETE, delval = Constant.DELETE)
-    private String discard;
+    private String fast_task;
 
-    @TableField("create_time")
-    private Date createTime;
-    @TableField("name")
+    private LocalDateTime create_time;
+
     private String name;
 
-    @TableField("original_text")
     private String original_text;
 
-    @TableField("translate_text")
     private String translate_text;
 
-    @TableField("original_language")
     private String original_language;
 
-    @TableField("translate_language")
     private String translate_language;
 
-    @TableField(value = "uid")
-    private Long uid;//用户id
-
-    public Long getUid() {
-        return uid;
-    }
-
-    public void setUid(Long uid) {
-        this.uid = uid;
-    }
+    private Long uid;
 
     public Long getId() {
         return id;
@@ -54,23 +43,20 @@ public class FastTask implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-
-    public String isDiscard() {
-        return discard;
+    public String getFast_task() {
+        return fast_task;
     }
 
-    public void setDiscard(String discard) {
-        this.discard = discard;
+    public void setFast_task(String fast_task) {
+        this.fast_task = fast_task;
+    }
+    public LocalDateTime getCreate_time() {
+        return create_time;
     }
 
-    public Date getCreateTime() {
-        return createTime;
+    public void setCreate_time(LocalDateTime create_time) {
+        this.create_time = create_time;
     }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
     public String getName() {
         return name;
     }
@@ -78,7 +64,6 @@ public class FastTask implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
     public String getOriginal_text() {
         return original_text;
     }
@@ -86,7 +71,6 @@ public class FastTask implements Serializable {
     public void setOriginal_text(String original_text) {
         this.original_text = original_text;
     }
-
     public String getTranslate_text() {
         return translate_text;
     }
@@ -94,7 +78,6 @@ public class FastTask implements Serializable {
     public void setTranslate_text(String translate_text) {
         this.translate_text = translate_text;
     }
-
     public String getOriginal_language() {
         return original_language;
     }
@@ -102,12 +85,33 @@ public class FastTask implements Serializable {
     public void setOriginal_language(String original_language) {
         this.original_language = original_language;
     }
-
     public String getTranslate_language() {
         return translate_language;
     }
 
     public void setTranslate_language(String translate_language) {
         this.translate_language = translate_language;
+    }
+    public Long getUid() {
+        return uid;
+    }
+
+    public void setUid(Long uid) {
+        this.uid = uid;
+    }
+
+    @Override
+    public String toString() {
+        return "Fast_task{" +
+            "id=" + id +
+            ", fast_task=" + fast_task +
+            ", create_time=" + create_time +
+            ", name=" + name +
+            ", original_text=" + original_text +
+            ", translate_text=" + translate_text +
+            ", original_language=" + original_language +
+            ", translate_language=" + translate_language +
+            ", uid=" + uid +
+        "}";
     }
 }

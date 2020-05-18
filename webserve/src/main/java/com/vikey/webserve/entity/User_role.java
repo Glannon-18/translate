@@ -1,22 +1,26 @@
-package com.vikey.webserve.model;
+package com.vikey.webserve.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-
 import java.io.Serializable;
 
-@TableName("user_role")
-public class User_Role implements Serializable {
+/**
+ * <p>
+ *     用户角色中间表实体类
+ * </p>
+ *
+ * @author wkw
+ * @since 2020-05-18
+ */
+public class User_role implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @TableField("uid")
     private Long uid;
 
-    @TableField("rid")
     private Long rid;
 
     public Long getId() {
@@ -26,7 +30,6 @@ public class User_Role implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-
     public Long getUid() {
         return uid;
     }
@@ -34,12 +37,20 @@ public class User_Role implements Serializable {
     public void setUid(Long uid) {
         this.uid = uid;
     }
-
     public Long getRid() {
         return rid;
     }
 
     public void setRid(Long rid) {
         this.rid = rid;
+    }
+
+    @Override
+    public String toString() {
+        return "User_role{" +
+            "id=" + id +
+            ", uid=" + uid +
+            ", rid=" + rid +
+        "}";
     }
 }

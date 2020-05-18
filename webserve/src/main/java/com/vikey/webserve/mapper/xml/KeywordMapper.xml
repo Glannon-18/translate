@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vikey.webserve.mapper.KeywordMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.vikey.webserve.entity.Keyword">
+        <id column="id" property="id" />
+        <result column="discard" property="discard" />
+        <result column="create_time" property="create_time" />
+        <result column="word" property="word" />
+        <result column="lid" property="lid" />
+    </resultMap>
+
+</mapper>

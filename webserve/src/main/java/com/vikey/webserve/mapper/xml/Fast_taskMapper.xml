@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vikey.webserve.mapper.Fast_taskMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.vikey.webserve.entity.Fast_task">
+        <id column="id" property="id" />
+        <result column="fast_task" property="fast_task" />
+        <result column="create_time" property="create_time" />
+        <result column="name" property="name" />
+        <result column="original_text" property="original_text" />
+        <result column="translate_text" property="translate_text" />
+        <result column="original_language" property="original_language" />
+        <result column="translate_language" property="translate_language" />
+        <result column="uid" property="uid" />
+    </resultMap>
+
+</mapper>

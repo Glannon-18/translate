@@ -1,22 +1,27 @@
-package com.vikey.webserve.model;
+package com.vikey.webserve.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 
-@TableName("atask_ann")
-public class ATask_Ann implements Serializable {
+/**
+ * <p>
+ * 附件翻译和附件中间表实体类
+ * </p>
+ *
+ * @author wkw
+ * @since 2020-05-18
+ */
+public class Atask_ann implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @TableField("atid")
     private Long atid;
-    
-    @TableField("aid")
+
     private Long aid;
 
     public Long getId() {
@@ -41,5 +46,14 @@ public class ATask_Ann implements Serializable {
 
     public void setAid(Long aid) {
         this.aid = aid;
+    }
+
+    @Override
+    public String toString() {
+        return "Atask_ann{" +
+                "id=" + id +
+                ", atid=" + atid +
+                ", aid=" + aid +
+                "}";
     }
 }

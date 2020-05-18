@@ -1,54 +1,49 @@
-package com.vikey.webserve.model;
+package com.vikey.webserve.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
-import com.vikey.webserve.Constant;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.vikey.webserve.model.Role;
 
+import java.time.LocalDateTime;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 /**
- * 用户实体类
+ * <p>
+ *
+ * </p>
+ *
+ * @author wkw
+ * @since 2020-05-18
  */
-@TableName("user")
 public class User implements Serializable {
 
+    private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @TableField(value = "discard")
-    @TableLogic(value = Constant.NOT_DELETE, delval = Constant.DELETE)
-    private String discard;//逻辑删除标识
+    private String discard;
 
-    @TableField("create_time")
-    private Date createTime;
+    private LocalDateTime create_time;
 
-    @TableField("account")
     private String account;
 
-    @TableField("password")
     private String password;
 
-    @TableField("username")
     private String username;
 
-    @TableField("last_login_time")
-    private Date lastLoginTime;
+    private LocalDateTime last_login_time;
 
-    @TableField("telephone")
     private String telephone;
 
-    @TableField("enabled")
-    private boolean enabled;
+    private Boolean enabled;
 
-
-    @TableField("userface")
     private String userface;
 
     @TableField(exist = false)
     private List<Role> roleList;
-
 
     public Long getId() {
         return id;
@@ -58,7 +53,7 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public String isDiscard() {
+    public String getDiscard() {
         return discard;
     }
 
@@ -66,12 +61,12 @@ public class User implements Serializable {
         this.discard = discard;
     }
 
-    public Date getCreateTime() {
-        return createTime;
+    public LocalDateTime getCreate_time() {
+        return create_time;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public void setCreate_time(LocalDateTime create_time) {
+        this.create_time = create_time;
     }
 
     public String getAccount() {
@@ -98,12 +93,12 @@ public class User implements Serializable {
         this.username = username;
     }
 
-    public Date getLastLoginTime() {
-        return lastLoginTime;
+    public LocalDateTime getLast_login_time() {
+        return last_login_time;
     }
 
-    public void setLastLoginTime(Date lastLoginTime) {
-        this.lastLoginTime = lastLoginTime;
+    public void setLast_login_time(LocalDateTime last_login_time) {
+        this.last_login_time = last_login_time;
     }
 
     public String getTelephone() {
@@ -114,11 +109,11 @@ public class User implements Serializable {
         this.telephone = telephone;
     }
 
-    public boolean isEnabled() {
+    public Boolean getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
 
@@ -136,5 +131,21 @@ public class User implements Serializable {
 
     public void setRoleList(List<Role> roleList) {
         this.roleList = roleList;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", discard=" + discard +
+                ", create_time=" + create_time +
+                ", account=" + account +
+                ", password=" + password +
+                ", username=" + username +
+                ", last_login_time=" + last_login_time +
+                ", telephone=" + telephone +
+                ", enabled=" + enabled +
+                ", userface=" + userface +
+                "}";
     }
 }

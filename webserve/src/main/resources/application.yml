@@ -3,4 +3,6 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     username: root
     password: 123456
-    url: jdbc:mysql://localhost:3306/translate?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    #    MYSQL6 需要加上时区
+    url: jdbc:mysql://localhost:3306/translate?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver

@@ -3,7 +3,6 @@ package com.vikey.webserve.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.vikey.webserve.model.Role;
 
 import java.time.LocalDateTime;
 import java.io.Serializable;

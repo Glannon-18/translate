@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * 文本翻译任务
  */
-@TableName("annexetask")
+@TableName("annexe_task")
 public class AnnexeTask {
 
     @TableId(value = "id", type = IdType.AUTO)

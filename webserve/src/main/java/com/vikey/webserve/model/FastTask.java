@@ -10,7 +10,7 @@ import java.util.Date;
  * 快速翻译任务实体类
  */
 
-@TableName("fasttask")
+@TableName("fast_task")
 public class FastTask implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;

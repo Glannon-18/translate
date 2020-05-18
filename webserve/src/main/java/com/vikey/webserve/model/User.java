@@ -33,7 +33,7 @@ public class User implements Serializable {
     @TableField("username")
     private String username;
 
-    @TableField("lastLoginTime")
+    @TableField("last_login_time")
     private Date lastLoginTime;
 
     @TableField("telephone")

@@ -1,6 +1,6 @@
 package com.vikey.webserve;
 
-import com.vikey.webserve.service.IAnnexe_taskService;
+import com.vikey.webserve.service.IUserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,12 +9,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 class WebserveApplicationTests {
 
     @Autowired
-    private IAnnexe_taskService IAnnexe_taskService;
+    private IUserService IUserService;
 
     @Test
     void contextLoads() {
-        IAnnexe_taskService.getById(1l);
+
+        IUserService.selectUserWithRoles(new Long("1"));
+//        IUserService.getById(1l);
 
     }
+
 
 }

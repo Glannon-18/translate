@@ -3,9 +3,11 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     username: root
     password: 123456
-    #    MYSQL6 需要加上时区
+    #    MYSQL8 需要加上时区
     url: jdbc:mysql://localhost:3306/translate?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
     driver-class-name: com.mysql.cj.jdbc.Driver
+
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:com/vikey/webserve/mapper/xml/*.xml

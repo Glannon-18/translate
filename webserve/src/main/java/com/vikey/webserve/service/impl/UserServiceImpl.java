@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author wkw
@@ -17,4 +17,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
 
+    @Override
+    public User selectUserWithRoles(Long id) {
+        User user = super.getBaseMapper().selectUserWithRoles(1l);
+        return user;
+    }
 }

@@ -8,6 +8,7 @@
         <result column="discard" property="discard" />
         <result column="create_time" property="create_time" />
         <result column="name" property="name" />
+        <result column="nameZh" property="nameZh" />
     </resultMap>
 
 </mapper>

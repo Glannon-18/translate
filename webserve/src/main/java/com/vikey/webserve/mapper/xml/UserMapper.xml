@@ -29,11 +29,27 @@
 
 
     <select id="selectUserWithRoles" resultMap="UserWithRoles">
-        select u.id,u.discard, u.create_time,u.account,u.password,u.username,u.userface,u.last_login_time
-         ,u.telephone,u.enabled,r.id as rid, r.name as rname,r.nameZh as rnameZh,r.create_time as rcreate_time,r.discard
-          as rdiscard from user u left join user_role ur on u.id= ur.uid left join role r on
-        ur.rid= r.id where u.id=${id}
---         select * from user where id=#{id}
+        select u.id
+             , u.discard
+             , u.create_time
+             , u.account
+             , u.password
+             , u.username
+             , u.userface
+             , u.last_login_time
+             , u.telephone
+             , u.enabled
+             , r.id          as rid
+             , r.name        as rname
+             , r.nameZh      as rnameZh
+             , r.create_time as rcreate_time
+             , r.discard
+                             as rdiscard
+        from user u
+                 left join user_role ur on u.id = ur.uid
+                 left join role r on
+            ur.rid = r.id
+        where u.id = ${id}
 
     </select>
 

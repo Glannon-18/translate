@@ -1,5 +1,6 @@
 package com.vikey.webserve;
 
+import com.vikey.webserve.entity.User;
 import com.vikey.webserve.service.IUserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,9 @@ class WebserveApplicationTests {
     @Test
     void contextLoads() {
 
-        IUserService.selectUserWithRoles(new Long("1"));
+      User u=  IUserService.selectUserWithRoles(new Long("1"));
+        System.out.println(u.toString());
+
 //        IUserService.getById(1l);
 
     }

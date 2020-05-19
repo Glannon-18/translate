@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 
 import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -37,6 +38,9 @@ public class Annexe_task implements Serializable {
     private String original_language;
 
     private String translate_language;
+
+    @TableField(exist = false)
+    private List<Annexe> annexeList;
 
     private Long uid;
 
@@ -110,6 +114,15 @@ public class Annexe_task implements Serializable {
 
     public void setTranslate_text(String translate_text) {
         this.translate_text = translate_text;
+    }
+
+
+    public List<Annexe> getAnnexeList() {
+        return annexeList;
+    }
+
+    public void setAnnexeList(List<Annexe> annexeList) {
+        this.annexeList = annexeList;
     }
 
     @Override

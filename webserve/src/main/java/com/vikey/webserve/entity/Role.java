@@ -11,7 +11,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author wkw
- * @since 2020-05-18
+ * @since 2020-05-19
  */
 public class Role implements Serializable {
 
@@ -25,6 +25,8 @@ public class Role implements Serializable {
     private LocalDateTime create_time;
 
     private String name;
+
+    private String nameZh;
 
     public Long getId() {
         return id;
@@ -54,6 +56,13 @@ public class Role implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+    public String getNameZh() {
+        return nameZh;
+    }
+
+    public void setNameZh(String nameZh) {
+        this.nameZh = nameZh;
+    }
 
     @Override
     public String toString() {
@@ -62,6 +71,7 @@ public class Role implements Serializable {
             ", discard=" + discard +
             ", create_time=" + create_time +
             ", name=" + name +
+            ", nameZh=" + nameZh +
         "}";
     }
 }

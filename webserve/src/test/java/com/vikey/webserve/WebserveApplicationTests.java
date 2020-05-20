@@ -10,19 +10,63 @@ import com.baomidou.mybatisplus.generator.config.converts.MySqlTypeConvert;
 import com.baomidou.mybatisplus.generator.config.rules.IColumnType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
+import com.vikey.webserve.entity.Fast_task;
 import com.vikey.webserve.entity.User;
+import com.vikey.webserve.service.IFast_taskService;
 import com.vikey.webserve.service.IUserService;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
+import java.util.Map;
 
 @SpringBootTest
 class WebserveApplicationTests {
 
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebserveApplicationTests.class);
+
     @Autowired
     private IUserService IUserService;
 
+    @Autowired
+    private IFast_taskService IFast_taskService;
+
+
     @Test
+    void test() {
+
+        IUserService.getById(1l);
+    }
+
+    @Test
+    void test0() {
+        User u = IUserService.selectUserWithRoles(Long.valueOf(1l));
+        System.out.println(u.toString());
+    }
+
+    @Test
+    void test1() {
+        List<Fast_task> fast_tasks = IFast_taskService.getLastFast_task(Long.valueOf(1));
+        fast_tasks.stream().forEach(t -> LOGGER.info(t.toString()));
+    }
+
+    @Test
+    void test2() {
+        Map<String, List<Fast_task>> map = IFast_taskService.getFast_taskByDate(Long.valueOf(1));
+        map.forEach((k, v) -> {
+            LOGGER.info(k);
+            v.stream().forEach(t -> {
+                LOGGER.info(t.toString());
+            });
+        });
+
+    }
+
+    //    @Test
     void codeGenerator() {
         AutoGenerator mpg = new AutoGenerator();
         // 选择 freemarker 引擎
@@ -32,7 +76,7 @@ class WebserveApplicationTests {
         GlobalConfig gc = new GlobalConfig();
         gc.setAuthor("wkw");
         gc.setOutputDir("D:\\wkw\\translate\\webserve\\src\\main\\java");
-        gc.setFileOverride(true);// 是否覆盖同名文件，默认是false
+        gc.setFileOverride(false);// 是否覆盖同名文件，默认是false
         gc.setActiveRecord(false);// 不需要ActiveRecord特性的请改为false
         gc.setEnableCache(false);// XML 二级缓存
         gc.setBaseResultMap(true);// XML ResultMap
@@ -152,17 +196,6 @@ class WebserveApplicationTests {
 //        System.err.println(mpg.getCfg().getMap().get("abc"));
 
 
-    }
-
-    void test() {
-
-        IUserService.getById(1l);
-    }
-
-
-    void test1() {
-        User u = IUserService.selectUserWithRoles(Long.valueOf(1l));
-        System.out.println(u.toString());
     }
 
 

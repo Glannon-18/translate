@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 /**
  * <p>
- *     文档任务对应文档实体类
+ * 文档任务对应文档实体类
  * </p>
  *
  * @author wkw
@@ -32,15 +32,6 @@ public class Annexe implements Serializable {
 
     private String path;
 
-    private Long atid;
-
-    public Long getAtid() {
-        return atid;
-    }
-
-    public void setAtid(Long atid) {
-        this.atid = atid;
-    }
 
     public Long getId() {
         return id;
@@ -49,6 +40,7 @@ public class Annexe implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
     public LocalDateTime getCreate_time() {
         return create_time;
     }
@@ -56,6 +48,7 @@ public class Annexe implements Serializable {
     public void setCreate_time(LocalDateTime create_time) {
         this.create_time = create_time;
     }
+
     public String getPath() {
         return path;
     }
@@ -83,9 +76,9 @@ public class Annexe implements Serializable {
     @Override
     public String toString() {
         return "Annexe{" +
-            "id=" + id +
-            ", create_time=" + create_time +
-            ", path=" + path +
-        "}";
+                "id=" + id +
+                ", create_time=" + create_time +
+                ", path=" + path +
+                "}";
     }
 }

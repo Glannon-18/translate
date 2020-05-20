@@ -29,18 +29,18 @@ public class Fast_taskServiceImpl extends ServiceImpl<Fast_taskMapper, Fast_task
 
 
     @Override
-    public List<Fast_task> getLastFast_task(Long id) {
+    public List<Fast_task> getLastFast_task(Long uid) {
         List<Fast_task> fast_taskList;
-        fast_taskList = getBaseMapper().selectLastFast_task(id);
+        fast_taskList = getBaseMapper().selectLastFast_task(uid);
         return fast_taskList;
     }
 
     @Override
-    public LinkedHashMap<String, List<Fast_task>> getFast_taskByDate(Long id) {
+    public LinkedHashMap<String, List<Fast_task>> getFast_taskByDate(Long uid) {
         LinkedHashMap<String, List<Fast_task>> map = new LinkedHashMap<>();
         List<Fast_task> fast_taskList;
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        fast_taskList = getBaseMapper().selectFast_taskByDate(id);
+        fast_taskList = getBaseMapper().selectFast_taskByDate(uid);
         fast_taskList.stream().forEach(t -> {
             String date = dateTimeFormatter.format(t.getCreate_time());
             if (map.containsKey(date)) {

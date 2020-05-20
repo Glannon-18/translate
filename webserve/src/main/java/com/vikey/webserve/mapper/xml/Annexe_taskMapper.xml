@@ -11,7 +11,10 @@
         <result column="original_language" property="original_language"/>
         <result column="translate_language" property="translate_language"/>
         <result column="uid" property="uid"/>
-        <result column="status" property="status"></result>
     </resultMap>
+
+    <select id="getAnnexe_taskByDate" resultMap="BaseResultMap">
+         SELECT DATE(create_time) as create_time, name ,id  FROM annexe_task where uid=#{uid} ORDER BY create_time desc;
+    </select>
 
 </mapper>

@@ -39,7 +39,6 @@ public class Annexe_task implements Serializable {
 
     private String translate_language;
 
-    private String status;
 
     @TableField(exist = false)
     private List<Annexe> annexeList;
@@ -128,13 +127,7 @@ public class Annexe_task implements Serializable {
     }
 
 
-    public String getStatus() {
-        return status;
-    }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
     @Override
     public String toString() {

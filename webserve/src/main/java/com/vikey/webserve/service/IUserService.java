@@ -1,8 +1,7 @@
 package com.vikey.webserve.service;
 
-import com.vikey.webserve.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.apache.ibatis.annotations.Param;
+import com.vikey.webserve.entity.User;
 
 /**
  * <p>
@@ -14,6 +13,12 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface IUserService extends IService<User> {
 
+    /**
+     * 获取一个用户包括角色信息
+     *
+     * @param id 用户id
+     * @return
+     */
     User selectUserWithRoles(Long id);
 
 }

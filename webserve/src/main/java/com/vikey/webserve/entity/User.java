@@ -39,6 +39,9 @@ public class User implements Serializable {
 
     private Boolean enabled;
 
+    /**
+     * 用户头像地址
+     */
     private String userface;
 
     @TableField(exist = false)

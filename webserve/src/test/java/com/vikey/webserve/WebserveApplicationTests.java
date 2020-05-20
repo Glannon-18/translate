@@ -1,6 +1,7 @@
 package com.vikey.webserve;
 
 import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
 import com.baomidou.mybatisplus.generator.config.GlobalConfig;
@@ -10,8 +11,12 @@ import com.baomidou.mybatisplus.generator.config.converts.MySqlTypeConvert;
 import com.baomidou.mybatisplus.generator.config.rules.IColumnType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
+import com.vikey.webserve.entity.Annexe;
+import com.vikey.webserve.entity.Annexe_task;
 import com.vikey.webserve.entity.Fast_task;
 import com.vikey.webserve.entity.User;
+import com.vikey.webserve.service.IAnnexeService;
+import com.vikey.webserve.service.IAnnexe_taskService;
 import com.vikey.webserve.service.IFast_taskService;
 import com.vikey.webserve.service.IUserService;
 import org.junit.jupiter.api.Test;
@@ -34,6 +39,12 @@ class WebserveApplicationTests {
 
     @Autowired
     private IFast_taskService IFast_taskService;
+
+    @Autowired
+    private IAnnexe_taskService IAnnexe_taskService;
+
+    @Autowired
+    private IAnnexeService IAnnexeService;
 
 
     @Test
@@ -64,6 +75,22 @@ class WebserveApplicationTests {
             });
         });
 
+    }
+
+    @Test
+    void test3() {
+        Map<String, List<Annexe_task>> map = IAnnexe_taskService.getAnnexe_taskByDate(Long.valueOf(1));
+        map.forEach((k, v) -> {
+            LOGGER.info(k);
+            v.stream().forEach(t -> {
+                LOGGER.info(t.toString());
+            });
+        });
+    }
+
+    @Test
+    void test4() {
+        IPage<Annexe> iPage = IAnnexeService.getAnnexeByPage(1, 2, 1l);
     }
 
     //    @Test
@@ -193,7 +220,7 @@ class WebserveApplicationTests {
         mpg.execute();
 
         // 打印注入设置【可无】
-//        System.err.println(mpg.getCfg().getMap().get("abc"));
+        // System.err.println(mpg.getCfg().getMap().get("abc"));
 
 
     }

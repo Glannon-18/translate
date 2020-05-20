@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author wkw
@@ -16,9 +16,21 @@ import java.util.List;
  */
 public interface IFast_taskService extends IService<Fast_task> {
 
-    public List<Fast_task> getLastFast_task(Long id);
+    /**
+     * 历史记录，查询最后五条快速翻译记录
+     *
+     * @param uid 用户id
+     * @return
+     */
+    public List<Fast_task> getLastFast_task(Long uid);
 
-    public LinkedHashMap<String,List<Fast_task>> getFast_taskByDate(Long id);
+    /**
+     * 查询同一天下的快速翻译任务，左侧菜单栏
+     *
+     * @param uid 用户id
+     * @return
+     */
+    public LinkedHashMap<String, List<Fast_task>> getFast_taskByDate(Long uid);
 
 
 }

@@ -16,5 +16,10 @@ import java.util.List;
  */
 public interface IAnnexe_taskService extends IService<Annexe_task> {
 
-
+    /**
+     * 查询同一天下的快速翻译任务，左侧菜单栏
+     * @param uid 用户id
+     * @return
+     */
+    public LinkedHashMap<String, List<Annexe_task>> getAnnexe_taskByDate(Long uid);
 }

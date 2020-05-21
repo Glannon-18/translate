@@ -22,7 +22,11 @@
 
 
     <select id="selectFast_taskByDate" resultMap="BaseResultMap">
-      SELECT DATE(create_time) as create_time,`name` ,id  FROM `fast_task` where uid=#{uid} ORDER BY create_time desc;
+        SELECT DATE(create_time) as create_time, name ,id FROM fast_task where uid=#{uid}
+        <if test="name!=null and name!=''">
+            and name like CONCAT('%',#{name},'%')
+        </if>
+        ORDER BY create_time desc;
     </select>
 
 </mapper>

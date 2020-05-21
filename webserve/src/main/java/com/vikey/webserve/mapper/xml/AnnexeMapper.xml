@@ -9,12 +9,14 @@
         <result column="path" property="path"/>
         <result column="status" property="status"></result>
         <result column="name" property="name"></result>
+        <result column="original_language" property="original_language"></result>
     </resultMap>
 
 
     <select id="getAnnexeByAtid" resultMap="BaseResultMap">
         select a.id as id, a.create_time as create_time
-        ,a.path as path,a.status as status, a.name as name
+        ,a.path as path,a.status as status, a.name as name,
+        a.original_language as original_language
         from annexe a left join atask_ann at_a on at_a.atid=#{atid}
     </select>
 </mapper>

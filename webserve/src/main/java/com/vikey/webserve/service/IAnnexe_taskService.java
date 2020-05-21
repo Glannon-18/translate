@@ -21,5 +21,5 @@ public interface IAnnexe_taskService extends IService<Annexe_task> {
      * @param uid 用户id
      * @return
      */
-    public LinkedHashMap<String, List<Annexe_task>> getAnnexe_taskByDate(Long uid);
+    public LinkedHashMap<String, List<Annexe_task>> getAnnexe_taskByDate(Long uid,String name);
 }

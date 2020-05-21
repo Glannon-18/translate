@@ -36,11 +36,11 @@ public class Fast_taskServiceImpl extends ServiceImpl<Fast_taskMapper, Fast_task
     }
 
     @Override
-    public LinkedHashMap<String, List<Fast_task>> getFast_taskByDate(Long uid) {
+    public LinkedHashMap<String, List<Fast_task>> getFast_taskByDate(Long uid,String name) {
         LinkedHashMap<String, List<Fast_task>> map = new LinkedHashMap<>();
         List<Fast_task> fast_taskList;
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        fast_taskList = getBaseMapper().selectFast_taskByDate(uid);
+        fast_taskList = getBaseMapper().selectFast_taskByDate(uid,name);
         fast_taskList.stream().forEach(t -> {
             String date = dateTimeFormatter.format(t.getCreate_time());
             if (map.containsKey(date)) {

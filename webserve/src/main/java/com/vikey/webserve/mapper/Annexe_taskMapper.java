@@ -16,6 +16,6 @@ import java.util.List;
  */
 public interface Annexe_taskMapper extends BaseMapper<Annexe_task> {
 
-    List<Annexe_task> getAnnexe_taskByDate(@Param("uid") Long uid);
+    List<Annexe_task> getAnnexe_taskByDate(@Param("uid") Long uid,@Param("name") String name);
 
 }

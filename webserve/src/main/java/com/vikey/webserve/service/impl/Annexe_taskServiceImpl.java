@@ -25,8 +25,8 @@ import java.util.List;
 public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annexe_task> implements IAnnexe_taskService {
 
     @Override
-    public LinkedHashMap<String, List<Annexe_task>> getAnnexe_taskByDate(Long uid) {
-        List<Annexe_task> annexe_taskList = getBaseMapper().getAnnexe_taskByDate(uid);
+    public LinkedHashMap<String, List<Annexe_task>> getAnnexe_taskByDate(Long uid, String name) {
+        List<Annexe_task> annexe_taskList = getBaseMapper().getAnnexe_taskByDate(uid, name);
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LinkedHashMap<String, List<Annexe_task>> map = new LinkedHashMap<>();
         annexe_taskList.stream().forEach(t -> {

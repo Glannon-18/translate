@@ -30,7 +30,7 @@ public interface IFast_taskService extends IService<Fast_task> {
      * @param uid 用户id
      * @return
      */
-    public LinkedHashMap<String, List<Fast_task>> getFast_taskByDate(Long uid);
+    public LinkedHashMap<String, List<Fast_task>> getFast_taskByDate(Long uid,String name);
 
 
 }

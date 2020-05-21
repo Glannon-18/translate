@@ -19,7 +19,7 @@ public interface Fast_taskMapper extends BaseMapper<Fast_task> {
 
     List<Fast_task> selectLastFast_task(@Param("uid") Long uid);
 
-    List<Fast_task> selectFast_taskByDate(@Param("uid") Long uid);
+    List<Fast_task> selectFast_taskByDate(@Param("uid") Long uid, @Param("name") String name);
 
 
 }

@@ -1,5 +1,6 @@
 package com.vikey.webserve.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.vikey.webserve.entity.Annexe_task;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -18,8 +19,12 @@ public interface IAnnexe_taskService extends IService<Annexe_task> {
 
     /**
      * 查询同一天下的快速翻译任务，左侧菜单栏
+     *
      * @param uid 用户id
      * @return
      */
-    public LinkedHashMap<String, List<Annexe_task>> getAnnexe_taskByDate(Long uid,String name);
+    LinkedHashMap<String, List<Annexe_task>> getAnnexe_taskByDate(Long uid, String name);
+
+
+    void addAnnexe_task(JSONObject jsonObject);
 }

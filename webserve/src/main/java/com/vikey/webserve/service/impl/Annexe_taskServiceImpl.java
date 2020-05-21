@@ -1,5 +1,6 @@
 package com.vikey.webserve.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.vikey.webserve.entity.Annexe_task;
 import com.vikey.webserve.entity.Fast_task;
@@ -7,6 +8,7 @@ import com.vikey.webserve.mapper.Annexe_taskMapper;
 import com.vikey.webserve.service.IAnnexe_taskService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -40,5 +42,11 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
             }
         });
         return map;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void addAnnexe_task(JSONObject jsonObject) {
+
     }
 }

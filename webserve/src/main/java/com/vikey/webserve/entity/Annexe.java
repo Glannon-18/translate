@@ -32,6 +32,15 @@ public class Annexe implements Serializable {
 
     private String path;
 
+    private String original_language;
+
+    public String getOriginal_language() {
+        return original_language;
+    }
+
+    public void setOriginal_language(String original_language) {
+        this.original_language = original_language;
+    }
 
     public Long getId() {
         return id;

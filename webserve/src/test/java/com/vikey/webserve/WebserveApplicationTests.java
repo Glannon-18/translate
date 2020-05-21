@@ -1,5 +1,6 @@
 package com.vikey.webserve;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
@@ -67,7 +68,7 @@ class WebserveApplicationTests {
 
     @Test
     void test2() {
-        Map<String, List<Fast_task>> map = IFast_taskService.getFast_taskByDate(Long.valueOf(1));
+        Map<String, List<Fast_task>> map = IFast_taskService.getFast_taskByDate(Long.valueOf(1), "a");
         map.forEach((k, v) -> {
             LOGGER.info(k);
             v.stream().forEach(t -> {
@@ -79,7 +80,7 @@ class WebserveApplicationTests {
 
     @Test
     void test3() {
-        Map<String, List<Annexe_task>> map = IAnnexe_taskService.getAnnexe_taskByDate(Long.valueOf(1));
+        Map<String, List<Annexe_task>> map = IAnnexe_taskService.getAnnexe_taskByDate(Long.valueOf(1), "e");
         map.forEach((k, v) -> {
             LOGGER.info(k);
             v.stream().forEach(t -> {
@@ -93,7 +94,13 @@ class WebserveApplicationTests {
         IPage<Annexe> iPage = IAnnexeService.getAnnexeByPage(1, 2, 1l);
     }
 
-    //    @Test
+    @Test
+    void test5() {
+        JSONObject jsonObject = new JSONObject();
+
+    }
+
+//    @Test
     void codeGenerator() {
         AutoGenerator mpg = new AutoGenerator();
         // 选择 freemarker 引擎
@@ -139,7 +146,7 @@ class WebserveApplicationTests {
         // strategy.setCapitalMode(true);// 全局大写命名 ORACLE 注意
 //        strategy.setTablePrefix(new String[]{"user_"});// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.no_change);// 表名生成策略
-        strategy.setInclude(new String[]{"role"}); // 需要生成的表
+        strategy.setInclude(new String[]{"atask_lib"}); // 需要生成的表
         // strategy.setExclude(new String[]{"test"}); // 排除生成的表
         // 自定义实体父类
         // strategy.setSuperEntityClass("com.baomidou.demo.TestEntity");

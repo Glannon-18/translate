@@ -24,4 +24,12 @@ public interface UserMapper extends BaseMapper<User> {
      */
     User selectUserWithRoles(@Param("id") Long id);
 
+    /**
+     * 根据账号名获取用户
+     *
+     * @param account
+     * @return
+     */
+    User selectUserWithRolesByAccount(@Param("account") String account);
+
 }

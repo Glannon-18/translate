@@ -3,9 +3,14 @@ package com.vikey.webserve.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -16,7 +21,7 @@ import java.util.List;
  * @author wkw
  * @since 2020-05-18
  */
-public class User implements Serializable {
+public class User implements Serializable, UserDetails {
 
     private static final long serialVersionUID = 1L;
 
@@ -79,6 +84,15 @@ public class User implements Serializable {
         this.account = account;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> list = new ArrayList<>();
+        getRoleList().stream().forEach(r -> {
+            list.add(new SimpleGrantedAuthority(r.getName()));
+        });
+        return list;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -89,6 +103,26 @@ public class User implements Serializable {
 
     public String getUsername() {
         return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return getEnabled();
     }
 
     public void setUsername(String username) {
@@ -134,6 +168,7 @@ public class User implements Serializable {
     public void setRoleList(List<Role> roleList) {
         this.roleList = roleList;
     }
+
 
     @Override
     public String toString() {

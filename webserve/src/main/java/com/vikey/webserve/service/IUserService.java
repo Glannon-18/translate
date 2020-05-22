@@ -21,4 +21,10 @@ public interface IUserService extends IService<User> {
      */
     User selectUserWithRoles(Long id);
 
+    /**
+     * @param account 登陆账号名
+     * @return
+     */
+    User selectUserWithRolesByAccount(String account);
+
 }

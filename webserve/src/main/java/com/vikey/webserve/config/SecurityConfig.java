@@ -2,6 +2,8 @@ package com.vikey.webserve.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vikey.webserve.entity.RespBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
@@ -12,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -26,9 +29,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @Configuration
-@EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+
+    @Qualifier("userServiceImpl")
+    @Autowired
+    UserDetailsService userDetailsService;
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -37,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication().withUser("zhangsan").password("$2a$10$2O4EwLrrFPEboTfDOtC0F.RpUMk.3q3KvBHRx7XXKUMLBGjOOBs8q").roles("user");
+        auth.userDetailsService(userDetailsService);
     }
 
     @Override
@@ -52,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse resp, Authentication authentication) throws IOException, ServletException {
                 resp.setContentType("application/json;charset=utf-8");
                 PrintWriter out = resp.getWriter();
-                RespBean respBean = RespBean.ok("登录成功!");
+                RespBean respBean = RespBean.ok("登录成功!",authentication);
                 out.write(new ObjectMapper().writeValueAsString(respBean));
                 out.flush();
                 out.close();
@@ -82,11 +88,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .loginProcessingUrl("/doLogin")
 //                .loginPage("/login")
 //                .permitAll()
-                .addFilterAt(filter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAt(filter(), UsernamePasswordAuthenticationFilter.class).logout().logoutUrl("/logout")
+                .logoutSuccessHandler(((request, response, authentication) -> {
+                    response.setContentType("application/json;charset=utf-8");
+                    PrintWriter printWriter = response.getWriter();
+                    printWriter.println("注销成功！");
+                    printWriter.flush();
+                    printWriter.close();
+
+                })).and()
                 .csrf().disable().exceptionHandling()
                 .authenticationEntryPoint(new AuthenticationEntryPoint() {
                     @Override
-                    public void commence(HttpServletRequest req, HttpServletResponse resp, AuthenticationException authException) throws IOException, ServletException {
+                    public void commence(HttpServletRequest req, HttpServletResponse resp, AuthenticationException authException) throws IOException {
                         resp.setContentType("application/json;charset=utf-8");
                         PrintWriter out = resp.getWriter();
                         RespBean respBean = RespBean.error("访问失败!");

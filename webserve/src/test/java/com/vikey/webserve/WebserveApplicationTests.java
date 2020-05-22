@@ -96,11 +96,11 @@ class WebserveApplicationTests {
 
     @Test
     void test5() {
-        JSONObject jsonObject = new JSONObject();
+        IUserService.selectUserWithRolesByAccount("admin");
 
     }
 
-//    @Test
+    //    @Test
     void codeGenerator() {
         AutoGenerator mpg = new AutoGenerator();
         // 选择 freemarker 引擎

@@ -1,6 +1,5 @@
 package com.vikey.webserve;
 
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
@@ -23,9 +22,9 @@ import com.vikey.webserve.service.IUserService;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -35,16 +34,16 @@ class WebserveApplicationTests {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebserveApplicationTests.class);
 
-    @Autowired
+    @Resource
     private IUserService IUserService;
 
-    @Autowired
+    @Resource
     private IFast_taskService IFast_taskService;
 
-    @Autowired
+    @Resource
     private IAnnexe_taskService IAnnexe_taskService;
 
-    @Autowired
+    @Resource
     private IAnnexeService IAnnexeService;
 
 

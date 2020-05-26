@@ -19,3 +19,9 @@ mybatis-plus:
 logging:
   level: {com.vikey.webserve.controller: debug}
 
+
+
+personal-config:
+  make_file_dir: D:\\wkw\\file
+
+

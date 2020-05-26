@@ -4,22 +4,32 @@ package com.vikey.webserve.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.vikey.webserve.Constant;
+import com.vikey.webserve.config.PersonalConfig;
 import com.vikey.webserve.entity.Fast_task;
 import com.vikey.webserve.entity.RespBean;
 import com.vikey.webserve.entity.User;
 import com.vikey.webserve.service.IFast_taskService;
 import com.vikey.webserve.utils.SecurityUtils;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * <p>
@@ -37,6 +47,9 @@ public class Fast_taskController {
 
     @Resource
     private IFast_taskService IFast_taskService;
+
+    @Resource
+    private PersonalConfig personalConfig;
 
     private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
@@ -73,6 +86,29 @@ public class Fast_taskController {
         User user = SecurityUtils.getCurrentUser();
         List<Fast_task> fast_taskList = IFast_taskService.getLastFast_task(user.getId());
         return RespBean.ok("ok", fast_taskList);
+    }
+
+    @PostMapping("/export")
+    public ResponseEntity<byte[]> export(@RequestBody String jsonStr) {
+
+        JSONObject jsonObject = JSONObject.parseObject(jsonStr);
+        String file_path = personalConfig.getMake_file_dir() + File.separator + UUID.randomUUID().toString() + ".txt";
+        byte[] content = new byte[0];
+        File tex_file = new File(file_path);
+        if (!tex_file.getParentFile().exists()) {
+            tex_file.getParentFile().mkdirs();
+        }
+        try {
+            FileUtils.write(tex_file, jsonObject.getString("translate"), "utf-8");
+            content = FileUtils.readFileToByteArray(tex_file);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentDispositionFormData("attachment", "translate.txt");
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        return new ResponseEntity<byte[]>(content, headers, HttpStatus.CREATED);
     }
 
 

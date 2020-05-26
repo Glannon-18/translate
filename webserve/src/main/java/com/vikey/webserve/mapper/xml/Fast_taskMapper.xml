@@ -17,7 +17,7 @@
 
 
     <select id="selectLastFast_task" resultMap="BaseResultMap">
-        select * from fast_task where uid=#{uid} order by create_time desc limit 5
+        select id,name, original_text,translate_text,original_language from fast_task where uid=#{uid} order by create_time desc limit 5
     </select>
 
 

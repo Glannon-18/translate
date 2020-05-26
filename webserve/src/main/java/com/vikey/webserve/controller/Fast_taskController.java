@@ -11,17 +11,15 @@ import com.vikey.webserve.service.IFast_taskService;
 import com.vikey.webserve.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * <p>
@@ -68,6 +66,15 @@ public class Fast_taskController {
 
         return RespBean.ok("ok");
     }
+
+
+    @GetMapping("/")
+    public RespBean getFast_TaskList() {
+        User user = SecurityUtils.getCurrentUser();
+        List<Fast_task> fast_taskList = IFast_taskService.getLastFast_task(user.getId());
+        return RespBean.ok("ok", fast_taskList);
+    }
+
 
     private String creatNameBytime(LocalDateTime localDateTime) {
         return Constant.FAST_TASK_NAME_PREFIX + dtf.format(localDateTime);

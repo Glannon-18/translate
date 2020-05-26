@@ -7,7 +7,9 @@ public class Constant {
     public static final String DELETE = "1";
     public static final String NOT_DELETE = "0";
 
-    public static final boolean account_enable = true;
-    public static final boolean account_unenable = false;
+    public static final boolean ACCOUNT_ENABLE = true;
+    public static final boolean ACCOUNT_UNENABLE = false;
+
+    public static final String FAST_TASK_NAME_PREFIX="快速翻译 ";
 
 }

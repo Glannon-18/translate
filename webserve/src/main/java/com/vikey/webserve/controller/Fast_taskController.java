@@ -1,7 +1,6 @@
 package com.vikey.webserve.controller;
 
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.vikey.webserve.Constant;
 import com.vikey.webserve.config.PersonalConfig;
@@ -19,16 +18,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Controller;
-
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -54,15 +50,9 @@ public class Fast_taskController {
     private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     @PostMapping("/")
-    public RespBean postFast_task(@RequestBody String jsonStr) {
-//        original_text: this.original,
-//        translate_text: this.translation,
-//        original_language: this.language_ori,
-//        translate_language: 'zh',
-        LOGGER.debug(jsonStr);
+    public RespBean postFast_task(@RequestBody JSONObject jsonObject) {
+        LOGGER.debug(jsonObject.toJSONString());
         User user = SecurityUtils.getCurrentUser();
-
-        JSONObject jsonObject = JSONObject.parseObject(jsonStr);
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -72,7 +62,7 @@ public class Fast_taskController {
         fast_task.setOriginal_language(jsonObject.getString("original_language"));
         fast_task.setTranslate_text(jsonObject.getString("translate_text"));
         fast_task.setTranslate_language(jsonObject.getString("translate_language"));
-        fast_task.setName(creatNameBytime(now));
+        fast_task.setName(creatNameByTime(now));
         fast_task.setUid(user.getId());
 
         IFast_taskService.save(fast_task);
@@ -88,10 +78,18 @@ public class Fast_taskController {
         return RespBean.ok("ok", fast_taskList);
     }
 
-    @PostMapping("/export")
-    public ResponseEntity<byte[]> export(@RequestBody String jsonStr) {
+    @GetMapping("/listByDate")
+    public RespBean getFast_TaskListByDate(@RequestBody JSONObject jsonObject) {
+        User user = SecurityUtils.getCurrentUser();
+        String name = jsonObject.getString("name");
+        Map map = IFast_taskService.getFast_taskByDate(user.getId(), name);
+        return RespBean.ok("ok", map);
+    }
 
-        JSONObject jsonObject = JSONObject.parseObject(jsonStr);
+    @PostMapping("/export")
+    public ResponseEntity<byte[]> export(@RequestBody JSONObject jsonObject) {
+        LOGGER.debug(jsonObject.toJSONString());
+
         String file_path = personalConfig.getMake_file_dir() + File.separator + UUID.randomUUID().toString() + ".txt";
         byte[] content = new byte[0];
         File tex_file = new File(file_path);
@@ -108,11 +106,11 @@ public class Fast_taskController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentDispositionFormData("attachment", "translate.txt");
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        return new ResponseEntity<byte[]>(content, headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(content, headers, HttpStatus.CREATED);
     }
 
 
-    private String creatNameBytime(LocalDateTime localDateTime) {
+    private String creatNameByTime(LocalDateTime localDateTime) {
         return Constant.FAST_TASK_NAME_PREFIX + dtf.format(localDateTime);
     }
 

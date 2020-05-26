@@ -79,11 +79,10 @@ public class Fast_taskController {
     }
 
     @GetMapping("/listByDate")
-    public RespBean getFast_TaskListByDate() {
-//        LOGGER.debug(jsonObject.toJSONString());
+    public RespBean getFast_TaskListByDate(@RequestParam String name) {
+        LOGGER.debug(name);
         User user = SecurityUtils.getCurrentUser();
-//        String name = jsonObject.getString("name");
-        Map map = IFast_taskService.getFast_taskByDate(user.getId(), null);
+        Map map = IFast_taskService.getFast_taskByDate(user.getId(), name);
         return RespBean.ok("ok", map);
     }
 

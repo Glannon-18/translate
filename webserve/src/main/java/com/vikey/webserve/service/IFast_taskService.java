@@ -22,7 +22,7 @@ public interface IFast_taskService extends IService<Fast_task> {
      * @param uid 用户id
      * @return
      */
-    public List<Fast_task> getLastFast_task(Long uid);
+    List<Fast_task> getLastFast_task(Long uid);
 
     /**
      * 查询同一天下的快速翻译任务，左侧菜单栏
@@ -30,7 +30,14 @@ public interface IFast_taskService extends IService<Fast_task> {
      * @param uid 用户id
      * @return
      */
-    public LinkedHashMap<String, List<Fast_task>> getFast_taskByDate(Long uid,String name);
+    LinkedHashMap<String, List<Fast_task>> getFast_taskByDate(Long uid, String name);
+
+    /**
+     * 根据id查询实体，调用baseMapper里面的方法
+     * @param id
+     * @return
+     */
+    Fast_task getFast_TaskById(Long id);
 
 
 }

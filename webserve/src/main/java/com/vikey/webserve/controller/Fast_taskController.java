@@ -109,6 +109,13 @@ public class Fast_taskController {
         return new ResponseEntity<>(content, headers, HttpStatus.CREATED);
     }
 
+    @GetMapping("/{id}")
+    public RespBean getFast_TaskById(@PathVariable String id) {
+        Long tid = Long.valueOf(id);
+        Fast_task fast_task = IFast_taskService.getFast_TaskById(tid);
+        return RespBean.ok("ok", fast_task);
+    }
+
 
     private String creatNameByTime(LocalDateTime localDateTime) {
         return Constant.FAST_TASK_NAME_PREFIX + dtf.format(localDateTime);

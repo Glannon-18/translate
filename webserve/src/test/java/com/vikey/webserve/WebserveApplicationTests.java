@@ -99,6 +99,13 @@ class WebserveApplicationTests {
 
     }
 
+    @Test
+    void tes6(){
+        Fast_task t= IFast_taskService.getFast_TaskById(1l);
+        LOGGER.info(t.toString());
+
+    }
+
     //    @Test
     void codeGenerator() {
         AutoGenerator mpg = new AutoGenerator();

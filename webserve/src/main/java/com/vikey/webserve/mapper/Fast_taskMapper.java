@@ -21,5 +21,5 @@ public interface Fast_taskMapper extends BaseMapper<Fast_task> {
 
     List<Fast_task> selectFast_taskByDate(@Param("uid") Long uid, @Param("name") String name);
 
-
+    List<Fast_task> selectBytid(@Param("tid")Long tid);
 }

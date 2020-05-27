@@ -14,11 +14,11 @@
     </resultMap>
 
     <select id="getAnnexe_taskByDate" resultMap="BaseResultMap">
-         SELECT DATE(create_time) as create_time, name ,id  FROM annexe_task where uid=#{uid}
+         SELECT DATE(create_time) as create_time, name ,id, create_time as e FROM annexe_task where uid=#{uid}
          <if test="name!=null and name!=''">
              and name like CONCAT('%',#{name},'%')
          </if>
-         ORDER BY create_time desc;
+         ORDER BY e desc;
     </select>
 
 </mapper>

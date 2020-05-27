@@ -10,6 +10,9 @@ public class Constant {
     public static final boolean ACCOUNT_ENABLE = true;
     public static final boolean ACCOUNT_UNENABLE = false;
 
-    public static final String FAST_TASK_NAME_PREFIX="快速翻译 ";
+    public static final String FAST_TASK_NAME_PREFIX = "快速翻译 ";
+
+    public static final String ANNEXE_STATUS_UNPROCESSED = "0";
+    public static final String ANNEXE_STATUS_PROCESSED = "1";
 
 }

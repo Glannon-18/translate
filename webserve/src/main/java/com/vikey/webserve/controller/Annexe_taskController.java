@@ -1,21 +1,22 @@
 package com.vikey.webserve.controller;
 
 
+import com.vikey.webserve.config.PersonalConfig;
 import com.vikey.webserve.entity.RespBean;
 import com.vikey.webserve.entity.User;
 import com.vikey.webserve.service.IAnnexe_taskService;
 import com.vikey.webserve.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.util.Map;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * <p>
@@ -34,12 +35,32 @@ public class Annexe_taskController {
     @Resource
     private IAnnexe_taskService IAnnexe_taskService;
 
+    @Resource
+    private PersonalConfig personalConfig;
+
     @GetMapping("/listByDate")
     public RespBean getFast_TaskListByDate(@RequestParam String name) {
         LOGGER.debug(name);
         User user = SecurityUtils.getCurrentUser();
         Map map = IAnnexe_taskService.getAnnexe_taskByDate(user.getId(), name);
         return RespBean.ok("ok", map);
+    }
+
+    @PostMapping("/upload")
+    public RespBean upload(MultipartFile multipartFile) {
+
+        String dirPath = personalConfig.getUpload_dir();
+        String filePath = dirPath + File.separator + UUID.randomUUID().toString().substring(0, 10) + "_" + multipartFile.getOriginalFilename();
+        File file = new File(filePath);
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+        try {
+            multipartFile.transferTo(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return RespBean.ok("ok", filePath);
     }
 
 }

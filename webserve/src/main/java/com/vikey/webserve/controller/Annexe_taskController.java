@@ -41,7 +41,8 @@ public class Annexe_taskController {
 
 
     @PostMapping("/")
-    public RespBean createAnnexe_Task(@RequestBody JSONObject jsonObject) {
+    public RespBean createAnnexe_Task(@RequestBody String json) {
+        JSONObject jsonObject=JSONObject.parseObject(json);
         IAnnexe_taskService.createAnnexe_task(jsonObject);
         return RespBean.ok("ok");
     }

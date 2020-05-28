@@ -90,6 +90,7 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
             annexe.setName(a_name);
             annexe.setPath(a_path);
             annexe.setOriginal_language(language);
+            annexe.setStatus(Constant.ANNEXE_STATUS_UNPROCESSED);
             annexes.add(annexe)
             ;
 
@@ -100,6 +101,7 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
             Atask_ann atask_ann = new Atask_ann();
             atask_ann.setAtid(atid);
             atask_ann.setAid(a.getId());
+            atask_anns.add(atask_ann);
         });
         IAtask_annService.saveBatch(atask_anns);
     }

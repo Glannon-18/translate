@@ -1,6 +1,8 @@
 package com.vikey.webserve;
 
 import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
@@ -25,6 +27,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -100,10 +104,31 @@ class WebserveApplicationTests {
     }
 
     @Test
-    void tes6(){
-        Fast_task t= IFast_taskService.getFast_TaskById(1l);
+    void tes6() {
+        Fast_task t = IFast_taskService.getFast_TaskById(1l);
         LOGGER.info(t.toString());
 
+    }
+
+    @Test
+    void test7() {
+        QueryWrapper<Annexe_task> queryWrapper = new QueryWrapper();
+        queryWrapper.select("id", "name").eq("id", Long.valueOf("11"));
+        List<Annexe_task> annexe_tasks = IAnnexe_taskService.getBaseMapper().selectList(queryWrapper);
+        LOGGER.info(annexe_tasks.get(0).toString());
+    }
+
+    @Test
+    void test8() {
+        String[] ids = {"36", "37"};
+        List<Long> ids_ = new ArrayList<>();
+        Arrays.stream(ids).forEach(i -> {
+            ids_.add(Long.valueOf(i));
+        });
+
+        UpdateWrapper<Annexe> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("discard", Constant.DELETE).in("id", ids_);
+        IAnnexeService.getBaseMapper().update(null, updateWrapper);
     }
 
     //    @Test

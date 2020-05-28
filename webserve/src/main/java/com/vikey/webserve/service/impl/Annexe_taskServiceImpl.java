@@ -89,6 +89,7 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
             annexe.setCreate_time(now);
             annexe.setName(a_name);
             annexe.setPath(a_path);
+            annexe.setDiscard(Constant.NOT_DELETE);
             annexe.setOriginal_language(language);
             annexe.setStatus(Constant.ANNEXE_STATUS_UNPROCESSED);
             annexes.add(annexe)

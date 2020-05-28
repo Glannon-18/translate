@@ -15,4 +15,5 @@ public class Constant {
     public static final String ANNEXE_STATUS_UNPROCESSED = "0";
     public static final String ANNEXE_STATUS_PROCESSED = "1";
 
+    public static final Integer PAGESIZE=10;
 }

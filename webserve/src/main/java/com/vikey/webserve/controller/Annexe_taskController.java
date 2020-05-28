@@ -2,13 +2,18 @@ package com.vikey.webserve.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.vikey.webserve.Constant;
 import com.vikey.webserve.config.PersonalConfig;
-import com.vikey.webserve.entity.RespBean;
-import com.vikey.webserve.entity.User;
+import com.vikey.webserve.entity.*;
+import com.vikey.webserve.service.IAnnexeService;
 import com.vikey.webserve.service.IAnnexe_taskService;
 import com.vikey.webserve.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
@@ -36,15 +41,24 @@ public class Annexe_taskController {
     @Resource
     private IAnnexe_taskService IAnnexe_taskService;
 
+
     @Resource
     private PersonalConfig personalConfig;
 
 
     @PostMapping("/")
     public RespBean createAnnexe_Task(@RequestBody String json) {
-        JSONObject jsonObject=JSONObject.parseObject(json);
+        JSONObject jsonObject = JSONObject.parseObject(json);
         IAnnexe_taskService.createAnnexe_task(jsonObject);
         return RespBean.ok("ok");
+    }
+
+    @GetMapping("/{id}")
+    public RespBean getAnnext_Task(@PathVariable String id) {
+        QueryWrapper<Annexe_task> queryWrapper = new QueryWrapper();
+        queryWrapper.select("id", "name").eq("id", Long.valueOf(id));
+        List<Annexe_task> annexe_tasks = IAnnexe_taskService.getBaseMapper().selectList(queryWrapper);
+        return RespBean.ok("ok", annexe_tasks.get(0));
     }
 
 

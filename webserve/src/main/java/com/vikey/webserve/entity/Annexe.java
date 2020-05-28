@@ -34,6 +34,8 @@ public class Annexe implements Serializable {
 
     private String original_language;
 
+    private String discard;
+
     public String getOriginal_language() {
         return original_language;
     }
@@ -80,6 +82,14 @@ public class Annexe implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getDiscard() {
+        return discard;
+    }
+
+    public void setDiscard(String discard) {
+        this.discard = discard;
     }
 
     @Override

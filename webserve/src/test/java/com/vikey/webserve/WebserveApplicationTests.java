@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.generator.config.converts.MySqlTypeConvert;
 import com.baomidou.mybatisplus.generator.config.rules.IColumnType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
+import com.vikey.webserve.config.PersonalConfig;
 import com.vikey.webserve.entity.Annexe;
 import com.vikey.webserve.entity.Annexe_task;
 import com.vikey.webserve.entity.Fast_task;
@@ -21,16 +22,23 @@ import com.vikey.webserve.service.IAnnexeService;
 import com.vikey.webserve.service.IAnnexe_taskService;
 import com.vikey.webserve.service.IFast_taskService;
 import com.vikey.webserve.service.IUserService;
+import com.vikey.webserve.utils.ZipUtils;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 @SpringBootTest
 class WebserveApplicationTests {
@@ -49,6 +57,9 @@ class WebserveApplicationTests {
 
     @Resource
     private IAnnexeService IAnnexeService;
+
+    @Resource
+    private PersonalConfig PersonalConfig;
 
 
     @Test
@@ -119,16 +130,45 @@ class WebserveApplicationTests {
     }
 
     @Test
+    @Transactional
     void test8() {
         String[] ids = {"36", "37"};
         List<Long> ids_ = new ArrayList<>();
         Arrays.stream(ids).forEach(i -> {
             ids_.add(Long.valueOf(i));
         });
-
+        Predicate<Annexe> p = null;
         UpdateWrapper<Annexe> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("discard", Constant.DELETE).in("id", ids_);
         IAnnexeService.getBaseMapper().update(null, updateWrapper);
+    }
+
+    @Test
+    void test9() {
+        List<Long> list = convert("38,39");
+        QueryWrapper<Annexe> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("name", "path").in("id", list);
+        List<Annexe> annexeList = IAnnexeService.getBaseMapper().selectList(queryWrapper);
+
+        try {
+            File file = new File(PersonalConfig.getMake_file_dir() + File.separator + "a.zip");
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
+            FileOutputStream fileOutputStream = new FileOutputStream(PersonalConfig.getMake_file_dir() + File.separator + "a.zip");
+            ZipUtils.toZip(annexeList, fileOutputStream, PersonalConfig.getUpload_dir());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private List<Long> convert(String content) {
+        List<Long> list = new ArrayList<>();
+        Arrays.stream(content.split(",")).forEach(i ->
+        {
+            list.add(Long.valueOf(i));
+        });
+        return list;
     }
 
     //    @Test

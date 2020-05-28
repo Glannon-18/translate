@@ -1,6 +1,7 @@
 package com.vikey.webserve.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.vikey.webserve.config.PersonalConfig;
 import com.vikey.webserve.entity.RespBean;
 import com.vikey.webserve.entity.User;
@@ -38,8 +39,16 @@ public class Annexe_taskController {
     @Resource
     private PersonalConfig personalConfig;
 
+
+    @PostMapping("/")
+    public RespBean createAnnexe_Task(@RequestBody JSONObject jsonObject) {
+        IAnnexe_taskService.createAnnexe_task(jsonObject);
+        return RespBean.ok("ok");
+    }
+
+
     @GetMapping("/listByDate")
-    public RespBean getFast_TaskListByDate(@RequestParam String name) {
+    public RespBean getAnnexe_TaskListByDate(@RequestParam String name) {
         LOGGER.debug(name);
         User user = SecurityUtils.getCurrentUser();
         Map map = IAnnexe_taskService.getAnnexe_taskByDate(user.getId(), name);
@@ -49,8 +58,10 @@ public class Annexe_taskController {
     @PostMapping("/upload")
     public RespBean upload(MultipartFile multipartFile) {
 
+        Map<String, String> map = new HashMap<>();
+        String name = multipartFile.getOriginalFilename();
         String dirPath = personalConfig.getUpload_dir();
-        String filePath = dirPath + File.separator + UUID.randomUUID().toString().substring(0, 10) + "_" + multipartFile.getOriginalFilename();
+        String filePath = dirPath + File.separator + UUID.randomUUID().toString().substring(0, 12) + "_" + multipartFile.getOriginalFilename();
         File file = new File(filePath);
         if (!file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
@@ -60,7 +71,9 @@ public class Annexe_taskController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return RespBean.ok("ok", filePath);
+        map.put("originalName", name);
+        map.put("severName", filePath.replace(dirPath + File.separator, ""));
+        return RespBean.ok("ok", map);
     }
 
 }

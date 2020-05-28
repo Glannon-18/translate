@@ -26,5 +26,5 @@ public interface IAnnexe_taskService extends IService<Annexe_task> {
     LinkedHashMap<String, List<Annexe_task>> getAnnexe_taskByDate(Long uid, String name);
 
 
-    void addAnnexe_task(JSONObject jsonObject);
+    void createAnnexe_task(JSONObject jsonObject);
 }

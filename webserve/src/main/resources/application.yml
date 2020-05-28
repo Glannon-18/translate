@@ -17,11 +17,12 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath:com/vikey/webserve/mapper/xml/*.xml
 logging:
-  level: {com.vikey.webserve.controller: debug}
+  level: {com.vikey.webserve.controller: debug,com.vikey.webserve.service.impl: debug}
 
 
 
 personal-config:
   make_file_dir: D:\\wkw\\file
+  upload_dir: D:\\wkw\\upload
 
 

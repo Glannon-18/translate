@@ -42,7 +42,8 @@ public class User implements Serializable, UserDetails {
 
     private String telephone;
 
-    private Boolean enabled;
+    @TableField(value = "enabled")
+    private Boolean available;
 
     /**
      * 用户头像地址
@@ -122,7 +123,7 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return getEnabled();
+        return getAvailable();
     }
 
     public void setUsername(String username) {
@@ -145,12 +146,12 @@ public class User implements Serializable, UserDetails {
         this.telephone = telephone;
     }
 
-    public Boolean getEnabled() {
-        return enabled;
+    public Boolean getAvailable() {
+        return available;
     }
 
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
+    public void setAvailable(Boolean available) {
+        this.available = available;
     }
 
     public String getUserface() {
@@ -181,7 +182,7 @@ public class User implements Serializable, UserDetails {
                 ", username=" + username +
                 ", last_login_time=" + last_login_time +
                 ", telephone=" + telephone +
-                ", enabled=" + enabled +
+                ", Available=" + available +
                 ", userface=" + userface +
                 "}";
     }

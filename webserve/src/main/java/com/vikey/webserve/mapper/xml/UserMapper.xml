@@ -12,7 +12,7 @@
         <result column="username" property="username"/>
         <result column="last_login_time" property="last_login_time"/>
         <result column="telephone" property="telephone"/>
-        <result column="enabled" property="enabled"/>
+        <result column="available" property="available"/>
         <result column="userface" property="userface"/>
     </resultMap>
 
@@ -38,7 +38,7 @@
              , u.userface
              , u.last_login_time
              , u.telephone
-             , u.enabled
+             , u.enabled     as available
              , r.id          as rid
              , r.name        as rname
              , r.nameZh      as rnameZh
@@ -58,7 +58,7 @@
              , u.account
              , u.username
              , u.userface
-             , u.enabled
+             , u.enabled as available
              , u.password
              , r.id      as rid
              , r.name    as rname

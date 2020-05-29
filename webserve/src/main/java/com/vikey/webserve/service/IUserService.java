@@ -1,6 +1,8 @@
 package com.vikey.webserve.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.vikey.webserve.entity.User;
 
@@ -31,5 +33,8 @@ public interface IUserService extends IService<User> {
 
 
     void create(JSONObject jsonObject);
+
+
+    IPage<User> selectUserWithRolesByName(Page<User> page, String name);
 
 }

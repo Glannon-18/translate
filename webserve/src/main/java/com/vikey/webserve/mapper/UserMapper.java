@@ -1,5 +1,7 @@
 package com.vikey.webserve.mapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vikey.webserve.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -31,5 +33,12 @@ public interface UserMapper extends BaseMapper<User> {
      * @return
      */
     User selectUserWithRolesByAccount(@Param("account") String account);
+
+    /**
+     * @param name
+     * @return
+     */
+    IPage<User> selectUserWithRolesByName(Page<User> page, @Param("name") String name);
+
 
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
 import com.baomidou.mybatisplus.generator.config.GlobalConfig;
@@ -27,7 +28,6 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -47,42 +47,42 @@ class WebserveApplicationTests {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebserveApplicationTests.class);
 
     @Resource
-    private IUserService IUserService;
+    private IUserService iUserService;
 
     @Resource
-    private IFast_taskService IFast_taskService;
+    private IFast_taskService iFast_taskService;
 
     @Resource
-    private IAnnexe_taskService IAnnexe_taskService;
+    private IAnnexe_taskService iAnnexe_taskService;
 
     @Resource
-    private IAnnexeService IAnnexeService;
+    private IAnnexeService iAnnexeService;
 
     @Resource
-    private PersonalConfig PersonalConfig;
+    private PersonalConfig personalConfig;
 
 
     @Test
     void test() {
 
-        IUserService.getById(1l);
+        iUserService.getById(1l);
     }
 
     @Test
     void test0() {
-        User u = IUserService.selectUserWithRoles(Long.valueOf(1l));
+        User u = iUserService.selectUserWithRoles(Long.valueOf(1l));
         System.out.println(u.toString());
     }
 
     @Test
     void test1() {
-        List<Fast_task> fast_tasks = IFast_taskService.getLastFast_task(Long.valueOf(1));
+        List<Fast_task> fast_tasks = iFast_taskService.getLastFast_task(Long.valueOf(1));
         fast_tasks.stream().forEach(t -> LOGGER.info(t.toString()));
     }
 
     @Test
     void test2() {
-        Map<String, List<Fast_task>> map = IFast_taskService.getFast_taskByDate(Long.valueOf(1), "a");
+        Map<String, List<Fast_task>> map = iFast_taskService.getFast_taskByDate(Long.valueOf(1), "a");
         map.forEach((k, v) -> {
             LOGGER.info(k);
             v.stream().forEach(t -> {
@@ -94,7 +94,7 @@ class WebserveApplicationTests {
 
     @Test
     void test3() {
-        Map<String, List<Annexe_task>> map = IAnnexe_taskService.getAnnexe_taskByDate(Long.valueOf(1), "e");
+        Map<String, List<Annexe_task>> map = iAnnexe_taskService.getAnnexe_taskByDate(Long.valueOf(1), "e");
         map.forEach((k, v) -> {
             LOGGER.info(k);
             v.stream().forEach(t -> {
@@ -105,18 +105,18 @@ class WebserveApplicationTests {
 
     @Test
     void test4() {
-        IPage<Annexe> iPage = IAnnexeService.getAnnexeByPage(1, 2, 1l);
+        IPage<Annexe> iPage = iAnnexeService.getAnnexeByPage(1, 2, 1l);
     }
 
     @Test
     void test5() {
-        IUserService.selectUserWithRolesByAccount("admin");
+        iUserService.selectUserWithRolesByAccount("admin");
 
     }
 
     @Test
     void tes6() {
-        Fast_task t = IFast_taskService.getFast_TaskById(1l);
+        Fast_task t = iFast_taskService.getFast_TaskById(1l);
         LOGGER.info(t.toString());
 
     }
@@ -125,7 +125,7 @@ class WebserveApplicationTests {
     void test7() {
         QueryWrapper<Annexe_task> queryWrapper = new QueryWrapper();
         queryWrapper.select("id", "name").eq("id", Long.valueOf("11"));
-        List<Annexe_task> annexe_tasks = IAnnexe_taskService.getBaseMapper().selectList(queryWrapper);
+        List<Annexe_task> annexe_tasks = iAnnexe_taskService.getBaseMapper().selectList(queryWrapper);
         LOGGER.info(annexe_tasks.get(0).toString());
     }
 
@@ -140,7 +140,7 @@ class WebserveApplicationTests {
         Predicate<Annexe> p = null;
         UpdateWrapper<Annexe> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("discard", Constant.DELETE).in("id", ids_);
-        IAnnexeService.getBaseMapper().update(null, updateWrapper);
+        iAnnexeService.getBaseMapper().update(null, updateWrapper);
     }
 
     @Test
@@ -148,18 +148,27 @@ class WebserveApplicationTests {
         List<Long> list = convert("44,45");
         QueryWrapper<Annexe> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("name", "path").in("id", list);
-        List<Annexe> annexeList = IAnnexeService.getBaseMapper().selectList(queryWrapper);
+        List<Annexe> annexeList = iAnnexeService.getBaseMapper().selectList(queryWrapper);
 
         try {
-            File file = new File(PersonalConfig.getMake_file_dir() + File.separator + "a.zip");
+            File file = new File(personalConfig.getMake_file_dir() + File.separator + "a.zip");
             if (!file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();
             }
             FileOutputStream fileOutputStream = new FileOutputStream(file);
-            ZipUtils.toZip(annexeList, fileOutputStream, PersonalConfig.getUpload_dir());
+            ZipUtils.toZip(annexeList, fileOutputStream, personalConfig.getUpload_dir());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    void test10() {
+        Page<User>
+                page = new Page<>(1, 1);
+        iUserService.selectUserWithRolesByName(page, "5");
+
+
     }
 
     private List<Long> convert(String content) {

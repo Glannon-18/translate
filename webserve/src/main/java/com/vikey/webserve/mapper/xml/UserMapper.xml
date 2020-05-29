@@ -24,8 +24,27 @@
             <result column="rcreate_time" property="create_time"></result>
             <result column="rdiscard" property="discard"></result>
         </collection>
-
     </resultMap>
+
+
+    <resultMap id="UserWithRolesPage" type="com.vikey.webserve.entity.User" extends="BaseResultMap">
+        <collection property="roleList" ofType="com.vikey.webserve.entity.Role" select="selectUserRoleName"
+                    column="{uid=id}">
+            <id column="rid" property="id"></id>
+            <result column="rname" property="name"></result>
+            <result column="rnameZh" property="nameZh"></result>
+            <result column="rcreate_time" property="create_time"></result>
+            <result column="rdiscard" property="discard"></result>
+        </collection>
+    </resultMap>
+
+    <select id="selectUserRoleName" resultMap="com.vikey.webserve.mapper.RoleMapper.BaseResultMap">
+        select r.nameZh as nameZh
+        from role r
+                 left join user_role ur on r.id = ur.rid
+                 left join user u on ur.uid = u.id
+        where u.id = #{uid}
+    </select>
 
 
     <select id="selectUserWithRoles" resultMap="UserWithRoles">
@@ -70,6 +89,21 @@
         where u.account = #{account}
           and u.discard = '0'
           and u.enabled = true
+    </select>
+
+    <select id="selectUserWithRolesByName" resultMap="UserWithRolesPage">
+        select id, account, username, telephone, create_time
+        from user where discard='0'
+        <if test="name!=null and name!=''">
+            and
+            (
+            account like CONCAT("%",#{name},"%")
+            OR
+            username like CONCAT("%",#{name},"%")
+            )
+        </if>
+
+
     </select>
 
 

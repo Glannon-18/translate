@@ -1,6 +1,8 @@
 package com.vikey.webserve.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vikey.webserve.Constant;
 import com.vikey.webserve.entity.User;
 import com.vikey.webserve.entity.User_role;
@@ -75,6 +77,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             user_roleList.add(ur);
         });
         iUser_roleService.saveBatch(user_roleList);
+    }
+
+    @Override
+    public IPage<User> selectUserWithRolesByName(Page<User> page, String name) {
+        return getBaseMapper().selectUserWithRolesByName(page, name);
     }
 
     @Override

@@ -1,11 +1,7 @@
 package com.vikey.webserve.utils;
 
-import com.vikey.webserve.config.PersonalConfig;
 import com.vikey.webserve.entity.Annexe;
-import org.springframework.stereotype.Component;
-import sun.misc.Contended;
 
-import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,7 +18,7 @@ public class ZipUtils {
             zos = new ZipOutputStream(out);
             for (Annexe a : as) {
                 byte[] buf = new byte[1024];
-                zos.putNextEntry(new ZipEntry(a.getName()));
+                zos.putNextEntry(new ZipEntry(a.getPath()));
                 int len;
                 FileInputStream in = new FileInputStream(Prefix + File.separator + a.getPath());
                 while ((len = in.read(buf)) != -1) {

@@ -4,11 +4,22 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.vikey.webserve.entity.Library">
-        <id column="id" property="id" />
-        <result column="discard" property="discard" />
-        <result column="create_time" property="create_time" />
-        <result column="name" property="name" />
-        <result column="uid" property="uid" />
+        <id column="id" property="id"/>
+        <result column="discard" property="discard"/>
+        <result column="create_time" property="create_time"/>
+        <result column="name" property="name"/>
+        <result column="uid" property="uid"/>
+        <result column="username" property="username"></result>
     </resultMap>
+
+    <select id="list" resultMap="BaseResultMap">
+        select l.id as id,l.name as name ,l.create_time as create_time
+        ,u.account as username
+        from library l left join user u on l.uid=u.id where l
+        .discard='0' and u.id=#{uid}
+        <if test="name!=null and name!=''">
+            and l.name like CONCAT('%',#{name},'%')
+        </if>
+    </select>
 
 </mapper>

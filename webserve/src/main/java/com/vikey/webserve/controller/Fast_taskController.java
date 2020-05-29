@@ -42,7 +42,7 @@ public class Fast_taskController {
     private static final Logger LOGGER = LoggerFactory.getLogger(Fast_taskController.class);
 
     @Resource
-    private IFast_taskService IFast_taskService;
+    private IFast_taskService iFast_taskService;
 
     @Resource
     private PersonalConfig personalConfig;
@@ -65,7 +65,7 @@ public class Fast_taskController {
         fast_task.setName(creatNameByTime(now));
         fast_task.setUid(user.getId());
 
-        IFast_taskService.save(fast_task);
+        iFast_taskService.save(fast_task);
 
         return RespBean.ok("ok");
     }
@@ -74,7 +74,7 @@ public class Fast_taskController {
     @GetMapping("/")
     public RespBean getFast_TaskList() {
         User user = SecurityUtils.getCurrentUser();
-        List<Fast_task> fast_taskList = IFast_taskService.getLastFast_task(user.getId());
+        List<Fast_task> fast_taskList = iFast_taskService.getLastFast_task(user.getId());
         return RespBean.ok("ok", fast_taskList);
     }
 
@@ -82,7 +82,7 @@ public class Fast_taskController {
     public RespBean getFast_TaskListByDate(@RequestParam String name) {
         LOGGER.debug(name);
         User user = SecurityUtils.getCurrentUser();
-        Map map = IFast_taskService.getFast_taskByDate(user.getId(), name);
+        Map map = iFast_taskService.getFast_taskByDate(user.getId(), name);
         return RespBean.ok("ok", map);
     }
 
@@ -112,7 +112,7 @@ public class Fast_taskController {
     @GetMapping("/{id}")
     public RespBean getFast_TaskById(@PathVariable String id) {
         Long tid = Long.valueOf(id);
-        Fast_task fast_task = IFast_taskService.getFast_TaskById(tid);
+        Fast_task fast_task = iFast_taskService.getFast_TaskById(tid);
         return RespBean.ok("ok", fast_task);
     }
 

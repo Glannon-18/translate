@@ -145,7 +145,7 @@ class WebserveApplicationTests {
 
     @Test
     void test9() {
-        List<Long> list = convert("38,39");
+        List<Long> list = convert("44,45");
         QueryWrapper<Annexe> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("name", "path").in("id", list);
         List<Annexe> annexeList = IAnnexeService.getBaseMapper().selectList(queryWrapper);
@@ -155,7 +155,7 @@ class WebserveApplicationTests {
             if (!file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();
             }
-            FileOutputStream fileOutputStream = new FileOutputStream(PersonalConfig.getMake_file_dir() + File.separator + "a.zip");
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
             ZipUtils.toZip(annexeList, fileOutputStream, PersonalConfig.getUpload_dir());
         } catch (FileNotFoundException e) {
             e.printStackTrace();

@@ -1,6 +1,7 @@
 package com.vikey.webserve.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -11,6 +12,10 @@ import com.vikey.webserve.entity.RespBean;
 import com.vikey.webserve.entity.RespPageBean;
 import com.vikey.webserve.service.IAnnexeService;
 import com.vikey.webserve.utils.ZipUtils;
+import org.apache.commons.io.FileUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +23,7 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 
@@ -56,24 +62,30 @@ public class AnnexeController {
     }
 
     @PostMapping("/export")
-    public ResponseEntity<byte[]> export(@RequestParam String ids) {
-        List<Long> list = convert(ids);
+    public ResponseEntity<byte[]> export(@RequestBody String json) {
+
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        List<Long> list = convert(jsonObject.getString("ids"));
         QueryWrapper<Annexe> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("name", "path").in("id", list);
         List<Annexe> annexeList = IAnnexeService.getBaseMapper().selectList(queryWrapper);
-
         try {
-            File file = new File(PersonalConfig.getMake_file_dir() + File.separator + "a.zip");
+            String zip_path = PersonalConfig.getMake_file_dir() + File.separator + "download.zip";
+            File file = new File(zip_path);
             if (!file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();
             }
-            FileOutputStream fileOutputStream = new FileOutputStream(PersonalConfig.getMake_file_dir() + File.separator + "a.zip");
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
             ZipUtils.toZip(annexeList, fileOutputStream, PersonalConfig.getUpload_dir());
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentDispositionFormData("attachment", "download.zip");
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            return new ResponseEntity<>(FileUtils.readFileToByteArray(new File(zip_path)), headers, HttpStatus.CREATED);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-
         return null;
     }
 

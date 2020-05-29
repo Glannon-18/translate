@@ -25,20 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 public class UserController {
 
-    private static final Logger LOGGER= LoggerFactory.getLogger(UserController.class);
-
-    @GetMapping("/a")
-    public String a() {
-        return "aaa";
-    }
-
-    @GetMapping("/b")
-    public String b() {
-        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
-
-        LOGGER.info(authentication.toString());
-        return "bbb";
-    }
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
 
 }

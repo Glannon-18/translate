@@ -2,6 +2,8 @@ package com.vikey.webserve.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.vikey.webserve.Constant;
 
 import java.time.LocalDateTime;
 import java.io.Serializable;
@@ -90,6 +92,16 @@ public class Annexe implements Serializable {
 
     public void setDiscard(String discard) {
         this.discard = discard;
+    }
+
+    @JsonGetter("original_language_zh")
+    public String getOriginal_language_zh() {
+        return Constant.LANGUAGE_ZH.get(getOriginal_language());
+    }
+
+    @JsonGetter("status_zh")
+    public String getStatus_zh() {
+        return Constant.ANNEXE_STATUS_ZH.get(getStatus());
     }
 
     @Override

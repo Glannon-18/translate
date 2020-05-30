@@ -1,5 +1,7 @@
 package com.vikey.webserve;
 
+import java.util.HashMap;
+
 /**
  * 系统常量
  */
@@ -15,5 +17,17 @@ public class Constant {
     public static final String ANNEXE_STATUS_UNPROCESSED = "0";
     public static final String ANNEXE_STATUS_PROCESSED = "1";
 
-    public static final Integer PAGESIZE=10;
+    public static final Integer PAGESIZE = 2;
+
+    public static final HashMap<String, String> LANGUAGE_ZH = new HashMap() {{
+        put("zh", "中文");
+        put("en", "英文");
+        put("vi", "越南文");
+        put("th", "泰文");
+    }};
+
+    public static final HashMap<String, String> ANNEXE_STATUS_ZH = new HashMap() {{
+        put("0", "未完成");
+        put("1", "已完成");
+    }};
 }

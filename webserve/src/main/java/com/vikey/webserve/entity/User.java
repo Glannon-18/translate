@@ -3,6 +3,7 @@ package com.vikey.webserve.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,10 +31,12 @@ public class User implements UserDetails {
 
     private String discard;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime create_time;
 
     private String account;
 
+    @JsonIgnore
     private String password;
 
     private String username;
@@ -52,6 +55,7 @@ public class User implements UserDetails {
 
     @TableField(exist = false)
     private List<Role> roleList;
+
 
     public Long getId() {
         return id;

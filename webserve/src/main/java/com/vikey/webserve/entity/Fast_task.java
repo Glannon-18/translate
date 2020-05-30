@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.vikey.webserve.Constant;
 import org.apache.ibatis.type.JdbcType;
 
 import java.time.LocalDateTime;
@@ -111,6 +113,11 @@ public class Fast_task implements Serializable {
 
     public void setUid(Long uid) {
         this.uid = uid;
+    }
+
+    @JsonGetter("original_language_zh")
+    public String getOriginal_language_zh() {
+        return Constant.LANGUAGE_ZH.get(getOriginal_language());
     }
 
     @Override

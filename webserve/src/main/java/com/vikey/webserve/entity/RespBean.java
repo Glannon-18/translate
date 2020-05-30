@@ -1,6 +1,8 @@
 package com.vikey.webserve.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RespBean {
     private Integer status;
     private String msg;

@@ -2,6 +2,8 @@ package com.vikey.webserve.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.time.LocalDateTime;
 import java.io.Serializable;
 
@@ -13,6 +15,7 @@ import java.io.Serializable;
  * @author wkw
  * @since 2020-05-19
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Role implements Serializable {
 
     private static final long serialVersionUID = 1L;

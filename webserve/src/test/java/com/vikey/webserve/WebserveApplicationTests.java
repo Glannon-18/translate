@@ -1,5 +1,7 @@
 package com.vikey.webserve;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -15,10 +17,7 @@ import com.baomidou.mybatisplus.generator.config.rules.IColumnType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.vikey.webserve.config.PersonalConfig;
-import com.vikey.webserve.entity.Annexe;
-import com.vikey.webserve.entity.Annexe_task;
-import com.vikey.webserve.entity.Fast_task;
-import com.vikey.webserve.entity.User;
+import com.vikey.webserve.entity.*;
 import com.vikey.webserve.service.IAnnexeService;
 import com.vikey.webserve.service.IAnnexe_taskService;
 import com.vikey.webserve.service.IFast_taskService;
@@ -165,11 +164,13 @@ class WebserveApplicationTests {
     @Test
     void test10() {
         Page<User>
-                page = new Page<>(1, 1);
-        iUserService.selectUserWithRolesByName(page, "5");
+                page = new Page<>(1, 2);
+        IPage<User> page1 = iUserService.selectUserWithRolesByName(page, null);
+        LOGGER.info(JSON.toJSONString(new RespPageBean(page1.getTotal(), page1.getRecords(), page1.getSize())));
 
 
     }
+
 
     private List<Long> convert(String content) {
         List<Long> list = new ArrayList<>();

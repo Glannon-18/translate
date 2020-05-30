@@ -1,6 +1,8 @@
 package com.vikey.webserve.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vikey.webserve.Constant;
@@ -66,22 +68,56 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         user.setPassword(new BCryptPasswordEncoder().encode("123456"));
         user.setTelephone(phone);
         user.setUsername(username);
-
         getBaseMapper().insert(user);
-        Long userid = user.getId();
-        List<User_role> user_roleList = new ArrayList<>();
-        roles.stream().forEach(r -> {
-            User_role ur = new User_role();
-            ur.setRid(Long.valueOf(r));
-            ur.setUid(userid);
-            user_roleList.add(ur);
-        });
-        iUser_roleService.saveBatch(user_roleList);
+
+        if (!roles.isEmpty()) {
+            Long userid = user.getId();
+            List<User_role> user_roleList = new ArrayList<>();
+            roles.stream().forEach(r -> {
+                User_role ur = new User_role();
+                ur.setRid(Long.valueOf(r));
+                ur.setUid(userid);
+                user_roleList.add(ur);
+            });
+            iUser_roleService.saveBatch(user_roleList);
+        }
+
     }
 
     @Override
     public IPage<User> selectUserWithRolesByName(Page<User> page, String name) {
         return getBaseMapper().selectUserWithRolesByName(page, name);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void update(String id, JSONObject jsonObject) {
+        String account = jsonObject.getString("account");
+        String username = jsonObject.getString("username");
+        String phone = jsonObject.getString("phone");
+        ArrayList<Integer> roles = (ArrayList<Integer>) jsonObject.get("roles");
+
+        UpdateWrapper<User> userUpdateWrapper = new UpdateWrapper<>();
+        userUpdateWrapper.set("account", account).set("username", username).set("telephone", phone)
+                .eq("id", Long.valueOf(id));
+        update(userUpdateWrapper);
+
+        QueryWrapper<User_role> user_roleQueryWrapper = new QueryWrapper<>();
+        user_roleQueryWrapper.eq("uid", Long.valueOf(id));
+        iUser_roleService.getBaseMapper().delete(user_roleQueryWrapper);
+
+
+        if (!roles.isEmpty()) {
+            List<User_role> user_roleList = new ArrayList<>();
+            roles.stream().forEach(r -> {
+                User_role ur = new User_role();
+                ur.setRid(Long.valueOf(r));
+                ur.setUid(Long.valueOf(id));
+                user_roleList.add(ur);
+            });
+            iUser_roleService.saveBatch(user_roleList);
+        }
+
     }
 
     @Override

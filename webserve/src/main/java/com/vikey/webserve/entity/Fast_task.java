@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.vikey.webserve.Constant;
 import org.apache.ibatis.type.JdbcType;
 
@@ -19,6 +20,7 @@ import java.io.Serializable;
  * @author wkw
  * @since 2020-05-18
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @TableName(resultMap = "BaseResultMap")
 public class Fast_task implements Serializable {
 

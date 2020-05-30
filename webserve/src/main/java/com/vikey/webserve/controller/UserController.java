@@ -1,8 +1,8 @@
 package com.vikey.webserve.controller;
 
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vikey.webserve.Constant;
@@ -43,10 +43,23 @@ public class UserController {
     }
 
     @GetMapping("/")
-    public RespPageBean list(@RequestParam String name,@RequestParam Integer currentPage) {
+    public RespPageBean listUser(@RequestParam String name, @RequestParam Integer currentPage) {
         Page<User> page = new Page<>(currentPage, Constant.PAGESIZE);
-        IPage<User> userIPage=iUserService.selectUserWithRolesByName(page,name);
-        return new RespPageBean(userIPage.getTotal(),userIPage.getRecords(),userIPage.getSize());
+        IPage<User> userIPage = iUserService.selectUserWithRolesByName(page, name);
+        return new RespPageBean(userIPage.getTotal(), userIPage.getRecords(), userIPage.getSize());
+    }
+
+    @GetMapping("/{id}")
+    public RespBean getUser(@PathVariable String id) {
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.select("id", "account", "username", "telephone").eq("id", Long.valueOf(id));
+        return RespBean.ok("ok", iUserService.getOne(userQueryWrapper));
+    }
+
+    @PutMapping("/{id}")
+    public RespBean updateUser(@PathVariable String id, @RequestBody JSONObject jsonObject) {
+        iUserService.update(id, jsonObject);
+        return RespBean.ok("ok");
     }
 
 

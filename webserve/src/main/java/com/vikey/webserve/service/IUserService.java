@@ -31,10 +31,12 @@ public interface IUserService extends IService<User> {
     User selectUserWithRolesByAccount(String account);
 
 
-
     void create(JSONObject jsonObject);
 
 
     IPage<User> selectUserWithRolesByName(Page<User> page, String name);
+
+
+    void update(String id, JSONObject jsonObject);
 
 }

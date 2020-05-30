@@ -3,6 +3,7 @@ package com.vikey.webserve.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.vikey.webserve.Constant;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import java.io.Serializable;
  * @author wkw
  * @since 2020-05-18
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Annexe implements Serializable {
 
     private static final long serialVersionUID = 1L;

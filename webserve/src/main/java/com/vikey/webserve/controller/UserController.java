@@ -73,5 +73,12 @@ public class UserController {
 
     }
 
+    @GetMapping("/check")
+    public RespBean checkeAccount(@RequestParam String account) {
+        Integer count = iUserService.countByAccount(account);
+        return RespBean.ok("ok", count);
+
+    }
+
 
 }

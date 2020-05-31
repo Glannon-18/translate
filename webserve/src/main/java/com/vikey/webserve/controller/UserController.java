@@ -3,6 +3,7 @@ package com.vikey.webserve.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vikey.webserve.Constant;
@@ -60,6 +61,16 @@ public class UserController {
     public RespBean updateUser(@PathVariable String id, @RequestBody JSONObject jsonObject) {
         iUserService.update(id, jsonObject);
         return RespBean.ok("ok");
+    }
+
+
+    @DeleteMapping("/{id}")
+    public RespBean deleteUser(@PathVariable String id) {
+        UpdateWrapper<User> userUpdateWrapper = new UpdateWrapper<>();
+        userUpdateWrapper.set("discard", Constant.DELETE).eq("id", Long.valueOf(id));
+        iUserService.update(userUpdateWrapper);
+        return RespBean.ok("ok");
+
     }
 
 

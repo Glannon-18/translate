@@ -2,9 +2,11 @@ package com.vikey.webserve.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -14,6 +16,7 @@ import java.io.Serializable;
  * @author wkw
  * @since 2020-05-18
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Keyword implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -23,6 +26,7 @@ public class Keyword implements Serializable {
 
     private String discard;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime create_time;
 
     private String word;

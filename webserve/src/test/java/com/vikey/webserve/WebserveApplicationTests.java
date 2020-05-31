@@ -166,7 +166,16 @@ class WebserveApplicationTests {
         Page<User>
                 page = new Page<>(1, 2);
         IPage<User> page1 = iUserService.selectUserWithRolesByName(page, null);
-        LOGGER.info(JSON.toJSONString(new RespPageBean(page1.getTotal(), page1.getRecords(), page1.getSize())));
+        LOGGER.debug(JSON.toJSONString(new RespPageBean(page1.getTotal(), page1.getRecords(), page1.getSize())));
+
+
+    }
+
+    @Test
+    void test11() {
+        Integer count =
+                iUserService.countByAccount("admin",1l);
+        LOGGER.info(count.toString());
 
 
     }

@@ -13,6 +13,7 @@ import com.vikey.webserve.entity.User;
 import com.vikey.webserve.service.IUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -74,8 +75,8 @@ public class UserController {
     }
 
     @GetMapping("/check")
-    public RespBean checkeAccount(@RequestParam String account) {
-        Integer count = iUserService.countByAccount(account);
+    public RespBean checkeAccount(@RequestParam String account, @RequestParam String userid) {
+        Integer count = iUserService.countByAccount(account, StringUtils.isEmpty(userid) ? null : Long.valueOf(userid));
         return RespBean.ok("ok", count);
 
     }

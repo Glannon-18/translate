@@ -108,6 +108,11 @@
 
     <select id="countByAccount" resultType="integer">
         select COUNT(*) from user where account=#{account}
+        <trim prefix="and" prefixOverrides="and">
+            <if test="userid!=null">
+                and id!=#{userid}
+            </if>
+        </trim>
     </select>
 
 

@@ -121,8 +121,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public Integer countByAccount(String account) {
-        return getBaseMapper().countByAccount(account);
+    public Integer countByAccount(String account,Long userid) {
+        return getBaseMapper().countByAccount(account,userid);
     }
 
     @Override

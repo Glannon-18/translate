@@ -2,7 +2,6 @@ package com.vikey.webserve.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -16,8 +15,6 @@ import com.vikey.webserve.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
-
-import org.springframework.stereotype.Controller;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -63,7 +60,7 @@ public class LibraryController {
     }
 
     @GetMapping("/")
-    public RespPageBean pageLLib(@RequestParam String name, @RequestParam String currentPage) {
+    public RespPageBean pageLib(@RequestParam String name, @RequestParam String currentPage) {
         User user = SecurityUtils.getCurrentUser();
         Page<Library> page = new Page<>(Integer.valueOf(currentPage), Constant.PAGESIZE);
         IPage<Library> iPage = iLibraryService.list(page, user.getId(), name);

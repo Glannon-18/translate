@@ -41,6 +41,6 @@ public interface IUserService extends IService<User> {
     void update(String id, JSONObject jsonObject);
 
 
-    Integer countByAccount(String account);
+    Integer countByAccount(String account,Long userid);
 
 }

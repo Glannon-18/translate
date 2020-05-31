@@ -50,6 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/css/**", "/js/**", "/index.html", "/img/**", "/fonts/**", "/favicon.ico", "/verifyCode");
     }
 
     @Bean
@@ -94,7 +95,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .formLogin()
 //                .loginProcessingUrl("/doLogin")
 //                .loginPage("/login")
-//                .permitAll()
+//                .permitAll().and()
                 .addFilterAt(filter(), UsernamePasswordAuthenticationFilter.class).logout().logoutUrl("/logout")
                 .logoutSuccessHandler(((request, response, authentication) -> {
                     response.setContentType("application/json;charset=utf-8");
@@ -109,6 +110,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     @Override
                     public void commence(HttpServletRequest req, HttpServletResponse resp, AuthenticationException authException) throws IOException {
                         resp.setContentType("application/json;charset=utf-8");
+                        resp.setStatus(401);
                         PrintWriter out = resp.getWriter();
                         RespBean respBean = RespBean.error("访问失败!");
                         if (authException instanceof InsufficientAuthenticationException) {

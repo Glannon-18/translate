@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.vikey.webserve.entity.User;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -38,5 +39,8 @@ public interface IUserService extends IService<User> {
 
 
     void update(String id, JSONObject jsonObject);
+
+
+    Integer countByAccount(String account);
 
 }

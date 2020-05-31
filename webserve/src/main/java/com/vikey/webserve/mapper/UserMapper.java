@@ -41,4 +41,6 @@ public interface UserMapper extends BaseMapper<User> {
     IPage<User> selectUserWithRolesByName(Page<User> page, @Param("name") String name);
 
 
+    Integer countByAccount(@Param("account") String account);
+
 }

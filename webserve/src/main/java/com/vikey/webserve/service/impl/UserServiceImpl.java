@@ -61,7 +61,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         String phone = jsonObject.getString("phone");
         ArrayList<Integer> roles = (ArrayList<Integer>) jsonObject.get("roles");
         User user = new User();
-        user.setAccount(account);
+        user.setAccount(account.trim());
         user.setCreate_time(LocalDateTime.now());
         user.setDiscard(Constant.NOT_DELETE);
         user.setAvailable(true);
@@ -98,7 +98,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         ArrayList<Integer> roles = (ArrayList<Integer>) jsonObject.get("roles");
 
         UpdateWrapper<User> userUpdateWrapper = new UpdateWrapper<>();
-        userUpdateWrapper.set("account", account).set("username", username).set("telephone", phone)
+        userUpdateWrapper.set("account", account.trim()).set("username", username).set("telephone", phone)
                 .eq("id", Long.valueOf(id));
         update(userUpdateWrapper);
 
@@ -118,6 +118,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             iUser_roleService.saveBatch(user_roleList);
         }
 
+    }
+
+    @Override
+    public Integer countByAccount(String account) {
+        return getBaseMapper().countByAccount(account);
     }
 
     @Override

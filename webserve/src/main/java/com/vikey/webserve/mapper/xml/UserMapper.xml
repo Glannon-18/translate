@@ -106,5 +106,9 @@
 
     </select>
 
+    <select id="countByAccount" resultType="integer">
+        select COUNT(*) from user where account=#{account}
+    </select>
+
 
 </mapper>

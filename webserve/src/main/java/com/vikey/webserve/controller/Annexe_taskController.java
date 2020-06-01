@@ -44,7 +44,7 @@ public class Annexe_taskController {
     public RespBean createAnnexe_Task(@RequestBody String json) {
         JSONObject jsonObject = JSONObject.parseObject(json);
         iAnnexe_taskService.createAnnexe_task(jsonObject);
-        return RespBean.ok("ok");
+        return RespBean.ok("创建文本任务成功");
     }
 
     @GetMapping("/{id}")
@@ -52,7 +52,7 @@ public class Annexe_taskController {
         QueryWrapper<Annexe_task> queryWrapper = new QueryWrapper();
         queryWrapper.select("id", "name").eq("id", Long.valueOf(id));
         List<Annexe_task> annexe_tasks = iAnnexe_taskService.getBaseMapper().selectList(queryWrapper);
-        return RespBean.ok("ok", annexe_tasks.get(0));
+        return RespBean.ok(annexe_tasks.get(0));
     }
 
 
@@ -61,7 +61,7 @@ public class Annexe_taskController {
         LOGGER.debug(name);
         User user = SecurityUtils.getCurrentUser();
         Map map = iAnnexe_taskService.getAnnexe_taskByDate(user.getId(), name);
-        return RespBean.ok("ok", map);
+        return RespBean.ok(map);
     }
 
     @PostMapping("/upload")
@@ -82,7 +82,7 @@ public class Annexe_taskController {
         }
         map.put("originalName", name);
         map.put("severName", filePath.replace(dirPath + File.separator, ""));
-        return RespBean.ok("ok", map);
+        return RespBean.ok(map);
     }
 
 }

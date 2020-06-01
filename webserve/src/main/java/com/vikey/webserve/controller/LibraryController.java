@@ -48,7 +48,7 @@ public class LibraryController {
         library.setName(name);
         library.setUid(user.getId());
         iLibraryService.save(library);
-        return RespBean.ok("ok");
+        return RespBean.ok("添加词库成功！");
     }
 
     @DeleteMapping("/")
@@ -56,7 +56,7 @@ public class LibraryController {
         UpdateWrapper<Library> libraryUpdateWrapper = new UpdateWrapper<>();
         libraryUpdateWrapper.set("discard", Constant.DELETE).eq("id", Long.valueOf(id));
         iLibraryService.update(libraryUpdateWrapper);
-        return RespBean.ok("ok");
+        return RespBean.ok("删除词库成功！");
     }
 
     @GetMapping("/")

@@ -64,10 +64,8 @@ public class Fast_taskController {
         fast_task.setTranslate_language(jsonObject.getString("translate_language"));
         fast_task.setName(creatNameByTime(now));
         fast_task.setUid(user.getId());
-
         iFast_taskService.save(fast_task);
-
-        return RespBean.ok("ok");
+        return RespBean.ok();
     }
 
 
@@ -75,7 +73,7 @@ public class Fast_taskController {
     public RespBean getFast_TaskList() {
         User user = SecurityUtils.getCurrentUser();
         List<Fast_task> fast_taskList = iFast_taskService.getLastFast_task(user.getId());
-        return RespBean.ok("ok", fast_taskList);
+        return RespBean.ok(fast_taskList);
     }
 
     @GetMapping("/listByDate")
@@ -83,7 +81,7 @@ public class Fast_taskController {
         LOGGER.debug(name);
         User user = SecurityUtils.getCurrentUser();
         Map map = iFast_taskService.getFast_taskByDate(user.getId(), name);
-        return RespBean.ok("ok", map);
+        return RespBean.ok(map);
     }
 
     @PostMapping("/export")
@@ -113,7 +111,7 @@ public class Fast_taskController {
     public RespBean getFast_TaskById(@PathVariable String id) {
         Long tid = Long.valueOf(id);
         Fast_task fast_task = iFast_taskService.getFast_TaskById(tid);
-        return RespBean.ok("ok", fast_task);
+        return RespBean.ok(fast_task);
     }
 
 

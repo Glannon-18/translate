@@ -24,8 +24,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <p>
@@ -58,7 +59,7 @@ public class AnnexeController {
         UpdateWrapper<Annexe> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("discard", Constant.DELETE).in("id", convert(ids));
         IAnnexeService.getBaseMapper().update(null, updateWrapper);
-        return RespBean.ok("ok");
+        return RespBean.ok("删除文件成功！");
     }
 
     @PostMapping("/export")

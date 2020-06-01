@@ -41,7 +41,7 @@ public class UserController {
     public RespBean createUser(@RequestBody JSONObject jsonObject) {
         LOGGER.info(jsonObject.toJSONString());
         iUserService.create(jsonObject);
-        return RespBean.ok("ok");
+        return RespBean.ok("添加用户成功！");
     }
 
     @GetMapping("/")
@@ -55,13 +55,13 @@ public class UserController {
     public RespBean getUser(@PathVariable String id) {
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
         userQueryWrapper.select("id", "account", "username", "telephone").eq("id", Long.valueOf(id));
-        return RespBean.ok("ok", iUserService.getOne(userQueryWrapper));
+        return RespBean.ok(iUserService.getOne(userQueryWrapper));
     }
 
     @PutMapping("/{id}")
     public RespBean updateUser(@PathVariable String id, @RequestBody JSONObject jsonObject) {
         iUserService.update(id, jsonObject);
-        return RespBean.ok("ok");
+        return RespBean.ok("修改用户成功！");
     }
 
 
@@ -70,14 +70,14 @@ public class UserController {
         UpdateWrapper<User> userUpdateWrapper = new UpdateWrapper<>();
         userUpdateWrapper.set("discard", Constant.DELETE).eq("id", Long.valueOf(id));
         iUserService.update(userUpdateWrapper);
-        return RespBean.ok("ok");
+        return RespBean.ok("删除用户成功！");
 
     }
 
     @GetMapping("/check")
     public RespBean checkeAccount(@RequestParam String account, @RequestParam String userid) {
         Integer count = iUserService.countByAccount(account, StringUtils.isEmpty(userid) ? null : Long.valueOf(userid));
-        return RespBean.ok("ok", count);
+        return RespBean.ok(count);
 
     }
 

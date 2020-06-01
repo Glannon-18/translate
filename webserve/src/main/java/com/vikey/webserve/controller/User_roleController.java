@@ -36,11 +36,11 @@ public class User_roleController {
         user_roleQueryWrapper.select("rid").eq("uid", Long.valueOf(uid));
         List<User_role> user_roleList = iUser_roleService.list(user_roleQueryWrapper);
         //这里处理一下再回传，方便双向绑定
-        Long[] ids=new Long[user_roleList.size()];
-        for (int i=0;i<ids.length;i++){
-            ids[i]=user_roleList.get(i).getRid();
+        Long[] ids = new Long[user_roleList.size()];
+        for (int i = 0; i < ids.length; i++) {
+            ids[i] = user_roleList.get(i).getRid();
         }
-        return RespBean.ok("ok", ids);
+        return RespBean.ok(ids);
     }
 
 }

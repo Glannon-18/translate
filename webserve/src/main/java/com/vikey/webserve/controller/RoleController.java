@@ -34,7 +34,7 @@ public class RoleController {
         QueryWrapper<Role> roleQueryWrapper = new QueryWrapper<>();
         roleQueryWrapper.select("id", "name", "nameZh");
         List<Role> roleList = iRoleService.list(roleQueryWrapper);
-        return RespBean.ok("ok", roleList);
+        return RespBean.ok(roleList);
     }
 
 

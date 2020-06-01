@@ -114,7 +114,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         PrintWriter out = resp.getWriter();
                         RespBean respBean = RespBean.error("访问失败!");
                         if (authException instanceof InsufficientAuthenticationException) {
-                            respBean.setMsg("没有经过认证的请求!");
+                            respBean.setMsg("请先登录！");
                         }
                         out.write(new ObjectMapper().writeValueAsString(respBean));
                         out.flush();

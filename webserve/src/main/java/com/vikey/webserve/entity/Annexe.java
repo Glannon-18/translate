@@ -25,9 +25,6 @@ public class Annexe implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    /**
-     * 文档名称
-     */
     private String name;
 
     private String status;
@@ -39,6 +36,8 @@ public class Annexe implements Serializable {
     private String original_language;
 
     private String discard;
+
+    private String type;
 
     public String getOriginal_language() {
         return original_language;
@@ -106,12 +105,25 @@ public class Annexe implements Serializable {
         return Constant.ANNEXE_STATUS_ZH.get(getStatus());
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return "Annexe{" +
                 "id=" + id +
+                ", name='" + name + '\'' +
+                ", status='" + status + '\'' +
                 ", create_time=" + create_time +
-                ", path=" + path +
-                "}";
+                ", path='" + path + '\'' +
+                ", original_language='" + original_language + '\'' +
+                ", discard='" + discard + '\'' +
+                ", type='" + type + '\'' +
+                '}';
     }
 }

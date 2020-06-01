@@ -85,10 +85,12 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
             JSONObject obj = paths.getJSONObject(i);
             String a_name = obj.getString("originalName");
             String a_path = obj.getString("severName");
+            String a_type = obj.getString("type");
             Annexe annexe = new Annexe();
             annexe.setCreate_time(now);
             annexe.setName(a_name);
             annexe.setPath(a_path);
+            annexe.setType(a_type);
             annexe.setDiscard(Constant.NOT_DELETE);
             annexe.setOriginal_language(language);
             annexe.setStatus(Constant.ANNEXE_STATUS_UNPROCESSED);

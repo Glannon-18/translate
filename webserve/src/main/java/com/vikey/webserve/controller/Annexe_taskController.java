@@ -69,6 +69,7 @@ public class Annexe_taskController {
 
         Map<String, String> map = new HashMap<>();
         String name = multipartFile.getOriginalFilename();
+        String type = name.split("\\.")[1];
         String dirPath = personalConfig.getUpload_dir();
         String filePath = dirPath + File.separator + UUID.randomUUID().toString().substring(0, 12) + "_" + multipartFile.getOriginalFilename();
         File file = new File(filePath);
@@ -80,6 +81,7 @@ public class Annexe_taskController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        map.put("type", type);
         map.put("originalName", name);
         map.put("severName", filePath.replace(dirPath + File.separator, ""));
         return RespBean.ok(map);

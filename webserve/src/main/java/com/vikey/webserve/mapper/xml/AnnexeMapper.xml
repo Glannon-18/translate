@@ -11,7 +11,7 @@
         <result column="name" property="name"></result>
         <result column="original_language" property="original_language"></result>
         <result column="discard" property="discard"></result>
-
+        <result column="type" property="type"></result>
     </resultMap>
 
 
@@ -20,5 +20,17 @@
         a.original_language as original_language
         from annexe a left join atask_ann at_a on at_a.aid=a.id
         where a.discard='0' and at_a.atid=#{atid}
+    </select>
+
+    <select id="getAnnexeCount" resultType="integer">
+        select COUNT(*) from annexe
+        <trim prefix="where" prefixOverrides="and">
+            <if test="time!=null">
+                and create_time >#{time}
+            </if>
+            <if test="status!=null and status!=''">
+                and status=#{status}
+            </if>
+        </trim>
     </select>
 </mapper>

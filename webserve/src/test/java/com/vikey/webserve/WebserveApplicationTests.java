@@ -33,10 +33,8 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.function.Predicate;
 
 @SpringBootTest
@@ -176,8 +174,13 @@ class WebserveApplicationTests {
         Integer count =
                 iUserService.countByAccount("admin", 1l);
         LOGGER.info(count.toString());
+    }
 
-
+    @Test
+    void test12() {
+        LocalDateTime time = LocalDateTime.now();
+        Integer count = iAnnexeService.getAnnexeCount(time.minusDays(30l), "0");
+        System.out.println(count);
     }
 
 

@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vikey.webserve.entity.Annexe;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.time.LocalDateTime;
+
 /**
  * <p>
  * 服务类
@@ -24,5 +26,8 @@ public interface IAnnexeService extends IService<Annexe> {
      * @return
      */
     IPage<Annexe> getAnnexeByPage(Integer currentPage, Integer pageSize, Long atid);
+
+
+    Integer getAnnexeCount(LocalDateTime time, String status);
 
 }

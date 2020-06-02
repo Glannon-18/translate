@@ -24,9 +24,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 /**
  * <p>
@@ -45,12 +44,12 @@ public class AnnexeController {
 
 
     @Resource
-    private IAnnexeService IAnnexeService;
+    private IAnnexeService iAnnexeService;
 
 
     @GetMapping("/page")
     public RespPageBean getAnnexePage(@RequestParam String currentPage, @RequestParam String atid) {
-        IPage<Annexe> page = IAnnexeService.getAnnexeByPage(Integer.valueOf(currentPage), Constant.PAGESIZE, Long.valueOf(atid));
+        IPage<Annexe> page = iAnnexeService.getAnnexeByPage(Integer.valueOf(currentPage), Constant.PAGESIZE, Long.valueOf(atid));
         return new RespPageBean(page.getTotal(), page.getRecords(), page.getSize());
     }
 
@@ -58,7 +57,7 @@ public class AnnexeController {
     public RespBean deleteAnnexe(@RequestParam String ids) {
         UpdateWrapper<Annexe> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("discard", Constant.DELETE).in("id", convert(ids));
-        IAnnexeService.getBaseMapper().update(null, updateWrapper);
+        iAnnexeService.getBaseMapper().update(null, updateWrapper);
         return RespBean.ok("删除文件成功！");
     }
 
@@ -70,7 +69,7 @@ public class AnnexeController {
         List<Long> list = convert(jsonObject.getString("ids"));
         QueryWrapper<Annexe> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("name", "path").in("id", list);
-        List<Annexe> annexeList = IAnnexeService.getBaseMapper().selectList(queryWrapper);
+        List<Annexe> annexeList = iAnnexeService.getBaseMapper().selectList(queryWrapper);
         try {
             String zip_path = PersonalConfig.getMake_file_dir() + File.separator + "download.zip";
             File file = new File(zip_path);
@@ -90,6 +89,30 @@ public class AnnexeController {
         }
         return null;
     }
+
+
+    @GetMapping("/annexeStatus")
+    public RespBean annexeStatus() {
+        LocalDateTime time = LocalDateTime.now();
+        //24小时内文档接入量
+        Integer Au24h = iAnnexeService.getAnnexeCount(time.minusHours(24l), null);
+        //30天内文档接入量
+        Integer Au30d = iAnnexeService.getAnnexeCount(time.minusDays(30l), null);
+        //24小时内文档接处理量
+        Integer Ap24h = iAnnexeService.getAnnexeCount(time.minusHours(24l), Constant.ANNEXE_STATUS_PROCESSED);
+        //30天内文档接入量
+        Integer Ap30d = iAnnexeService.getAnnexeCount(time.minusDays(30l), Constant.ANNEXE_STATUS_PROCESSED);
+        Map<String, Integer> map = new HashMap<String, Integer>() {{
+            put("Au24h", Au24h);
+            put("Au30d", Au30d);
+            put("Ap24h", Ap24h);
+            put("Ap30d", Ap30d);
+        }};
+        return RespBean.ok(map);
+    }
+
+
+
 
 
     private List<Long> convert(String content) {

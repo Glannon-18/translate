@@ -33,19 +33,19 @@ public class KeywordController {
         QueryWrapper<Keyword> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("id", "word").eq("lid", Long.valueOf(lid)).eq("discard", Constant.NOT_DELETE);
         List<Keyword> list = iKeywordService.list(queryWrapper);
-        return RespBean.ok("ok", list);
+        return RespBean.ok(list);
     }
 
     @PostMapping("/")
     public RespBean createKeyword(@RequestParam String lib, @RequestParam String content) {
         Keyword keyword = iKeywordService.create(lib, content);
-        return RespBean.ok("ok", keyword);
+        return RespBean.ok(keyword);
     }
 
     @DeleteMapping("/{id}")
     public RespBean deleteKeyword(@PathVariable String id) {
         iKeywordService.delete(id);
-        return RespBean.ok("ok");
+        return RespBean.ok();
     }
 
 

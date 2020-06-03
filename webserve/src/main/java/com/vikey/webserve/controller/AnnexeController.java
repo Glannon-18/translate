@@ -112,7 +112,37 @@ public class AnnexeController {
     }
 
 
+    @GetMapping("annexeCountByPeriod")
+    public RespBean annexeCountByPeriod(@RequestParam String type) {
+        String format = null;
+        LocalDateTime now = LocalDateTime.now();
+        List<LocalDateTime> localDateTimes = new ArrayList<>();
 
+        if ("24h".equals(type)) {
+            format = "%Y-%m-%d %H:00:00";
+            LocalDateTime now_hour = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), now.getHour(), 0, 0);
+            for (int i = 23; i >= 0; i--) {
+                localDateTimes.add(now_hour.minusHours(i));
+            }
+        } else if ("30d".equals(type)) {
+            format = "%Y-%m-%d 00:00:00";
+            LocalDateTime now_day = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0, 0, 0);
+            for (int i = 29; i >= 0; i--) {
+                localDateTimes.add(now_day.minusDays(i));
+            }
+        }
+        List<Map> txt = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "txt", format);
+        List<Map> pdf = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "pdf", format);
+        List<Map> eml = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "eml", format);
+        List<Map> word = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "word", format);
+
+        Map<String, List<Map>> result = new HashMap<>();
+        result.put("txt", txt);
+        result.put("pdf", pdf);
+        result.put("eml", eml);
+        result.put("word", word);
+        return RespBean.ok(result);
+    }
 
 
     private List<Long> convert(String content) {

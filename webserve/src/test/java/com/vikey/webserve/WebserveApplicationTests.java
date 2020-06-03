@@ -183,6 +183,18 @@ class WebserveApplicationTests {
         System.out.println(count);
     }
 
+    @Test
+    void test13() {
+        List<LocalDateTime> localDateTimes = new ArrayList<>();
+        LocalDateTime time = LocalDateTime.of(2020, 6, 1, 14, 0, 0);
+        for (int i = 23; i >= 0; i--) {
+            localDateTimes.add(time.minusHours(Long.valueOf(i)));
+        }
+        List<Map> maps = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "txt", "%Y-%m-%d %H:00:00");
+        maps.stream().forEach(System.out::print);
+
+    }
+
 
     private List<Long> convert(String content) {
         List<Long> list = new ArrayList<>();

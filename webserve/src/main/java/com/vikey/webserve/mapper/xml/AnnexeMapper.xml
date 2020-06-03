@@ -33,4 +33,18 @@
             </if>
         </trim>
     </select>
+
+    <select id="getAnnexeCountByPeriod" resultType="map">
+        select
+        result.d as date, SUM(result.c) as count from
+        (
+        select DATE_FORMAT(a.create_time,#{format}) as d,COUNT(a.id) as c from annexe a where a.type=#{type} and
+        a.create_time>=#{startTime} group by d
+        <foreach collection="periods" item="item" index="index">
+            UNION (SELECT #{item}, 0)
+        </foreach>
+        ) as result
+        group by date
+        order by date desc
+    </select>
 </mapper>

@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.security.access.method.P;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -19,10 +21,10 @@ import java.time.LocalDateTime;
  */
 public interface AnnexeMapper extends BaseMapper<Annexe> {
 
-    IPage<Annexe> getAnnexeByAtid(Page<Annexe> page,@Param("atid") Long atid);
+    IPage<Annexe> getAnnexeByAtid(Page<Annexe> page, @Param("atid") Long atid);
 
     Integer getAnnexeCount(@Param("time") LocalDateTime time, @Param("status") String status);
 
-
+    List<Map> getAnnexeCountByPeriod(@Param("periods") List<LocalDateTime> periods, @Param("type") String type, @Param("format") String format, @Param("startTime") LocalDateTime start);
 
 }

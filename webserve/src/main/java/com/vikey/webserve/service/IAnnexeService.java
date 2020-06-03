@@ -4,8 +4,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vikey.webserve.entity.Annexe;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -29,5 +32,8 @@ public interface IAnnexeService extends IService<Annexe> {
 
 
     Integer getAnnexeCount(LocalDateTime time, String status);
+
+
+    List<Map> getAnnexeCountByPeriod (List<LocalDateTime> periods, String type, String format);
 
 }

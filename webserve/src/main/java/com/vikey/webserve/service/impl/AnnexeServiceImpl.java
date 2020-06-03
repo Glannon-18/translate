@@ -9,6 +9,8 @@ import com.vikey.webserve.service.IAnnexeService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -32,5 +34,11 @@ public class AnnexeServiceImpl extends ServiceImpl<AnnexeMapper, Annexe> impleme
     @Override
     public Integer getAnnexeCount(LocalDateTime time, String status) {
         return getBaseMapper().getAnnexeCount(time, status);
+    }
+
+    @Override
+    public List<Map> getAnnexeCountByPeriod(List<LocalDateTime> periods, String type, String format) {
+        LocalDateTime start = periods.get(0);
+        return getBaseMapper().getAnnexeCountByPeriod(periods, type, format, start);
     }
 }

@@ -27,4 +27,6 @@ public interface AnnexeMapper extends BaseMapper<Annexe> {
 
     List<Map> getAnnexeCountByPeriod(@Param("periods") List<LocalDateTime> periods, @Param("type") String type, @Param("format") String format, @Param("startTime") LocalDateTime start);
 
+
+    List<Map> getAnnexeCountByType(@Param("time") LocalDateTime time);
 }

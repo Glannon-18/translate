@@ -47,4 +47,9 @@
         group by date
         order by date desc
     </select>
+
+
+    <select id="getAnnexeCountByType" resultType="map">
+        select COUNT(*) from annexe where create_time
+    </select>
 </mapper>

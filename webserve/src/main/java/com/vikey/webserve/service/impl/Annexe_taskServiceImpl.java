@@ -139,11 +139,13 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
         if (ft.isEmpty() && at.isEmpty()) {
             return "";
         } else if (ft == null && at != null) {
-            return at.keySet().toString();
+            return at.get("original_language").toString();
         } else if (ft != null && at == null) {
-            return ft.keySet().toString();
+            return ft.get("original_language").toString();
         } else {
-            return "";
+            LocalDateTime ft_time = (LocalDateTime) ft.get("create_time");
+            LocalDateTime at_time = (LocalDateTime) at.get("create_time");
+            return ft_time.compareTo(at_time) > 0 ? ft.get("original_language").toString() : at.get("original_language").toString();
         }
     }
 }

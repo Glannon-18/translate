@@ -131,4 +131,19 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
         Optional<Map.Entry<String, Integer>> max = result.entrySet().stream().max(Map.Entry.comparingByValue());
         return max.get().getKey();
     }
+
+    @Override
+    public String getLastUseLanguage(Long id) {
+        Map<String, LocalDateTime> ft = ((Fast_taskServiceImpl) iFast_taskService).getBaseMapper().getLastFtUseLanguage(id);
+        Map<String, LocalDateTime> at = getBaseMapper().getLastAtUseLanguage(id);
+        if (ft.isEmpty() && at.isEmpty()) {
+            return "";
+        } else if (ft == null && at != null) {
+            return at.keySet().toString();
+        } else if (ft != null && at == null) {
+            return ft.keySet().toString();
+        } else {
+            return "";
+        }
+    }
 }

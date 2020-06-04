@@ -4,6 +4,7 @@ import com.vikey.webserve.entity.Annexe_task;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -22,4 +23,6 @@ public interface Annexe_taskMapper extends BaseMapper<Annexe_task> {
     Map getAllTaskCount(@Param("userid") Long id);
 
     List<Map> getMostAtUseLanguage(@Param("userid") Long id);
+
+    Map<String, LocalDateTime> getLastAtUseLanguage(@Param("userid") Long id);
 }

@@ -29,4 +29,7 @@ public interface IAnnexe_taskService extends IService<Annexe_task> {
 
 
     String getMostUseLanguage(Long id);
+
+
+    String getLastUseLanguage(Long id);
 }

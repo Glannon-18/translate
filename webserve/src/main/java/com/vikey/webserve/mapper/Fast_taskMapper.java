@@ -4,6 +4,7 @@ import com.vikey.webserve.entity.Fast_task;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -23,5 +24,7 @@ public interface Fast_taskMapper extends BaseMapper<Fast_task> {
     List<Fast_task> selectFast_taskByDate(@Param("uid") Long uid, @Param("name") String name);
 
     List<Map> getMostFtUseLanguage(@Param("userid") Long id);
+
+    Map<String, LocalDateTime> getLastFtUseLanguage(@Param("userid") Long id);
 
 }

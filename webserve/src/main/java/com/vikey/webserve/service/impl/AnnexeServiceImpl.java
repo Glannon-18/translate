@@ -8,6 +8,8 @@ import com.vikey.webserve.mapper.AnnexeMapper;
 import com.vikey.webserve.service.IAnnexeService;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -53,9 +55,19 @@ public class AnnexeServiceImpl extends ServiceImpl<AnnexeMapper, Annexe> impleme
     @Override
     public List<Map> getAnnexeCountByType(LocalDateTime time) {
         List<Map> list = getBaseMapper().getAnnexeCountByType(time);
+        BigDecimal total = list.stream().reduce(new BigDecimal("0"), (a, b) -> a.add((BigDecimal) b.get("count")), (a, b) -> null);
 
 
 
-        return null;
+        NumberFormat percent = NumberFormat.getPercentInstance();
+        percent.setMaximumFractionDigits(2);
+
+        list.stream().forEach(t -> {
+            BigDecimal count = (BigDecimal) t.get("count");
+            BigDecimal rate = count.divide(total, 2, BigDecimal.ROUND_HALF_UP);
+            t.put("rate", percent.format(rate.doubleValue()));
+        });
+
+        return list;
     }
 }

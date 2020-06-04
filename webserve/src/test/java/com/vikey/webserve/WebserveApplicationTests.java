@@ -35,7 +35,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 @SpringBootTest
 class WebserveApplicationTests {
@@ -212,6 +215,42 @@ class WebserveApplicationTests {
 
         String language = iAnnexe_taskService.getLastUseLanguage(1l);
         LOGGER.info(language);
+    }
+
+    @Test
+    void test17() {
+        ArrayList<Integer> accResult_ = Stream.of(1, 2, 3, 4)
+                .reduce(new ArrayList<Integer>(),
+                        new BiFunction<ArrayList<Integer>, Integer, ArrayList<Integer>>() {
+                            @Override
+                            public ArrayList<Integer> apply(ArrayList<Integer> acc, Integer item) {
+
+                                acc.add(item);
+                                System.out.println("item: " + item);
+                                System.out.println("acc+ : " + acc);
+                                System.out.println("BiFunction");
+                                return acc;
+                            }
+                        }, new BinaryOperator<ArrayList<Integer>>() {
+                            @Override
+                            public ArrayList<Integer> apply(ArrayList<Integer> acc, ArrayList<Integer> item) {
+                                System.out.println("BinaryOperator");
+                                acc.addAll(item);
+                                System.out.println("item: " + item);
+                                System.out.println("acc+ : " + acc);
+                                System.out.println("--------");
+                                return acc;
+                            }
+                        });
+        System.out.println("accResult_: " + accResult_);
+
+
+    }
+
+    @Test
+    void test18() {
+        List<Map> lit = iAnnexeService.getAnnexeCountByType(LocalDateTime.of(2020, 5, 28, 0, 0));
+        LOGGER.info(lit.toString());
     }
 
 

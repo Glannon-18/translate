@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * <p>
@@ -44,6 +45,17 @@ public class AnnexeServiceImpl extends ServiceImpl<AnnexeMapper, Annexe> impleme
 
     @Override
     public Integer getAnnexeCountByUserid(Long userid) {
+
+
         return getBaseMapper().getAnnexeCountByUserid(userid);
+    }
+
+    @Override
+    public List<Map> getAnnexeCountByType(LocalDateTime time) {
+        List<Map> list = getBaseMapper().getAnnexeCountByType(time);
+
+
+
+        return null;
     }
 }

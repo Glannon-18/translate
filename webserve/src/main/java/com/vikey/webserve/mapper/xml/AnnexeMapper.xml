@@ -50,14 +50,20 @@
 
 
     <select id="getAnnexeCountByType" resultType="map">
-        select COUNT(*) from annexe where create_time
+        select c.type as type,SUM(c.count) as count from
+        (
+        select  type ,COUNT(*) as count from annexe where create_time>#{time} group by type
+            UNION (SELECT 'txt', 0)
+            UNION (SELECT 'pdf', 0)
+            UNION (SELECT 'word', 0)
+            UNION (SELECT 'eml', 0)
+        ) c group by type order by type desc
     </select>
 
     <select id="getAnnexeCountByUserid" resultType="integer">
         select COUNT(*) FROM annexe a left join atask_ann at on a.id=at.aid left join annexe_task atask on at.atid=atask.id where
         atask.uid=#{userid}
     </select>
-
 
 
 </mapper>

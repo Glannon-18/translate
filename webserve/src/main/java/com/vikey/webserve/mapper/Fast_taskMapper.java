@@ -25,6 +25,6 @@ public interface Fast_taskMapper extends BaseMapper<Fast_task> {
 
     List<Map> getMostFtUseLanguage(@Param("userid") Long id);
 
-    Map<String, LocalDateTime> getLastFtUseLanguage(@Param("userid") Long id);
+    Map<String, Object> getLastFtUseLanguage(@Param("userid") Long id);
 
 }

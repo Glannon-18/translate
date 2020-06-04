@@ -38,4 +38,6 @@ public interface IAnnexeService extends IService<Annexe> {
 
 
     Integer getAnnexeCountByUserid(Long userid);
+
+    List<Map> getAnnexeCountByType(LocalDateTime time);
 }

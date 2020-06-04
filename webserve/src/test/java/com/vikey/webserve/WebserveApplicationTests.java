@@ -210,7 +210,8 @@ class WebserveApplicationTests {
     @Test
     void test16() {
 
-        iAnnexe_taskService.getLastUseLanguage(1l);
+        String language = iAnnexe_taskService.getLastUseLanguage(1l);
+        LOGGER.info(language);
     }
 
 

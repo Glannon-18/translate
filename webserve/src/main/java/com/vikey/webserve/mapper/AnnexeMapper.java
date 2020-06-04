@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vikey.webserve.entity.Annexe;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.security.access.method.P;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,7 +28,6 @@ public interface AnnexeMapper extends BaseMapper<Annexe> {
 
 
     List<Map> getAnnexeCountByType(@Param("time") LocalDateTime time);
-
 
     Integer getAnnexeCountByUserid(@Param("userid") Long id);
 }

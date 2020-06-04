@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -134,8 +135,8 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
 
     @Override
     public String getLastUseLanguage(Long id) {
-        Map<String, LocalDateTime> ft = ((Fast_taskServiceImpl) iFast_taskService).getBaseMapper().getLastFtUseLanguage(id);
-        Map<String, LocalDateTime> at = getBaseMapper().getLastAtUseLanguage(id);
+        Map<String, Object> ft = ((Fast_taskServiceImpl) iFast_taskService).getBaseMapper().getLastFtUseLanguage(id);
+        Map<String, Object> at = getBaseMapper().getLastAtUseLanguage(id);
         if (ft.isEmpty() && at.isEmpty()) {
             return "";
         } else if (ft == null && at != null) {
@@ -143,8 +144,8 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
         } else if (ft != null && at == null) {
             return ft.get("original_language").toString();
         } else {
-            LocalDateTime ft_time = (LocalDateTime) ft.get("create_time");
-            LocalDateTime at_time = (LocalDateTime) at.get("create_time");
+            Timestamp ft_time = (Timestamp) ft.get("time");
+            Timestamp at_time = (Timestamp) at.get("time");
             return ft_time.compareTo(at_time) > 0 ? ft.get("original_language").toString() : at.get("original_language").toString();
         }
     }

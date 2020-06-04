@@ -52,4 +52,12 @@
     <select id="getAnnexeCountByType" resultType="map">
         select COUNT(*) from annexe where create_time
     </select>
+
+    <select id="getAnnexeCountByUserid" resultType="integer">
+        select COUNT(*) FROM annexe a left join atask_ann at on a.id=at.aid left join annexe_task atask on at.atid=atask.id where
+        atask.uid=#{userid}
+    </select>
+
+
+
 </mapper>

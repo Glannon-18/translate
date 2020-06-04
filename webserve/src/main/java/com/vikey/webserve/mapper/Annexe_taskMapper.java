@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -16,6 +17,9 @@ import java.util.List;
  */
 public interface Annexe_taskMapper extends BaseMapper<Annexe_task> {
 
-    List<Annexe_task> getAnnexe_taskByDate(@Param("uid") Long uid,@Param("name") String name);
+    List<Annexe_task> getAnnexe_taskByDate(@Param("uid") Long uid, @Param("name") String name);
 
+    Map getAllTaskCount(@Param("userid") Long id);
+
+    List<Map> getMostAtUseLanguage(@Param("userid") Long id);
 }

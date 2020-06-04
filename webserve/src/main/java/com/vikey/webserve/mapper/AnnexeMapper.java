@@ -29,4 +29,7 @@ public interface AnnexeMapper extends BaseMapper<Annexe> {
 
 
     List<Map> getAnnexeCountByType(@Param("time") LocalDateTime time);
+
+
+    Integer getAnnexeCountByUserid(@Param("userid") Long id);
 }

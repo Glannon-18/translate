@@ -195,6 +195,18 @@ class WebserveApplicationTests {
 
     }
 
+    @Test
+    void test14() {
+        Map map = iAnnexe_taskService.getAllTaskCount(2l);
+        System.out.println(map);
+    }
+
+    @Test
+    void test15() {
+        String languege = iAnnexe_taskService.getMostUseLanguage(1l);
+        LOGGER.info(languege);
+    }
+
 
     private List<Long> convert(String content) {
         List<Long> list = new ArrayList<>();

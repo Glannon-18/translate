@@ -2,15 +2,14 @@ package com.vikey.webserve.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.vikey.webserve.Constant;
 import com.vikey.webserve.entity.*;
-import com.vikey.webserve.mapper.AnnexeMapper;
 import com.vikey.webserve.mapper.Annexe_taskMapper;
 import com.vikey.webserve.service.IAnnexeService;
 import com.vikey.webserve.service.IAnnexe_taskService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.vikey.webserve.service.IAtask_annService;
+import com.vikey.webserve.service.IFast_taskService;
 import com.vikey.webserve.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <p>
@@ -38,10 +38,13 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
     private static final Logger LOGGER = LoggerFactory.getLogger(Annexe_taskServiceImpl.class);
 
     @Resource
-    private IAnnexeService IAnnexeService;
+    private IAnnexeService iAnnexeService;
 
     @Resource
-    private IAtask_annService IAtask_annService;
+    private IAtask_annService iAtaskAnnService;
+
+    @Resource
+    private IFast_taskService iFast_taskService;
 
     @Override
     public LinkedHashMap<String, List<Annexe_task>> getAnnexe_taskByDate(Long uid, String name) {
@@ -98,7 +101,7 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
             ;
 
         }
-        IAnnexeService.saveBatch(annexes);
+        iAnnexeService.saveBatch(annexes);
         List<Atask_ann> atask_anns = new ArrayList<>();
         annexes.stream().forEach(a -> {
             Atask_ann atask_ann = new Atask_ann();
@@ -106,6 +109,26 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
             atask_ann.setAid(a.getId());
             atask_anns.add(atask_ann);
         });
-        IAtask_annService.saveBatch(atask_anns);
+        iAtaskAnnService.saveBatch(atask_anns);
+    }
+
+    @Override
+    public Map getAllTaskCount(Long id) {
+        return getBaseMapper().getAllTaskCount(id);
+    }
+
+    @Override
+    public String getMostUseLanguage(Long id) {
+        List<Map> ats = getBaseMapper().getMostAtUseLanguage(id);
+        List<Map> fts = ((Fast_taskServiceImpl) iFast_taskService).getBaseMapper().getMostFtUseLanguage(id);
+        Map<String, Integer> ats_map = ats.stream().collect(Collectors.toMap(v -> (String) v.get("original_language"), v -> Integer.valueOf(v.get("count").toString())));
+        Map<String, Integer> fts_map = fts.stream().collect(Collectors.toMap(v -> (String) v.get("original_language"), v -> Integer.valueOf(v.get("count").toString())));
+        Map<String, Integer> result = Stream.concat(ats_map.entrySet().stream(), fts_map.entrySet().stream())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue
+                        , (value1, value2) -> value1 + value2));
+        Optional<Map.Entry<String, Integer>> max = result.entrySet().stream().max(Map.Entry.comparingByValue());
+        return max.get().getKey();
     }
 }

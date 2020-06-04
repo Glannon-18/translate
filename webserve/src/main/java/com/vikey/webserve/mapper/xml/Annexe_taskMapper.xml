@@ -14,11 +14,20 @@
     </resultMap>
 
     <select id="getAnnexe_taskByDate" resultMap="BaseResultMap">
-         SELECT DATE(create_time) as create_time, name ,id, create_time as e FROM annexe_task where uid=#{uid}
-         <if test="name!=null and name!=''">
-             and name like CONCAT('%',#{name},'%')
-         </if>
-         ORDER BY e desc;
+        SELECT DATE(create_time) as create_time, name ,id, create_time as e FROM annexe_task where uid=#{uid}
+        <if test="name!=null and name!=''">
+            and name like CONCAT('%',#{name},'%')
+        </if>
+        ORDER BY e desc;
+    </select>
+
+    <select id="getAllTaskCount" resultType="map" statementType="CALLABLE">
+        CALL all_task_count(#{userid,mode=IN});
+    </select>
+
+    <select id="getMostAtUseLanguage" resultType="map">
+        select original_language,count(*) as count from annexe_task where uid=#{userid}
+        group by original_language
     </select>
 
 </mapper>

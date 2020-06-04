@@ -41,4 +41,9 @@ public class AnnexeServiceImpl extends ServiceImpl<AnnexeMapper, Annexe> impleme
         LocalDateTime start = periods.get(0);
         return getBaseMapper().getAnnexeCountByPeriod(periods, type, format, start);
     }
+
+    @Override
+    public Integer getAnnexeCountByUserid(Long userid) {
+        return getBaseMapper().getAnnexeCountByUserid(userid);
+    }
 }

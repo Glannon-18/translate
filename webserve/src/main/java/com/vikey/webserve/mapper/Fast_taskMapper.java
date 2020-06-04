@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -20,5 +21,7 @@ public interface Fast_taskMapper extends BaseMapper<Fast_task> {
     List<Fast_task> selectLastFast_task(@Param("uid") Long uid);
 
     List<Fast_task> selectFast_taskByDate(@Param("uid") Long uid, @Param("name") String name);
+
+    List<Map> getMostFtUseLanguage(@Param("userid") Long id);
 
 }

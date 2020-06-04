@@ -36,4 +36,6 @@ public interface IAnnexeService extends IService<Annexe> {
 
     List<Map> getAnnexeCountByPeriod (List<LocalDateTime> periods, String type, String format);
 
+
+    Integer getAnnexeCountByUserid(Long userid);
 }

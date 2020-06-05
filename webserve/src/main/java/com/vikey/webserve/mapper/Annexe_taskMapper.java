@@ -24,5 +24,5 @@ public interface Annexe_taskMapper extends BaseMapper<Annexe_task> {
 
     List<Map> getMostAtUseLanguage(@Param("userid") Long id, @Param("time") LocalDateTime time);
 
-    Map<String, Object> getLastAtUseLanguage(@Param("userid") Long id);
+    Map<String, Object> getLastAtUseLanguage(@Param("userid") Long id,@Param("time") LocalDateTime time);
 }

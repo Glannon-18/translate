@@ -32,8 +32,8 @@ public interface IAnnexe_taskService extends IService<Annexe_task> {
     String getMostUseLanguage(Long id, LocalDateTime time);
 
 
-    String getLastUseLanguage(Long id);
+    String getLastUseLanguage(Long id,LocalDateTime after);
 
 
-    List<Map> getAllInfo(Long userid,LocalDateTime after);
+    List<Map> getAllInfo(LocalDateTime after);
 }

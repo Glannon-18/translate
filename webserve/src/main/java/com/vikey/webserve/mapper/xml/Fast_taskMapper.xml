@@ -37,7 +37,7 @@
 
     <select id="getLastFtUseLanguage" resultType="map">
          select MAX(create_time) as time ,original_language from fast_task
-            where uid=#{userid}
+            where uid=#{userid} and create_time>#{time}
     </select>
 
 </mapper>

@@ -200,21 +200,21 @@ class WebserveApplicationTests {
 
     @Test
     void test14() {
-        Map map = iAnnexe_taskService.getAllTaskCount(2l);
-        System.out.println(map);
+//        Map map = iAnnexe_taskService.getAllTaskCount(2l);
+//        System.out.println(map);
     }
 
     @Test
     void test15() {
-        String languege = iAnnexe_taskService.getMostUseLanguage(1l);
-        LOGGER.info(languege);
+//        String languege = iAnnexe_taskService.getMostUseLanguage(1l);
+//        LOGGER.info(languege);
     }
 
     @Test
     void test16() {
 
-        String language = iAnnexe_taskService.getLastUseLanguage(1l);
-        LOGGER.info(language);
+//        String language = iAnnexe_taskService.getLastUseLanguage(1l);
+//        LOGGER.info(language);
     }
 
     @Test
@@ -251,6 +251,13 @@ class WebserveApplicationTests {
     void test18() {
         List<Map> lit = iAnnexeService.getAnnexeCountByType(LocalDateTime.of(2020, 5, 28, 0, 0));
         LOGGER.info(lit.toString());
+    }
+
+    @Test
+    void test19() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Map> list = iAnnexe_taskService.getAllInfo(now.minusHours(24l));
+        LOGGER.info(list.toString());
     }
 
 

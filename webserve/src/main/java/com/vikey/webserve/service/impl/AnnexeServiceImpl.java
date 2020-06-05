@@ -46,19 +46,14 @@ public class AnnexeServiceImpl extends ServiceImpl<AnnexeMapper, Annexe> impleme
     }
 
     @Override
-    public Integer getAnnexeCountByUserid(Long userid) {
-
-
-        return getBaseMapper().getAnnexeCountByUserid(userid);
+    public Integer getAnnexeCountByUserid(Long userid,LocalDateTime after) {
+        return getBaseMapper().getAnnexeCountByUserid(userid,after);
     }
 
     @Override
     public List<Map> getAnnexeCountByType(LocalDateTime time) {
         List<Map> list = getBaseMapper().getAnnexeCountByType(time);
         BigDecimal total = list.stream().reduce(new BigDecimal("0"), (a, b) -> a.add((BigDecimal) b.get("count")), (a, b) -> null);
-
-
-
         NumberFormat percent = NumberFormat.getPercentInstance();
         percent.setMaximumFractionDigits(2);
 

@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -85,6 +86,21 @@ public class Annexe_taskController {
         map.put("originalName", name);
         map.put("severName", filePath.replace(dirPath + File.separator, ""));
         return RespBean.ok(map);
+    }
+
+    @GetMapping("/getAllInfo")
+    public RespBean getAllInfo(@RequestParam String type) {
+        LocalDateTime after = null;
+        if ("24h".equals(type)) {
+            after = LocalDateTime.now().minusHours(24l);
+        } else if ("30d".equals(type)) {
+            after = LocalDateTime.now().minusDays(30l);
+        } else {
+            return RespBean.ok();
+        }
+        List<Map> result = iAnnexe_taskService.getAllInfo(after);
+
+        return RespBean.ok(result);
     }
 
 }

@@ -56,18 +56,13 @@ public class AnnexeServiceImpl extends ServiceImpl<AnnexeMapper, Annexe> impleme
     public List<Map> getAnnexeCountByType(LocalDateTime time) {
         List<Map> list = getBaseMapper().getAnnexeCountByType(time);
         BigDecimal total = list.stream().reduce(new BigDecimal("0"), (a, b) -> a.add((BigDecimal) b.get("count")), (a, b) -> null);
-
-
-
         NumberFormat percent = NumberFormat.getPercentInstance();
         percent.setMaximumFractionDigits(2);
-
         list.stream().forEach(t -> {
             BigDecimal count = (BigDecimal) t.get("count");
             BigDecimal rate = count.divide(total, 2, BigDecimal.ROUND_HALF_UP);
             t.put("rate", percent.format(rate.doubleValue()));
         });
-
         return list;
     }
 }

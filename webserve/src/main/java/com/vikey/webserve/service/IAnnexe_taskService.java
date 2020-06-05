@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.vikey.webserve.entity.Annexe_task;
 
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,11 +26,14 @@ public interface IAnnexe_taskService extends IService<Annexe_task> {
     void createAnnexe_task(JSONObject jsonObject);
 
 
-    Map getAllTaskCount(Long id);
+    Map getAllTaskCount(Long id,LocalDateTime time);
 
 
-    String getMostUseLanguage(Long id);
+    String getMostUseLanguage(Long id, LocalDateTime time);
 
 
     String getLastUseLanguage(Long id);
+
+
+    List<Map> getAllInfo(Long userid,LocalDateTime after);
 }

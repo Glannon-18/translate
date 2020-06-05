@@ -31,7 +31,7 @@
 
 
     <select id="getMostFtUseLanguage" resultType="map">
-        select original_language,count(*) as count from fast_task where uid=#{userid}
+        select original_language,count(*) as count from fast_task where uid=#{userid} and create_time>#{time}
         group by original_language
     </select>
 

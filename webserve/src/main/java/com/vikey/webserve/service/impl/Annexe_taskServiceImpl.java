@@ -2,14 +2,12 @@ package com.vikey.webserve.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.vikey.webserve.Constant;
 import com.vikey.webserve.entity.*;
 import com.vikey.webserve.mapper.Annexe_taskMapper;
-import com.vikey.webserve.service.IAnnexeService;
-import com.vikey.webserve.service.IAnnexe_taskService;
+import com.vikey.webserve.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.vikey.webserve.service.IAtask_annService;
-import com.vikey.webserve.service.IFast_taskService;
 import com.vikey.webserve.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +44,9 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
 
     @Resource
     private IFast_taskService iFast_taskService;
+
+    @Resource
+    private IUserService iUserService;
 
     @Override
     public LinkedHashMap<String, List<Annexe_task>> getAnnexe_taskByDate(Long uid, String name) {
@@ -114,14 +115,14 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
     }
 
     @Override
-    public Map getAllTaskCount(Long id) {
-        return getBaseMapper().getAllTaskCount(id);
+    public Map getAllTaskCount(Long id,LocalDateTime time) {
+        return getBaseMapper().getAllTaskCount(id,time);
     }
 
     @Override
-    public String getMostUseLanguage(Long id) {
-        List<Map> ats = getBaseMapper().getMostAtUseLanguage(id);
-        List<Map> fts = ((Fast_taskServiceImpl) iFast_taskService).getBaseMapper().getMostFtUseLanguage(id);
+    public String getMostUseLanguage(Long id, LocalDateTime time) {
+        List<Map> ats = getBaseMapper().getMostAtUseLanguage(id, time);
+        List<Map> fts = ((Fast_taskServiceImpl) iFast_taskService).getBaseMapper().getMostFtUseLanguage(id, time);
         Map<String, Integer> ats_map = ats.stream().collect(Collectors.toMap(v -> (String) v.get("original_language"), v -> Integer.valueOf(v.get("count").toString())));
         Map<String, Integer> fts_map = fts.stream().collect(Collectors.toMap(v -> (String) v.get("original_language"), v -> Integer.valueOf(v.get("count").toString())));
         Map<String, Integer> result = Stream.concat(ats_map.entrySet().stream(), fts_map.entrySet().stream())
@@ -148,5 +149,26 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
             Timestamp at_time = (Timestamp) at.get("time");
             return ft_time.compareTo(at_time) > 0 ? ft.get("original_language").toString() : at.get("original_language").toString();
         }
+    }
+
+    @Override
+    public List<Map> getAllInfo(Long userid, LocalDateTime after) {
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        List<User> users = iUserService.list(userQueryWrapper);
+        List<Map> result = users.stream().map(t -> {
+            Long uid = t.getId();
+            String account = t.getAccount();
+            Map<String, Object> map = new HashMap<>();
+
+            map.put("username",account);
+
+            getAllTaskCount(uid,after);
+
+
+            return map;
+        }).collect(Collectors.toList());
+
+
+        return null;
     }
 }

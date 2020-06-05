@@ -22,11 +22,11 @@
     </select>
 
     <select id="getAllTaskCount" resultType="map" statementType="CALLABLE">
-        CALL all_task_count(#{userid,mode=IN});
+        CALL all_task_count(#{userid,mode=IN},#{time,mode=IN});
     </select>
 
     <select id="getMostAtUseLanguage" resultType="map">
-        select original_language,count(*) as count from annexe_task where uid=#{userid}
+        select original_language,count(*) as count from annexe_task where uid=#{userid} and create_time>#{time}
         group by original_language
     </select>
 

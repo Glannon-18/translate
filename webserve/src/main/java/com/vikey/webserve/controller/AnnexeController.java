@@ -149,7 +149,7 @@ public class AnnexeController {
         List<Long> list = new ArrayList<>();
         Arrays.stream(content.split(",")).forEach(i ->
         {
-             list.add(Long.valueOf(i));
+            list.add(Long.valueOf(i));
         });
         return list;
     }

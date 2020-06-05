@@ -20,9 +20,9 @@ public interface Annexe_taskMapper extends BaseMapper<Annexe_task> {
 
     List<Annexe_task> getAnnexe_taskByDate(@Param("uid") Long uid, @Param("name") String name);
 
-    Map getAllTaskCount(@Param("userid") Long id);
+    Map getAllTaskCount(@Param("userid") Long id, @Param("time") LocalDateTime time);
 
-    List<Map> getMostAtUseLanguage(@Param("userid") Long id);
+    List<Map> getMostAtUseLanguage(@Param("userid") Long id, @Param("time") LocalDateTime time);
 
     Map<String, Object> getLastAtUseLanguage(@Param("userid") Long id);
 }

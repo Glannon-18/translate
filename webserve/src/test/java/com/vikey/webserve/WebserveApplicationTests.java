@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
@@ -189,7 +190,7 @@ class WebserveApplicationTests {
     @Test
     void test13() {
         List<LocalDateTime> localDateTimes = new ArrayList<>();
-        LocalDateTime time = LocalDateTime.of(2020, 6, 1, 14, 0, 0);
+        LocalDateTime time = LocalDateTime.of(2020, 5, 28, 14, 00, 0);
         for (int i = 23; i >= 0; i--) {
             localDateTimes.add(time.minusHours(Long.valueOf(i)));
         }
@@ -200,21 +201,21 @@ class WebserveApplicationTests {
 
     @Test
     void test14() {
-        Map map = iAnnexe_taskService.getAllTaskCount(2l);
-        System.out.println(map);
+//        Map map = iAnnexe_taskService.getAllTaskCount(2l);
+//        System.out.println(map);
     }
 
     @Test
     void test15() {
-        String languege = iAnnexe_taskService.getMostUseLanguage(1l);
-        LOGGER.info(languege);
+//        String languege = iAnnexe_taskService.getMostUseLanguage(1l);
+//        LOGGER.info(languege);
     }
 
     @Test
     void test16() {
 
-        String language = iAnnexe_taskService.getLastUseLanguage(1l);
-        LOGGER.info(language);
+//        String language = iAnnexe_taskService.getLastUseLanguage(1l);
+//        LOGGER.info(language);
     }
 
     @Test
@@ -251,6 +252,13 @@ class WebserveApplicationTests {
     void test18() {
         List<Map> lit = iAnnexeService.getAnnexeCountByType(LocalDateTime.of(2020, 5, 28, 0, 0));
         LOGGER.info(lit.toString());
+    }
+
+    @Test
+    void test19() {
+        DateTimeFormatter df =DateTimeFormatter.ofPattern("yyyy-MM-dd HH:00:00");
+        LOGGER.info(df.format(LocalDateTime.now()));
+
     }
 
 

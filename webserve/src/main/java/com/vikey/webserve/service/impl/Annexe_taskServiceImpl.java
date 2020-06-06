@@ -162,7 +162,7 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
     @Override
     public List<Map> getAllInfo(LocalDateTime after) {
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
-        List<User> users = iUserService.list(userQueryWrapper);
+        List<User> users = iUserService.list(userQueryWrapper.select("id", "account"));
         List<Map> result = users.stream().map(t -> {
             Long uid = t.getId();
             String account = t.getAccount();

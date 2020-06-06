@@ -24,8 +24,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -112,36 +116,60 @@ public class AnnexeController {
     }
 
 
-    @GetMapping("annexeCountByPeriod")
+    @GetMapping("/annexeCountByPeriod")
     public RespBean annexeCountByPeriod(@RequestParam String type) {
+
         String format = null;
+        String x_format = null;
         LocalDateTime now = LocalDateTime.now();
         List<LocalDateTime> localDateTimes = new ArrayList<>();
 
         if ("24h".equals(type)) {
-            format = "%Y-%m-%d %H:00:00";
+            format = "%Y-%m-%d %H:00:00.0";
+            x_format = "HH:00";
             LocalDateTime now_hour = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), now.getHour(), 0, 0);
             for (int i = 23; i >= 0; i--) {
                 localDateTimes.add(now_hour.minusHours(i));
             }
         } else if ("30d".equals(type)) {
-            format = "%Y-%m-%d 00:00:00";
+            format = "%Y-%m-%d 00:00:00.0";
+            x_format = "MM-dd";
             LocalDateTime now_day = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0, 0, 0);
             for (int i = 29; i >= 0; i--) {
                 localDateTimes.add(now_day.minusDays(i));
             }
         }
-        List<Map> txt = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "txt", format);
-        List<Map> pdf = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "pdf", format);
-        List<Map> eml = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "eml", format);
-        List<Map> word = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "word", format);
 
-        Map<String, List<Map>> result = new HashMap<>();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(x_format);
+        localDateTimes = localDateTimes.stream().sorted().collect(Collectors.toList());
+
+        List<String> x_string = localDateTimes.stream().map(t ->
+                dateTimeFormatter.format(t)
+        ).collect(Collectors.toList());
+
+
+        List<Long> txt = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "txt", format).stream().map(change()).collect(Collectors.toList());
+        List<Long> pdf = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "pdf", format).stream().map(change()).collect(Collectors.toList());
+        List<Long> eml = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "eml", format).stream().map(change()).collect(Collectors.toList());
+        List<Long> word = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "word", format).stream().map(change()).collect(Collectors.toList());
+
+        Map<String, Object> result = new HashMap<>();
         result.put("txt", txt);
         result.put("pdf", pdf);
         result.put("eml", eml);
         result.put("word", word);
+        result.put("x_string", x_string);
         return RespBean.ok(result);
+    }
+
+
+    private Function<Map, Long> change() {
+        return new Function<Map, Long>() {
+            @Override
+            public Long apply(Map map) {
+                return ((BigDecimal) map.get("count")).longValue();
+            }
+        };
     }
 
 

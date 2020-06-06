@@ -193,13 +193,10 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
                         Map.Entry::getKey,
                         Map.Entry::getValue
                         , (value1, value2) -> value1 + value2));
-        List<Map<String, String>> result = new ArrayList<>();
-        data.forEach((k, v) -> {
-            Map<String, String> map = new HashMap<>();
-            map.put("value", v.toString());
-            map.put("name", Constant.LANGUAGE_ZH.get(k));
-            result.add(map);
-        });
+        List<Map<String, String>> result = data.entrySet().stream().map((k) -> new HashMap<String, String>() {{
+            put("name", Constant.LANGUAGE_ZH.get(k.getKey()));
+            put("value", k.getValue().toString());
+        }}).collect(Collectors.toList());
         return result;
     }
 }

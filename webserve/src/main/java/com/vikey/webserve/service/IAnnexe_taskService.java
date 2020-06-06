@@ -36,4 +36,7 @@ public interface IAnnexe_taskService extends IService<Annexe_task> {
 
 
     List<Map> getAllInfo(LocalDateTime after);
+
+
+    List<Map<String, String>> getCountByLanguage(LocalDateTime after);
 }

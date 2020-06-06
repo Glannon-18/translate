@@ -180,4 +180,26 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
         }).collect(Collectors.toList());
         return result;
     }
+
+    @Override
+    public List<Map<String, String>> getCountByLanguage(LocalDateTime after) {
+        List<Map> ft = ((Fast_taskServiceImpl) iFast_taskService).getBaseMapper().getCountFtByLanguage(after);
+        List<Map> at = getBaseMapper().getCountAtByLanguage(after);
+
+        Map<String, Integer> ats_map = ft.stream().collect(Collectors.toMap(v -> (String) v.get("original_language"), v -> Integer.valueOf(v.get("count").toString())));
+        Map<String, Integer> fts_map = at.stream().collect(Collectors.toMap(v -> (String) v.get("original_language"), v -> Integer.valueOf(v.get("count").toString())));
+        Map<String, Integer> data = Stream.concat(ats_map.entrySet().stream(), fts_map.entrySet().stream())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue
+                        , (value1, value2) -> value1 + value2));
+        List<Map<String, String>> result = new ArrayList<>();
+        data.forEach((k, v) -> {
+            Map<String, String> map = new HashMap<>();
+            map.put("value", v.toString());
+            map.put("name", Constant.LANGUAGE_ZH.get(k));
+            result.add(map);
+        });
+        return result;
+    }
 }

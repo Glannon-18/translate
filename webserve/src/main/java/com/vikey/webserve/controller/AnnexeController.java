@@ -182,12 +182,7 @@ public class AnnexeController {
 
 
     private Function<Map, Long> change() {
-        return new Function<Map, Long>() {
-            @Override
-            public Long apply(Map map) {
-                return ((BigDecimal) map.get("count")).longValue();
-            }
-        };
+        return map -> ((BigDecimal) map.get("count")).longValue();
     }
 
 

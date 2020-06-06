@@ -31,12 +31,14 @@
     </select>
 
     <select id="getLastAtUseLanguage" resultType="map">
-
         select original_language,create_time as time from annexe_task where uid=#{userid} and create_time=(
             select MAX(create_time) from annexe_task
             where uid=#{userid} and create_time>#{time}
         )
+    </select>
 
+    <select id="getCountAtByLanguage" resultType="map">
+        select original_language , COUNT(*) as count from annexe_task where create_time>#{time} group by original_language
     </select>
 
 </mapper>

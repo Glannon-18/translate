@@ -43,4 +43,8 @@
             )
     </select>
 
+    <select id="getCountFtByLanguage" resultType="map">
+        select original_language , COUNT(*) as count from fast_task where create_time>#{time} group by original_language
+    </select>
+
 </mapper>

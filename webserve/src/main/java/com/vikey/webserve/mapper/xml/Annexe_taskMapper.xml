@@ -31,8 +31,12 @@
     </select>
 
     <select id="getLastAtUseLanguage" resultType="map">
-        select MAX(create_time) as time ,original_language from annexe_task
-        where uid=#{userid} and create_time>#{time}
+
+        select original_language,create_time as time from annexe_task where uid=#{userid} and create_time=(
+            select MAX(create_time) from annexe_task
+            where uid=#{userid} and create_time>#{time}
+        )
+
     </select>
 
 </mapper>

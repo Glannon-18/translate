@@ -126,14 +126,14 @@ public class AnnexeController {
 
         if ("24h".equals(type)) {
             format = "%Y-%m-%d %H:00:00.0";
-            x_format = "HH:00";
+            x_format = "HH时";
             LocalDateTime now_hour = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), now.getHour(), 0, 0);
             for (int i = 23; i >= 0; i--) {
                 localDateTimes.add(now_hour.minusHours(i));
             }
         } else if ("30d".equals(type)) {
             format = "%Y-%m-%d 00:00:00.0";
-            x_format = "MM-dd";
+            x_format = "dd日";
             LocalDateTime now_day = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0, 0, 0);
             for (int i = 29; i >= 0; i--) {
                 localDateTimes.add(now_day.minusDays(i));
@@ -160,6 +160,24 @@ public class AnnexeController {
         result.put("word", word);
         result.put("x_string", x_string);
         return RespBean.ok(result);
+    }
+
+    @GetMapping("/getAnnexeCountByType")
+    public RespBean getAnnexeCountByType(@RequestParam String type) {
+        LocalDateTime after = null;
+
+        if ("24h".equals(type)) {
+            after = LocalDateTime.now().minusHours(24l);
+        } else if ("30d".equals(type)) {
+            after = LocalDateTime.now().minusDays(30l);
+        }
+
+        List<Map> right = iAnnexeService.getAnnexeCountByType(after);
+        Map<String, Object> result = new HashMap<>();
+        result.put("r", right);
+
+        return RespBean.ok(result);
+
     }
 
 

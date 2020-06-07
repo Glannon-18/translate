@@ -18,7 +18,10 @@ mybatis-plus:
 logging:
   level: {com.vikey.webserve.controller: debug,com.vikey.webserve.service.impl: debug}
 
-
+server:
+  compression:
+    enabled: true
+    mime-types: application/javascript,text/css,application/json,application/xml,text/html,text/xml,text/plain
 
 personal-config:
   make_file_dir: D:\\translate_dir\\file

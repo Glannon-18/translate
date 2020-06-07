@@ -26,6 +26,7 @@ import com.vikey.webserve.utils.ZipUtils;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,6 +62,9 @@ class WebserveApplicationTests {
 
     @Resource
     private PersonalConfig personalConfig;
+
+    @Resource
+    private RabbitTemplate rabbitTemplate;
 
 
     @Test
@@ -125,7 +129,7 @@ class WebserveApplicationTests {
     @Test
     void test7() {
         QueryWrapper<Annexe_task> queryWrapper = new QueryWrapper();
-        queryWrapper.select("id", "name").eq("id", Long.valueOf("11"));
+        queryWrapper.select("id", "name").eq("id", Long.valueOf("1144"));
         List<Annexe_task> annexe_tasks = iAnnexe_taskService.getBaseMapper().selectList(queryWrapper);
         LOGGER.info(annexe_tasks.get(0).toString());
     }
@@ -207,8 +211,10 @@ class WebserveApplicationTests {
 
     @Test
     void test15() {
-//        String languege = iAnnexe_taskService.getMostUseLanguage(1l);
+//        String languege = iAnnexe_taskService.getMostUseLanguage(1l,LocalDateTime.now());
 //        LOGGER.info(languege);
+        String languege = iAnnexe_taskService.getLastUseLanguage(1l, LocalDateTime.now());
+        LOGGER.info(languege);
     }
 
     @Test
@@ -255,9 +261,17 @@ class WebserveApplicationTests {
 
     @Test
     void test19() {
-        DateTimeFormatter df =DateTimeFormatter.ofPattern("yyyy-MM-dd HH:00:00");
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:00:00");
         LOGGER.info(df.format(LocalDateTime.now()));
 
+    }
+
+    @Test
+    void test20() {
+        User user = new User();
+        user.setAccount("aaa");
+        String aaa = Optional.ofNullable(user).map(User::getUsername).orElse("111");
+        LOGGER.info(aaa);
     }
 
 

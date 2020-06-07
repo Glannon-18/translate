@@ -5,8 +5,20 @@ spring:
     password: 123456
     url: jdbc:mysql://localhost:3306/translate?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=True
     driver-class-name: com.mysql.cj.jdbc.Driver
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+      #确认消息已发送到交换机(Exchange)
+    publisher-confirms: true
+      #确认消息已发送到队列(Queue)
+    publisher-returns: true
+    listener:
+      simple:
+        acknowledge-mode: manual
 
-    #    MYSQL5
+  #    MYSQL5
 #    url: jdbc:mysql://localhost:3306/translate?useUnicode=true&characterEncoding=utf-8&useSSL=false
 #    driver-class-name: com.mysql.jdbc.Driver
 
@@ -22,6 +34,8 @@ server:
   compression:
     enabled: true
     mime-types: application/javascript,text/css,application/json,application/xml,text/html,text/xml,text/plain
+
+
 
 personal-config:
   make_file_dir: D:\\translate_dir\\file

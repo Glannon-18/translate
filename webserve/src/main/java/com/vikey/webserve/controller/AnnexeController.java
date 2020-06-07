@@ -13,6 +13,9 @@ import com.vikey.webserve.entity.RespPageBean;
 import com.vikey.webserve.service.IAnnexeService;
 import com.vikey.webserve.utils.ZipUtils;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -43,12 +46,17 @@ import java.util.stream.Collectors;
 @RequestMapping("/annexe")
 public class AnnexeController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AnnexeController.class);
+
     @Resource
     private PersonalConfig PersonalConfig;
 
 
     @Resource
     private IAnnexeService iAnnexeService;
+
+    @Resource
+    private RabbitTemplate rabbitTemplate;
 
 
     @GetMapping("/page")
@@ -178,6 +186,20 @@ public class AnnexeController {
 
         return RespBean.ok(result);
 
+    }
+
+    @GetMapping("/testRabbitmq")
+    public RespBean testRabbitmq() {
+        String messageId = String.valueOf(UUID.randomUUID());
+        String messageData = "test message^hello!";
+        String createTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        Map<String, Object> map = new HashMap<>();
+        map.put("messageId", messageId);
+        map.put("messageData", messageData);
+        map.put("createTime", createTime);
+        rabbitTemplate.convertAndSend("file_translate_exchange", "wkw", map);
+        LOGGER.info("已经发送消息：" + map.toString());
+        return RespBean.ok();
     }
 
 

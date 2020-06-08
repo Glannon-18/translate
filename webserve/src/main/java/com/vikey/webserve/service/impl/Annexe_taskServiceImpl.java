@@ -65,8 +65,7 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
     @Resource
     private IUserService iUserService;
 
-    @Resource
-    private IAnnexe_taskService iAnnexe_taskService;
+
 
     @Resource
     private PersonalConfig personalConfig;
@@ -193,9 +192,9 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
             map.put("task_count", task_count);
             Integer annexe_count = iAnnexeService.getAnnexeCountByUserid(uid, after);
             map.put("annexe_count", annexe_count);
-            String most_use_language = iAnnexe_taskService.getMostUseLanguage(uid, after);
+            String most_use_language = getMostUseLanguage(uid, after);
             map.put("most_use_language", StringUtils.isEmpty(most_use_language) ? "" : Constant.LANGUAGE_ZH.get(most_use_language));
-            String last_use_language = iAnnexe_taskService.getLastUseLanguage(uid, after);
+            String last_use_language = getLastUseLanguage(uid, after);
             map.put("last_use_language", StringUtils.isEmpty(last_use_language) ? "" : Constant.LANGUAGE_ZH.get(last_use_language));
             return map;
         }).collect(Collectors.toList());

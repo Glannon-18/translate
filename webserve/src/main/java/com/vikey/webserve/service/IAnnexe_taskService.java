@@ -26,14 +26,17 @@ public interface IAnnexe_taskService extends IService<Annexe_task> {
     void createAnnexe_task(JSONObject jsonObject);
 
 
-    Map getAllTaskCount(Long id,LocalDateTime time);
+    Map getAllTaskCount(Long id, LocalDateTime time);
 
 
     String getMostUseLanguage(Long id, LocalDateTime time);
 
 
-    String getLastUseLanguage(Long id,LocalDateTime after);
+    String getLastUseLanguage(Long id, LocalDateTime after);
 
 
     List<Map> getAllInfo(LocalDateTime after);
+
+
+    List<Map<String, String>> getCountByLanguage(LocalDateTime after);
 }

@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -49,6 +48,9 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
 
     @Resource
     private IUserService iUserService;
+
+    @Resource
+    private IAnnexe_taskService iAnnexe_taskService;
 
     @Override
     public LinkedHashMap<String, List<Annexe_task>> getAnnexe_taskByDate(Long uid, String name) {
@@ -125,9 +127,6 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
     public String getMostUseLanguage(Long id, LocalDateTime time) {
         List<Map> ats = getBaseMapper().getMostAtUseLanguage(id, time);
         List<Map> fts = ((Fast_taskServiceImpl) iFast_taskService).getBaseMapper().getMostFtUseLanguage(id, time);
-        if (ObjectUtils.isEmpty(ats) && ObjectUtils.isEmpty(fts)) {
-            return "";
-        }
         Map<String, Integer> ats_map = ats.stream().collect(Collectors.toMap(v -> (String) v.get("original_language"), v -> Integer.valueOf(v.get("count").toString())));
         Map<String, Integer> fts_map = fts.stream().collect(Collectors.toMap(v -> (String) v.get("original_language"), v -> Integer.valueOf(v.get("count").toString())));
         Map<String, Integer> result = Stream.concat(ats_map.entrySet().stream(), fts_map.entrySet().stream())
@@ -136,7 +135,11 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
                         Map.Entry::getValue
                         , (value1, value2) -> value1 + value2));
         Optional<Map.Entry<String, Integer>> max = result.entrySet().stream().max(Map.Entry.comparingByValue());
-        return max.get().getKey();
+        if (max.isPresent()) {
+            return max.get().getKey();
+        } else {
+            return "";
+        }
     }
 
     @Override
@@ -159,7 +162,7 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
     @Override
     public List<Map> getAllInfo(LocalDateTime after) {
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
-        List<User> users = iUserService.list(userQueryWrapper);
+        List<User> users = iUserService.list(userQueryWrapper.select("id", "account"));
         List<Map> result = users.stream().map(t -> {
             Long uid = t.getId();
             String account = t.getAccount();
@@ -169,12 +172,31 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
             map.put("task_count", task_count);
             Integer annexe_count = iAnnexeService.getAnnexeCountByUserid(uid, after);
             map.put("annexe_count", annexe_count);
-            String most_use_language = getMostUseLanguage(uid, after);
-            map.put("most_use_language", StringUtils.isEmpty(most_use_language) ? most_use_language : Constant.LANGUAGE_ZH.get(most_use_language));
-            String last_use_language = getLastUseLanguage(uid, after);
-            map.put("last_use_language", StringUtils.isEmpty(last_use_language) ? last_use_language : Constant.LANGUAGE_ZH.get(last_use_language));
+            String most_use_language = iAnnexe_taskService.getMostUseLanguage(uid, after);
+            map.put("most_use_language", StringUtils.isEmpty(most_use_language) ? "" : Constant.LANGUAGE_ZH.get(most_use_language));
+            String last_use_language = iAnnexe_taskService.getLastUseLanguage(uid, after);
+            map.put("last_use_language", StringUtils.isEmpty(last_use_language) ? "" : Constant.LANGUAGE_ZH.get(last_use_language));
             return map;
         }).collect(Collectors.toList());
+        return result;
+    }
+
+    @Override
+    public List<Map<String, String>> getCountByLanguage(LocalDateTime after) {
+        List<Map> ft = ((Fast_taskServiceImpl) iFast_taskService).getBaseMapper().getCountFtByLanguage(after);
+        List<Map> at = getBaseMapper().getCountAtByLanguage(after);
+
+        Map<String, Integer> ats_map = ft.stream().collect(Collectors.toMap(v -> (String) v.get("original_language"), v -> Integer.valueOf(v.get("count").toString())));
+        Map<String, Integer> fts_map = at.stream().collect(Collectors.toMap(v -> (String) v.get("original_language"), v -> Integer.valueOf(v.get("count").toString())));
+        Map<String, Integer> data = Stream.concat(ats_map.entrySet().stream(), fts_map.entrySet().stream())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue
+                        , (value1, value2) -> value1 + value2));
+        List<Map<String, String>> result = data.entrySet().stream().map((k) -> new HashMap<String, String>() {{
+            put("name", Constant.LANGUAGE_ZH.get(k.getKey()));
+            put("value", k.getValue().toString());
+        }}).collect(Collectors.toList());
         return result;
     }
 }

@@ -26,6 +26,7 @@ import com.vikey.webserve.utils.ZipUtils;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +35,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
@@ -60,6 +62,9 @@ class WebserveApplicationTests {
 
     @Resource
     private PersonalConfig personalConfig;
+
+    @Resource
+    private RabbitTemplate rabbitTemplate;
 
 
     @Test
@@ -124,7 +129,7 @@ class WebserveApplicationTests {
     @Test
     void test7() {
         QueryWrapper<Annexe_task> queryWrapper = new QueryWrapper();
-        queryWrapper.select("id", "name").eq("id", Long.valueOf("11"));
+        queryWrapper.select("id", "name").eq("id", Long.valueOf("1144"));
         List<Annexe_task> annexe_tasks = iAnnexe_taskService.getBaseMapper().selectList(queryWrapper);
         LOGGER.info(annexe_tasks.get(0).toString());
     }
@@ -189,7 +194,7 @@ class WebserveApplicationTests {
     @Test
     void test13() {
         List<LocalDateTime> localDateTimes = new ArrayList<>();
-        LocalDateTime time = LocalDateTime.of(2020, 6, 1, 14, 0, 0);
+        LocalDateTime time = LocalDateTime.of(2020, 5, 28, 14, 00, 0);
         for (int i = 23; i >= 0; i--) {
             localDateTimes.add(time.minusHours(Long.valueOf(i)));
         }
@@ -206,15 +211,16 @@ class WebserveApplicationTests {
 
     @Test
     void test15() {
-//        String languege = iAnnexe_taskService.getMostUseLanguage(1l);
+//        String languege = iAnnexe_taskService.getMostUseLanguage(1l,LocalDateTime.now());
 //        LOGGER.info(languege);
+        String languege = iAnnexe_taskService.getLastUseLanguage(1l, LocalDateTime.now());
+        LOGGER.info(languege);
     }
 
     @Test
     void test16() {
 
-//        String language = iAnnexe_taskService.getLastUseLanguage(1l);
-//        LOGGER.info(language);
+
     }
 
     @Test
@@ -255,11 +261,29 @@ class WebserveApplicationTests {
 
     @Test
     void test19() {
-        LocalDateTime now = LocalDateTime.now();
-        List<Map> list = iAnnexe_taskService.getAllInfo(now.minusHours(24l));
-        LOGGER.info(list.toString());
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:00:00");
+        LOGGER.info(df.format(LocalDateTime.now()));
+
     }
 
+    @Test
+    void test20() {
+        User user = new User();
+        user.setAccount("aaa");
+        String aaa = Optional.ofNullable(user).map(User::getUsername).orElse("111");
+        LOGGER.info(aaa);
+    }
+
+    @Test
+    void test21() {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:00:00");
+        LocalDateTime n = LocalDateTime.now();
+
+        String time = df.format(n);
+        LOGGER.info(time);
+
+
+    }
 
     private List<Long> convert(String content) {
         List<Long> list = new ArrayList<>();

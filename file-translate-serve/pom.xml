@@ -25,9 +25,7 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
-
     </dependencies>
-
     <build>
         <plugins>
             <plugin>

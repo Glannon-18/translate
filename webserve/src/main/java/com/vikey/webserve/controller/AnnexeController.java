@@ -13,6 +13,9 @@ import com.vikey.webserve.entity.RespPageBean;
 import com.vikey.webserve.service.IAnnexeService;
 import com.vikey.webserve.utils.ZipUtils;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,8 +27,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -39,12 +46,17 @@ import java.util.*;
 @RequestMapping("/annexe")
 public class AnnexeController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AnnexeController.class);
+
     @Resource
     private PersonalConfig PersonalConfig;
 
 
     @Resource
     private IAnnexeService iAnnexeService;
+
+    @Resource
+    private RabbitTemplate rabbitTemplate;
 
 
     @GetMapping("/page")
@@ -112,36 +124,87 @@ public class AnnexeController {
     }
 
 
-    @GetMapping("annexeCountByPeriod")
+    @GetMapping("/annexeCountByPeriod")
     public RespBean annexeCountByPeriod(@RequestParam String type) {
+
         String format = null;
+        String x_format = null;
         LocalDateTime now = LocalDateTime.now();
         List<LocalDateTime> localDateTimes = new ArrayList<>();
 
         if ("24h".equals(type)) {
-            format = "%Y-%m-%d %H:00:00";
+            format = "%Y-%m-%d %H:00:00.0";
+            x_format = "HH时";
             LocalDateTime now_hour = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), now.getHour(), 0, 0);
             for (int i = 23; i >= 0; i--) {
                 localDateTimes.add(now_hour.minusHours(i));
             }
         } else if ("30d".equals(type)) {
-            format = "%Y-%m-%d 00:00:00";
+            format = "%Y-%m-%d 00:00:00.0";
+            x_format = "dd日";
             LocalDateTime now_day = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0, 0, 0);
             for (int i = 29; i >= 0; i--) {
                 localDateTimes.add(now_day.minusDays(i));
             }
         }
-        List<Map> txt = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "txt", format);
-        List<Map> pdf = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "pdf", format);
-        List<Map> eml = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "eml", format);
-        List<Map> word = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "word", format);
 
-        Map<String, List<Map>> result = new HashMap<>();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(x_format);
+        localDateTimes = localDateTimes.stream().sorted().collect(Collectors.toList());
+
+        List<String> x_string = localDateTimes.stream().map(t ->
+                dateTimeFormatter.format(t)
+        ).collect(Collectors.toList());
+
+
+        List<Long> txt = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "txt", format).stream().map(change()).collect(Collectors.toList());
+        List<Long> pdf = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "pdf", format).stream().map(change()).collect(Collectors.toList());
+        List<Long> eml = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "eml", format).stream().map(change()).collect(Collectors.toList());
+        List<Long> word = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "word", format).stream().map(change()).collect(Collectors.toList());
+
+        Map<String, Object> result = new HashMap<>();
         result.put("txt", txt);
         result.put("pdf", pdf);
         result.put("eml", eml);
         result.put("word", word);
+        result.put("x_string", x_string);
         return RespBean.ok(result);
+    }
+
+    @GetMapping("/getAnnexeCountByType")
+    public RespBean getAnnexeCountByType(@RequestParam String type) {
+        LocalDateTime after = null;
+
+        if ("24h".equals(type)) {
+            after = LocalDateTime.now().minusHours(24l);
+        } else if ("30d".equals(type)) {
+            after = LocalDateTime.now().minusDays(30l);
+        }
+
+        List<Map> right = iAnnexeService.getAnnexeCountByType(after);
+        Map<String, Object> result = new HashMap<>();
+        result.put("r", right);
+
+        return RespBean.ok(result);
+
+    }
+
+    @GetMapping("/testRabbitmq")
+    public RespBean testRabbitmq() {
+        String messageId = String.valueOf(UUID.randomUUID());
+        String messageData = "test message^hello!";
+        String createTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        Map<String, Object> map = new HashMap<>();
+        map.put("messageId", messageId);
+        map.put("messageData", messageData);
+        map.put("createTime", createTime);
+        rabbitTemplate.convertAndSend("file_translate_exchange", "wkw", map);
+        LOGGER.info("已经发送消息：" + map.toString());
+        return RespBean.ok();
+    }
+
+
+    private Function<Map, Long> change() {
+        return map -> ((BigDecimal) map.get("count")).longValue();
     }
 
 

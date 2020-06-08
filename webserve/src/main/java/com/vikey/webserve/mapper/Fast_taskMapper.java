@@ -23,8 +23,10 @@ public interface Fast_taskMapper extends BaseMapper<Fast_task> {
 
     List<Fast_task> selectFast_taskByDate(@Param("uid") Long uid, @Param("name") String name);
 
-    List<Map> getMostFtUseLanguage(@Param("userid") Long id,@Param("time") LocalDateTime time);
+    List<Map> getMostFtUseLanguage(@Param("userid") Long id, @Param("time") LocalDateTime time);
 
-    Map<String, Object> getLastFtUseLanguage(@Param("userid") Long id,@Param("time") LocalDateTime time);
+    Map<String, Object> getLastFtUseLanguage(@Param("userid") Long id, @Param("time") LocalDateTime after);
+
+    List<Map> getCountFtByLanguage(@Param("time") LocalDateTime after);
 
 }

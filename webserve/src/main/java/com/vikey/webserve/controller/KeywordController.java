@@ -8,8 +8,6 @@ import com.vikey.webserve.entity.RespBean;
 import com.vikey.webserve.service.IKeywordService;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Controller;
-
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -47,6 +45,5 @@ public class KeywordController {
         iKeywordService.delete(id);
         return RespBean.ok();
     }
-
 
 }

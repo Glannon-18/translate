@@ -90,16 +90,30 @@ public class Annexe_taskController {
 
     @GetMapping("/getAllInfo")
     public RespBean getAllInfo(@RequestParam String type) {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime search_time = null;
-        if (type.equals("24h")) {
-            search_time = now.minusHours(24l);
-        } else if (type.equals("30d")) {
-            search_time = now.minusDays(30l);
+        LocalDateTime after = null;
+        if ("24h".equals(type)) {
+            after = LocalDateTime.now().minusHours(24l);
+        } else if ("30d".equals(type)) {
+            after = LocalDateTime.now().minusDays(30l);
         } else {
             return RespBean.ok();
         }
-        List<Map> result = iAnnexe_taskService.getAllInfo(search_time);
+        List<Map> result = iAnnexe_taskService.getAllInfo(after);
+        return RespBean.ok(result);
+    }
+
+
+    @GetMapping("/getLanguageShare")
+    public RespBean getLanguageShare(@RequestParam String type) {
+        LocalDateTime after = null;
+        if ("24h".equals(type)) {
+            after = LocalDateTime.now().minusHours(24l);
+        } else if ("30d".equals(type)) {
+            after = LocalDateTime.now().minusDays(30l);
+        } else {
+            return RespBean.ok();
+        }
+        List<Map<String, String>> result = iAnnexe_taskService.getCountByLanguage(after);
         return RespBean.ok(result);
     }
 

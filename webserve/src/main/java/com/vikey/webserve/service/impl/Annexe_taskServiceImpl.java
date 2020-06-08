@@ -66,7 +66,6 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
     private IUserService iUserService;
 
 
-
     @Resource
     private PersonalConfig personalConfig;
 
@@ -221,12 +220,12 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
     }
 
     @Override
-    @Async
+    @Async("fileTranslateExecutor")
     public void translate(List<Annexe> annexes, String srcLang, String tgtLang) {
 
 
         for (Annexe annexe : annexes) {
-            LOGGER.info("=================进入Async循环=============");
+            LOGGER.info("=================进入Async循环=================");
             Content content = null;
             String extend = annexe.getName().split("\\.")[1];
             if (extend.equals("txt")) {
@@ -234,7 +233,7 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
             }
             try {
                 HttpPost post = new HttpPost(personalConfig.getTranslate_api_url());
-                List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+                List<NameValuePair> urlParameters = new ArrayList<>();
                 urlParameters.add(new BasicNameValuePair("method", "translate"));
                 urlParameters.add(new BasicNameValuePair("srcLang", srcLang));
                 urlParameters.add(new BasicNameValuePair("tgtLang", tgtLang));
@@ -258,7 +257,8 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
                 if (!output.getParentFile().exists()) {
                     output.getParentFile().mkdirs();
                 }
-                content.write(result.toString(), output);
+                JSONObject jsonObject = JSONObject.parseObject(result.toString());
+                content.write(jsonObject.getString("data"), output);
             } catch (IOException e) {
                 e.printStackTrace();
                 continue;

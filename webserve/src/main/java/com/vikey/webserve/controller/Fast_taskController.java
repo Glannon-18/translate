@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -112,6 +113,14 @@ public class Fast_taskController {
         Long tid = Long.valueOf(id);
         Fast_task fast_task = iFast_taskService.getFast_TaskById(tid);
         return RespBean.ok(fast_task);
+    }
+
+    @GetMapping("/translate")
+    public RespBean fast_translate(@RequestParam String text, @RequestParam String srcLang, @RequestParam String tgtLang) throws Exception {
+        String translate_text = iFast_taskService.translate(text, srcLang, tgtLang);
+        Map<String,String> map=new HashMap<>();
+        map.put("tr",translate_text);
+        return RespBean.ok(map);
     }
 
 

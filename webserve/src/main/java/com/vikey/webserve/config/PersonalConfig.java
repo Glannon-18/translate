@@ -11,6 +11,8 @@ public class PersonalConfig {
 
     private String upload_dir;
 
+    private String translate_api_url;
+
     public String getMake_file_dir() {
         return make_file_dir;
     }
@@ -25,5 +27,13 @@ public class PersonalConfig {
 
     public void setUpload_dir(String upload_dir) {
         this.upload_dir = upload_dir;
+    }
+
+    public String getTranslate_api_url() {
+        return translate_api_url;
+    }
+
+    public void setTranslate_api_url(String translate_api_url) {
+        this.translate_api_url = translate_api_url;
     }
 }

@@ -3,6 +3,8 @@ package com.vikey.webserve.service;
 import com.vikey.webserve.entity.Fast_task;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -38,6 +40,10 @@ public interface IFast_taskService extends IService<Fast_task> {
      * @return
      */
     Fast_task getFast_TaskById(Long id);
+
+
+
+    String translate(String text, String srcLang, String tgtLang) throws Exception;
 
 
 }

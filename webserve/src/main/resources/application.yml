@@ -3,9 +3,9 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     username: root
     password: 123456
-#    url: jdbc:mysql://localhost:3306/translate?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=True
-#    driver-class-name: com.mysql.jdbc.Driver
-  #    MYSQL5
+    #    url: jdbc:mysql://localhost:3306/translate?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=True
+    #    driver-class-name: com.mysql.jdbc.Driver
+    #    MYSQL5
     url: jdbc:mysql://localhost:3306/translate?useUnicode=true&characterEncoding=utf-8&useSSL=false
     driver-class-name: com.mysql.jdbc.Driver
   rabbitmq:
@@ -13,9 +13,9 @@ spring:
     port: 5672
     username: guest
     password: guest
-      #确认消息已发送到交换机(Exchange)
+    #确认消息已发送到交换机(Exchange)
     publisher-confirms: true
-      #确认消息已发送到队列(Queue)
+    #确认消息已发送到队列(Queue)
     publisher-returns: true
     listener:
       simple:
@@ -41,5 +41,6 @@ server:
 personal-config:
   make_file_dir: D:\\translate_dir\\file
   upload_dir: D:\\translate_dir\\upload
+  translate_api_url: http://219.159.152.7:9999/NatureAPI/openapi.do
 
 

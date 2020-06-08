@@ -14,6 +14,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     public RespBean error(Exception ex) {
         ex.printStackTrace();
-        return RespBean.error("操作发生异常！");
+        return RespBean.error("操作发生异常！" + ex.getMessage());
     }
 }

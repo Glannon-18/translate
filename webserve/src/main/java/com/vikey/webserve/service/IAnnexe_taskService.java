@@ -2,8 +2,11 @@ package com.vikey.webserve.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.vikey.webserve.entity.Annexe;
 import com.vikey.webserve.entity.Annexe_task;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -23,7 +26,7 @@ public interface IAnnexe_taskService extends IService<Annexe_task> {
     LinkedHashMap<String, List<Annexe_task>> getAnnexe_taskByDate(Long uid, String name);
 
 
-    void createAnnexe_task(JSONObject jsonObject);
+    List<Annexe> createAnnexe_task(JSONObject jsonObject);
 
 
     Map getAllTaskCount(Long id, LocalDateTime time);
@@ -39,4 +42,7 @@ public interface IAnnexe_taskService extends IService<Annexe_task> {
 
 
     List<Map<String, String>> getCountByLanguage(LocalDateTime after);
+
+
+    void translate(List<Annexe> annexes, String srcLang, String tgtLang);
 }

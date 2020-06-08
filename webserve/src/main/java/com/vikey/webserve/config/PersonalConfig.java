@@ -13,6 +13,16 @@ public class PersonalConfig {
 
     private String translate_api_url;
 
+    private String translate_dir;
+
+    public String getTranslate_dir() {
+        return translate_dir;
+    }
+
+    public void setTranslate_dir(String translate_dir) {
+        this.translate_dir = translate_dir;
+    }
+
     public String getMake_file_dir() {
         return make_file_dir;
     }

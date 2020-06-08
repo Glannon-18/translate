@@ -44,7 +44,9 @@ public class Annexe_taskController {
     @PostMapping("/")
     public RespBean createAnnexe_Task(@RequestBody String json) {
         JSONObject jsonObject = JSONObject.parseObject(json);
-        iAnnexe_taskService.createAnnexe_task(jsonObject);
+        String language = jsonObject.getString("language");
+        List<Annexe> annexes = iAnnexe_taskService.createAnnexe_task(jsonObject);
+        iAnnexe_taskService.translate(annexes, language, "zh");
         return RespBean.ok("创建文本任务成功");
     }
 

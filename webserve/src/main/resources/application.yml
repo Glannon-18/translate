@@ -41,6 +41,7 @@ server:
 personal-config:
   make_file_dir: D:\\translate_dir\\file
   upload_dir: D:\\translate_dir\\upload
+  translate_dir: D:\\translate_dir\\translate
   translate_api_url: http://219.159.152.7:9999/NatureAPI/openapi.do
 
 

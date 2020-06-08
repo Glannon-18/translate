@@ -15,6 +15,7 @@ import com.vikey.webserve.utils.ZipUtils;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -197,7 +198,7 @@ public class AnnexeController {
         map.put("messageId", messageId);
         map.put("messageData", messageData);
         map.put("createTime", createTime);
-        rabbitTemplate.convertAndSend("file_translate_exchange", "wkw", map);
+        rabbitTemplate.convertAndSend(Constant.EXCHANGE_NAME, Constant.KEY, map, new CorrelationData("45656"));
         LOGGER.info("已经发送消息：" + map.toString());
         return RespBean.ok();
     }

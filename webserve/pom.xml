@@ -84,11 +84,11 @@
         <!--        </dependency>-->
 
 
-        <dependency>
-            <groupId>org.vikey</groupId>
-            <artifactId>file-translate-serve</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.vikey</groupId>-->
+        <!--            <artifactId>file-translate-serve</artifactId>-->
+        <!--            <version>0.0.1-SNAPSHOT</version>-->
+        <!--        </dependency>-->
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

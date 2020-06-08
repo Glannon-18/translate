@@ -30,4 +30,11 @@ public class Constant {
         put("0", "未完成");
         put("1", "已完成");
     }};
+
+
+    public static final String QUEUE_NAME = "file_translate";
+
+    public static final String EXCHANGE_NAME = "file_translate_exchange";
+
+    public static final String KEY = "translate_key";
 }

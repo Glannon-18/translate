@@ -115,7 +115,7 @@ public class Fast_taskController {
         return RespBean.ok(fast_task);
     }
 
-    @GetMapping("/translate")
+    @PostMapping("/translate")
     public RespBean fast_translate(@RequestParam String text, @RequestParam String srcLang, @RequestParam String tgtLang) throws Exception {
         String translate_text = iFast_taskService.translate(text, srcLang, tgtLang);
         Map<String,String> map=new HashMap<>();

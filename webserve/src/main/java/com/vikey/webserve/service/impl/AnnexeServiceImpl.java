@@ -1,19 +1,24 @@
 package com.vikey.webserve.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.vikey.webserve.config.PersonalConfig;
 import com.vikey.webserve.entity.Annexe;
 import com.vikey.webserve.mapper.AnnexeMapper;
 import com.vikey.webserve.service.IAnnexeService;
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * <p>
@@ -25,6 +30,9 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Service
 public class AnnexeServiceImpl extends ServiceImpl<AnnexeMapper, Annexe> implements IAnnexeService {
+
+    @Resource
+    private PersonalConfig personalConfig;
 
 
     @Override
@@ -46,8 +54,8 @@ public class AnnexeServiceImpl extends ServiceImpl<AnnexeMapper, Annexe> impleme
     }
 
     @Override
-    public Integer getAnnexeCountByUserid(Long userid,LocalDateTime after) {
-        return getBaseMapper().getAnnexeCountByUserid(userid,after);
+    public Integer getAnnexeCountByUserid(Long userid, LocalDateTime after) {
+        return getBaseMapper().getAnnexeCountByUserid(userid, after);
     }
 
     @Override
@@ -69,4 +77,21 @@ public class AnnexeServiceImpl extends ServiceImpl<AnnexeMapper, Annexe> impleme
         }
         return list;
     }
+
+    @Override
+    public Annexe getAnnexeById(Long id) throws IOException {
+        QueryWrapper<Annexe> annexeQueryWrapper = new QueryWrapper<>();
+        annexeQueryWrapper.select("id", "name", "path", "translate_path", "type").eq("id", id);
+        Annexe annexe = getOne(annexeQueryWrapper);
+        File original_file = new File(personalConfig.getUpload_dir() + File.separator + annexe.getPath());
+        File translate_file = new File(personalConfig.getTranslate_dir() + File.separator + annexe.getTranslate_path());
+        if (annexe.getType().equals("txt")) {
+            annexe.setOriginal_text(FileUtils.readFileToString(original_file, "utf-8"));
+            annexe.setTranslate_text(FileUtils.readFileToString(translate_file, "utf-8"));
+            annexe.setPath(null);
+            annexe.setTranslate_path(null);
+        }
+        return annexe;
+    }
+
 }

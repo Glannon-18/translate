@@ -134,14 +134,14 @@ public class AnnexeController {
         List<LocalDateTime> localDateTimes = new ArrayList<>();
 
         if ("24h".equals(type)) {
-            format = "%Y-%m-%d %H:00:00.0";
+            format = "%Y-%m-%d %H:00:00";
             x_format = "HH时";
             LocalDateTime now_hour = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), now.getHour(), 0, 0);
             for (int i = 23; i >= 0; i--) {
                 localDateTimes.add(now_hour.minusHours(i));
             }
         } else if ("30d".equals(type)) {
-            format = "%Y-%m-%d 00:00:00.0";
+            format = "%Y-%m-%d 00:00:00";
             x_format = "dd日";
             LocalDateTime now_day = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0, 0, 0);
             for (int i = 29; i >= 0; i--) {
@@ -188,6 +188,13 @@ public class AnnexeController {
         return RespBean.ok(result);
 
     }
+
+    @GetMapping("/{id}")
+    public RespBean getAnnexe(@PathVariable Long id) throws IOException {
+        Annexe annexe = iAnnexeService.getAnnexeById(id);
+        return RespBean.ok(annexe);
+    }
+
 
     @GetMapping("/testRabbitmq")
     public RespBean testRabbitmq() {

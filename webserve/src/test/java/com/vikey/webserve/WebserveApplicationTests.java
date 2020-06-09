@@ -34,6 +34,7 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -283,6 +284,12 @@ class WebserveApplicationTests {
         LOGGER.info(time);
 
 
+    }
+
+    @Test
+    void test22() throws IOException {
+        Annexe annexe = iAnnexeService.getAnnexeById(102l);
+        LOGGER.info(annexe.toString());
     }
 
     private List<Long> convert(String content) {

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.vikey.webserve.config.PersonalConfig;
 import com.vikey.webserve.entity.*;
 import com.vikey.webserve.service.IAnnexe_taskService;
+import com.vikey.webserve.service.IAsyncService;
 import com.vikey.webserve.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,13 +41,16 @@ public class Annexe_taskController {
     @Resource
     private PersonalConfig personalConfig;
 
+    @Resource
+    private IAsyncService iAsyncService;
+
 
     @PostMapping("/")
     public RespBean createAnnexe_Task(@RequestBody String json) {
         JSONObject jsonObject = JSONObject.parseObject(json);
         String language = jsonObject.getString("language");
         List<Annexe> annexes = iAnnexe_taskService.createAnnexe_task(jsonObject);
-        iAnnexe_taskService.translate(annexes, language, "zh");
+        iAsyncService.translate(annexes, language, "zh");
         return RespBean.ok("创建文本任务成功");
     }
 
@@ -74,7 +78,7 @@ public class Annexe_taskController {
         String name = multipartFile.getOriginalFilename();
         String type = name.split("\\.")[1];
         String dirPath = personalConfig.getUpload_dir();
-        String filePath = dirPath + File.separator + UUID.randomUUID().toString().substring(0, 12) + "_" + multipartFile.getOriginalFilename();
+        String filePath = dirPath + File.separator + UUID.randomUUID().toString() + "." + type;
         File file = new File(filePath);
         if (!file.getParentFile().exists()) {
             file.getParentFile().mkdirs();

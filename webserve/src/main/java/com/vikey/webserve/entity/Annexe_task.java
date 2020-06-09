@@ -31,16 +31,9 @@ public class Annexe_task implements Serializable {
 
     private String name;
 
-    @TableField(exist = false)
-    private String original_text;
-
-    @TableField(exist = false)
-    private String translate_text;
-
     private String original_language;
 
     private String translate_language;
-
 
     @TableField(exist = false)
     private List<Annexe> annexeList;
@@ -101,22 +94,6 @@ public class Annexe_task implements Serializable {
 
     public void setUid(Long uid) {
         this.uid = uid;
-    }
-
-    public String getOriginal_text() {
-        return original_text;
-    }
-
-    public void setOriginal_text(String original_text) {
-        this.original_text = original_text;
-    }
-
-    public String getTranslate_text() {
-        return translate_text;
-    }
-
-    public void setTranslate_text(String translate_text) {
-        this.translate_text = translate_text;
     }
 
 

@@ -27,7 +27,7 @@ class TaskPoolConfig {
         //也就是 如果现有线程数超过5 则会对超出的空闲线程 设置摧毁时间 也就是60秒
         executor.setKeepAliveSeconds(60);
         //设置 线程前缀
-        executor.setThreadNamePrefix("fileTranslate-");
+        executor.setThreadNamePrefix("异步翻译文件线程------");
         //线程池的饱和策略 我这里设置的是 CallerRunsPolicy 也就是由用调用者所在的线程来执行任务 共有四种
         //AbortPolicy：直接抛出异常，这是默认策略；
         //CallerRunsPolicy：用调用者所在的线程来执行任务；

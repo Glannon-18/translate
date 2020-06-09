@@ -43,6 +43,4 @@ public interface IAnnexe_taskService extends IService<Annexe_task> {
 
     List<Map<String, String>> getCountByLanguage(LocalDateTime after);
 
-
-    void translate(List<Annexe> annexes, String srcLang, String tgtLang);
 }

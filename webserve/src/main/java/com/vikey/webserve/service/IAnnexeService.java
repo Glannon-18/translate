@@ -6,6 +6,7 @@ import com.vikey.webserve.entity.Annexe;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.apache.ibatis.annotations.Param;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -39,5 +40,9 @@ public interface IAnnexeService extends IService<Annexe> {
 
     Integer getAnnexeCountByUserid(Long userid,LocalDateTime after);
 
+
     List<Map> getAnnexeCountByType(LocalDateTime time);
+
+
+    Annexe getAnnexeById(Long id) throws IOException;
 }

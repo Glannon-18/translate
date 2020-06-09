@@ -51,7 +51,6 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Annexe_taskServiceImpl.class);
 
-    private HttpClient httpClient = HttpClientBuilder.create().build();
 
     @Resource
     private IAnnexeService iAnnexeService;
@@ -65,9 +64,6 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
     @Resource
     private IUserService iUserService;
 
-
-    @Resource
-    private PersonalConfig personalConfig;
 
     @Override
     public LinkedHashMap<String, List<Annexe_task>> getAnnexe_taskByDate(Long uid, String name) {
@@ -217,57 +213,6 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
             put("value", k.getValue().toString());
         }}).collect(Collectors.toList());
         return result;
-    }
-
-    @Override
-    @Async("fileTranslateExecutor")
-    public void translate(List<Annexe> annexes, String srcLang, String tgtLang) {
-
-
-        for (Annexe annexe : annexes) {
-            LOGGER.info("=================进入Async循环=================");
-            Content content = null;
-            String extend = annexe.getName().split("\\.")[1];
-            if (extend.equals("txt")) {
-                content = new TxtContent(new File(personalConfig.getUpload_dir() + File.separator + annexe.getPath()));
-            }
-            try {
-                HttpPost post = new HttpPost(personalConfig.getTranslate_api_url());
-                List<NameValuePair> urlParameters = new ArrayList<>();
-                urlParameters.add(new BasicNameValuePair("method", "translate"));
-                urlParameters.add(new BasicNameValuePair("srcLang", srcLang));
-                urlParameters.add(new BasicNameValuePair("tgtLang", tgtLang));
-                urlParameters.add(new BasicNameValuePair("useSocket", "True"));
-                urlParameters.add(new BasicNameValuePair("text", srcLang.equals("vi") ? "startnmtpy " + content.getContent() : content.getContent()));
-                RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(3000).setConnectTimeout(3000).build();
-                post.setConfig(requestConfig);
-                post.setEntity(new UrlEncodedFormEntity(urlParameters, "utf-8"));
-                HttpResponse response = httpClient.execute(post);
-                LOGGER.info("翻译接口返回码： " + response.getStatusLine().getStatusCode());
-                StringBuffer result = new StringBuffer();
-                BufferedReader rd = new BufferedReader(
-                        new InputStreamReader(response.getEntity().getContent(), "utf-8"));
-                String line = "";
-                while ((line = rd.readLine()) != null) {
-                    result.append(line);
-                }
-                String translate_file_name = UUID.randomUUID().toString();
-                String translate_file_path = personalConfig.getTranslate_dir() + File.separator + translate_file_name + "." + extend;
-                File output = new File(translate_file_path);
-                if (!output.getParentFile().exists()) {
-                    output.getParentFile().mkdirs();
-                }
-                JSONObject jsonObject = JSONObject.parseObject(result.toString());
-                content.write(jsonObject.getString("data"), output);
-            } catch (IOException e) {
-                e.printStackTrace();
-                continue;
-            }
-
-
-        }
-
-
     }
 
 

@@ -1,10 +1,13 @@
 package com.vikey.webserve.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.vikey.webserve.Constant;
+import org.apache.ibatis.annotations.ResultMap;
 
 import java.time.LocalDateTime;
 import java.io.Serializable;
@@ -18,6 +21,7 @@ import java.io.Serializable;
  * @since 2020-05-18
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@TableName(resultMap = "BaseResultMap")
 public class Annexe implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -25,19 +29,39 @@ public class Annexe implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
+    /**
+     * 原文上传时的文件名
+     */
     private String name;
 
     private String status;
 
     private LocalDateTime create_time;
 
+    /**
+     * 原文文件保存相对路径
+     */
     private String path;
 
     private String original_language;
 
     private String discard;
 
+    /**
+     * 文件类型
+     */
     private String type;
+
+    /**
+     * 译文生成文件相对路径
+     */
+    private String translate_path;
+
+    @TableField(exist = false)
+    private String original_text;
+
+    @TableField(exist = false)
+    private String translate_text;
 
     public String getOriginal_language() {
         return original_language;
@@ -113,6 +137,30 @@ public class Annexe implements Serializable {
         this.type = type;
     }
 
+    public String getTranslate_path() {
+        return translate_path;
+    }
+
+    public void setTranslate_path(String translate_path) {
+        this.translate_path = translate_path;
+    }
+
+    public String getOriginal_text() {
+        return original_text;
+    }
+
+    public void setOriginal_text(String original_text) {
+        this.original_text = original_text;
+    }
+
+    public String getTranslate_text() {
+        return translate_text;
+    }
+
+    public void setTranslate_text(String translate_text) {
+        this.translate_text = translate_text;
+    }
+
     @Override
     public String toString() {
         return "Annexe{" +
@@ -124,6 +172,9 @@ public class Annexe implements Serializable {
                 ", original_language='" + original_language + '\'' +
                 ", discard='" + discard + '\'' +
                 ", type='" + type + '\'' +
+                ", translate_path='" + translate_path + '\'' +
+                ", original_text='" + original_text + '\'' +
+                ", translate_text='" + translate_text + '\'' +
                 '}';
     }
 }

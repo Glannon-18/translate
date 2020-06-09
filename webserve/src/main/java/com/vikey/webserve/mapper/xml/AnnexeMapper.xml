@@ -40,6 +40,7 @@
         result.d as date, SUM(result.c) as count from
         (
         select DATE_FORMAT(a.create_time,#{format}) as d,COUNT(a.id) as c from annexe a where a.type=#{type} and
+        a.status='1' and
         a.create_time>=#{startTime} group by d
         <foreach collection="periods" item="item" index="index">
             UNION (SELECT DATE_FORMAT(#{item},#{format}), 0)

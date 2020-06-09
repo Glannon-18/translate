@@ -21,7 +21,6 @@ import java.io.Serializable;
  * @since 2020-05-18
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@TableName(resultMap = "BaseResultMap")
 public class Annexe implements Serializable {
 
     private static final long serialVersionUID = 1L;

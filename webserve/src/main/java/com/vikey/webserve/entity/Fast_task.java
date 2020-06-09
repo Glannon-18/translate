@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
  * @since 2020-05-18
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@TableName(resultMap = "BaseResultMap")
 public class Fast_task implements Serializable {
 
     private static final long serialVersionUID = 1L;

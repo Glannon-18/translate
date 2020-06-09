@@ -23,6 +23,10 @@ import com.vikey.webserve.service.IAnnexe_taskService;
 import com.vikey.webserve.service.IFast_taskService;
 import com.vikey.webserve.service.IUserService;
 import com.vikey.webserve.utils.ZipUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,10 +35,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -227,27 +228,21 @@ class WebserveApplicationTests {
     @Test
     void test17() {
         ArrayList<Integer> accResult_ = Stream.of(1, 2, 3, 4)
-                .reduce(new ArrayList<Integer>(),
-                        new BiFunction<ArrayList<Integer>, Integer, ArrayList<Integer>>() {
-                            @Override
-                            public ArrayList<Integer> apply(ArrayList<Integer> acc, Integer item) {
+                .reduce(new ArrayList<>(),
+                        (acc, item) -> {
 
-                                acc.add(item);
-                                System.out.println("item: " + item);
-                                System.out.println("acc+ : " + acc);
-                                System.out.println("BiFunction");
-                                return acc;
-                            }
-                        }, new BinaryOperator<ArrayList<Integer>>() {
-                            @Override
-                            public ArrayList<Integer> apply(ArrayList<Integer> acc, ArrayList<Integer> item) {
-                                System.out.println("BinaryOperator");
-                                acc.addAll(item);
-                                System.out.println("item: " + item);
-                                System.out.println("acc+ : " + acc);
-                                System.out.println("--------");
-                                return acc;
-                            }
+                            acc.add(item);
+                            System.out.println("item: " + item);
+                            System.out.println("acc+ : " + acc);
+                            System.out.println("BiFunction");
+                            return acc;
+                        }, (acc, item) -> {
+                            System.out.println("BinaryOperator");
+                            acc.addAll(item);
+                            System.out.println("item: " + item);
+                            System.out.println("acc+ : " + acc);
+                            System.out.println("--------");
+                            return acc;
                         });
         System.out.println("accResult_: " + accResult_);
 
@@ -300,6 +295,71 @@ class WebserveApplicationTests {
         });
         return list;
     }
+
+    private static HttpClient HTTPCLIENT = HttpClientBuilder.create().build();
+
+
+    @Test
+    public void fun01() {
+        for (int i = 0; i < 10; i++) {
+            String url = "";
+            if (i % 2 == 0) {
+                url = "http://www.baidu.com";
+            } else {
+                url = "http://www.hao123.com";
+            }
+            HttpGet httpGet = new HttpGet(url);
+            LOGGER.info("------url:{}-----", url);
+            HttpResponse res = null;
+            try {
+                res = HTTPCLIENT.execute(httpGet);
+            } catch (IOException e) {
+                LOGGER.error("异常： ", e);
+                return;
+            }
+            int code = res.getStatusLine().getStatusCode();
+            LOGGER.info("---url:{}\tcode:{}\ti:{}", url, code, i + 1);
+
+        }
+
+    }
+
+    @Test
+    public void fun02() throws IOException {
+        for (int i = 0; i < 10; i++) {
+            String url = "";
+            if (i % 2 == 0) {
+                url = "http://www.baidu.com";
+            } else {
+                url = "http://www.hao123.com";
+            }
+            HttpGet httpGet = new HttpGet(url);
+            LOGGER.info("------url:{}-----", url);
+            HttpResponse res = null;
+            try {
+                res = HTTPCLIENT.execute(httpGet);
+                int code = res.getStatusLine().getStatusCode();
+                LOGGER.info("---url:{}\tcode:{}\ti:{}", url, code, i + 1);
+            } catch (IOException e) {
+                LOGGER.error("异常： ", e);
+                return;
+            } finally {
+                if (res != null) {
+                    if (res.getEntity() != null) {
+                        if (res.getEntity().isStreaming()) {
+                            InputStream inStream = res.getEntity().getContent();
+                            if (inStream != null) {
+                                inStream.close();
+                            }
+                        }
+
+                    }
+
+                }
+            }
+        }
+    }
+
 
     //    @Test
     void codeGenerator() {

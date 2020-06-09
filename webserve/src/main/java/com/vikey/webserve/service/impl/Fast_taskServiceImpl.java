@@ -15,6 +15,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -42,9 +43,10 @@ public class Fast_taskServiceImpl extends ServiceImpl<Fast_taskMapper, Fast_task
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Fast_taskServiceImpl.class);
 
-    private HttpClient httpClient = HttpClientBuilder.create().build();
+    private static HttpClient HTTPCLIENT = HttpClientBuilder.create().build();
 
     @Resource
+
     private PersonalConfig personalConfig;
 
 
@@ -92,7 +94,7 @@ public class Fast_taskServiceImpl extends ServiceImpl<Fast_taskMapper, Fast_task
         RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(3000).setConnectTimeout(3000).build();
         post.setConfig(requestConfig);
         post.setEntity(new UrlEncodedFormEntity(urlParameters, "utf-8"));
-        HttpResponse response = httpClient.execute(post);
+        HttpResponse response = HTTPCLIENT.execute(post);
         LOGGER.info("翻译接口返回码： " + response.getStatusLine().getStatusCode());
         StringBuffer result = new StringBuffer();
         BufferedReader rd = new BufferedReader(
@@ -103,6 +105,7 @@ public class Fast_taskServiceImpl extends ServiceImpl<Fast_taskMapper, Fast_task
         }
 
         JSONObject result_obj = JSONObject.parseObject(result.toString());
+        EntityUtils.consume(response.getEntity());
         if (result_obj.getString("success").equals("true")) {
             return result_obj.getString("data").replaceAll("\\$number", "");
         } else {

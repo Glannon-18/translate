@@ -50,7 +50,9 @@ public class Annexe_taskController {
         JSONObject jsonObject = JSONObject.parseObject(json);
         String language = jsonObject.getString("language");
         List<Annexe> annexes = iAnnexe_taskService.createAnnexe_task(jsonObject);
-        iAsyncService.translate(annexes, language, "zh");
+        annexes.stream().forEach(t ->
+                iAsyncService.translate(t, language, "zh")
+        );
         return RespBean.ok("创建文本任务成功");
     }
 

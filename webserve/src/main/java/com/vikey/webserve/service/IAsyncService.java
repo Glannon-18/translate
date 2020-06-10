@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface IAsyncService {
 
-     void translate(Annexe annexe, String srcLang, String tgtLang);
+     void translate(List<Annexe> annexes, String srcLang, String tgtLang);
 }

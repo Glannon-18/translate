@@ -7,26 +7,19 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-//启动异步
 @EnableAsync
-//这是一个配置类
 @Configuration
 class TaskPoolConfig {
-    //设置Bean的名称不设置的话没有办法在 任务中对应 配置信息
     @Bean("fileTranslateExecutor")
     public Executor taskExecutor() {
-        //根据ThreadPoolTaskExecutor 创建建线程池
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        //为线程设置初始的线程数量 5条线程
         executor.setCorePoolSize(10);
-        //为线程设置最大的线程数量 10条线程
         executor.setMaxPoolSize(20);
         //为任务队列设置最大 任务数量
         executor.setQueueCapacity(200);
         //设置 超出初始化线程的 存在时间为60秒
         //也就是 如果现有线程数超过5 则会对超出的空闲线程 设置摧毁时间 也就是60秒
         executor.setKeepAliveSeconds(60);
-        //设置 线程前缀
         executor.setThreadNamePrefix("异步翻译文件线程------");
         //线程池的饱和策略 我这里设置的是 CallerRunsPolicy 也就是由用调用者所在的线程来执行任务 共有四种
         //AbortPolicy：直接抛出异常，这是默认策略；

@@ -23,6 +23,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.mail.MessagingException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -85,7 +86,7 @@ public class AsyncServiceImpl implements IAsyncService {
                 UpdateWrapper<Annexe> annexeUpdateWrapper = new UpdateWrapper<>();
                 annexeUpdateWrapper.set("translate_path", translate_file_name).set("status", Constant.ANNEXE_STATUS_PROCESSED).eq("id", annexe.getId());
                 iAnnexeService.update(annexeUpdateWrapper);
-            } catch (IOException e) {
+            } catch (IOException | MessagingException e) {
                 e.printStackTrace();
             }
         }

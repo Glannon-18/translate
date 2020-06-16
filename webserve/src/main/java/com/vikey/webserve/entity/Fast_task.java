@@ -119,6 +119,11 @@ public class Fast_task implements Serializable {
         return Constant.LANGUAGE_ZH.get(getOriginal_language());
     }
 
+    @JsonGetter("translate_language_zh")
+    public String getTranslate_language_zh() {
+        return Constant.LANGUAGE_ZH.get(getTranslate_language());
+    }
+
     @Override
     public String toString() {
         return "Fast_task{" +

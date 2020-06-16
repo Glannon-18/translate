@@ -160,7 +160,7 @@ public class AnnexeController {
         List<Long> txt = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "txt", format).stream().map(change()).collect(Collectors.toList());
         List<Long> pdf = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "pdf", format).stream().map(change()).collect(Collectors.toList());
         List<Long> eml = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "eml", format).stream().map(change()).collect(Collectors.toList());
-        List<Long> word = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "word", format).stream().map(change()).collect(Collectors.toList());
+        List<Long> word = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "docx", format).stream().map(change()).collect(Collectors.toList());
 
         Map<String, Object> result = new HashMap<>();
         result.put("txt", txt);

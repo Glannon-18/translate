@@ -18,10 +18,7 @@ import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.vikey.webserve.config.PersonalConfig;
 import com.vikey.webserve.entity.*;
-import com.vikey.webserve.service.IAnnexeService;
-import com.vikey.webserve.service.IAnnexe_taskService;
-import com.vikey.webserve.service.IFast_taskService;
-import com.vikey.webserve.service.IUserService;
+import com.vikey.webserve.service.*;
 import com.vikey.webserve.utils.ZipUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -35,6 +32,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.mail.MessagingException;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -361,6 +359,16 @@ class WebserveApplicationTests {
     }
 
 
+    @Test
+    void test23() throws IOException, MessagingException {
+        Content content=new DocxContent(new File("D:\\wkw\\越南语测试文件\\越南语.docx"));
+        String c=content.getContent();
+        content.write(c, new File("d:\\ss.docx"));
+
+
+    }
+
+
     //    @Test
     void codeGenerator() {
         AutoGenerator mpg = new AutoGenerator();
@@ -370,7 +378,7 @@ class WebserveApplicationTests {
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
         gc.setAuthor("wkw");
-        gc.setOutputDir("D:\\wkw\\translate\\webserve\\src\\main\\java");
+        gc.setOutputDir("D:\\wkw\\translate_eee");
         gc.setFileOverride(false);// 是否覆盖同名文件，默认是false
         gc.setActiveRecord(false);// 不需要ActiveRecord特性的请改为false
         gc.setEnableCache(false);// XML 二级缓存
@@ -407,7 +415,7 @@ class WebserveApplicationTests {
         // strategy.setCapitalMode(true);// 全局大写命名 ORACLE 注意
 //        strategy.setTablePrefix(new String[]{"user_"});// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.no_change);// 表名生成策略
-        strategy.setInclude(new String[]{"atask_lib"}); // 需要生成的表
+        strategy.setInclude(new String[]{"user"}); // 需要生成的表
         // strategy.setExclude(new String[]{"test"}); // 排除生成的表
         // 自定义实体父类
         // strategy.setSuperEntityClass("com.baomidou.demo.TestEntity");

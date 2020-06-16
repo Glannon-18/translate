@@ -78,6 +78,7 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
         User user = SecurityUtils.getCurrentUser();
         String name = jsonObject.getString("name");
         String language = jsonObject.getString("language");
+        String language_tra = jsonObject.getString("language_tra");
         JSONArray paths = jsonObject.getJSONArray("filePaths");
 
         LocalDateTime now = LocalDateTime.now();
@@ -87,7 +88,7 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
         annexe_task.setDiscard(Constant.NOT_DELETE);
         annexe_task.setName(name);
         annexe_task.setOriginal_language(language);
-        annexe_task.setTranslate_language("zh");
+        annexe_task.setTranslate_language(language_tra);
         annexe_task.setUid(user.getId());
         save(annexe_task);
         Long atid = annexe_task.getId();

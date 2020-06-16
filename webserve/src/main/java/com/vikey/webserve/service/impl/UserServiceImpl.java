@@ -20,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.Resource;
@@ -59,13 +60,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         String account = jsonObject.getString("account");
         String username = jsonObject.getString("username");
         String phone = jsonObject.getString("phone");
+        String password = jsonObject.getString("password");
         ArrayList<Integer> roles = (ArrayList<Integer>) jsonObject.get("roles");
         User user = new User();
         user.setAccount(account.trim());
         user.setCreate_time(LocalDateTime.now());
         user.setDiscard(Constant.NOT_DELETE);
         user.setAvailable(true);
-        user.setPassword(new BCryptPasswordEncoder().encode("123456"));
+        user.setPassword(new BCryptPasswordEncoder().encode(password));
         user.setTelephone(phone);
         user.setUsername(username);
         getBaseMapper().insert(user);
@@ -95,11 +97,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         String account = jsonObject.getString("account");
         String username = jsonObject.getString("username");
         String phone = jsonObject.getString("phone");
+        String password = jsonObject.getString("password");
         ArrayList<Integer> roles = (ArrayList<Integer>) jsonObject.get("roles");
 
         UpdateWrapper<User> userUpdateWrapper = new UpdateWrapper<>();
         userUpdateWrapper.set("account", account.trim()).set("username", username).set("telephone", phone)
                 .eq("id", Long.valueOf(id));
+        if (!StringUtils.isEmpty(password)) {
+            userUpdateWrapper.set("password", new BCryptPasswordEncoder().encode(password));
+        }
         update(userUpdateWrapper);
 
         QueryWrapper<User_role> user_roleQueryWrapper = new QueryWrapper<>();
@@ -121,8 +127,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public Integer countByAccount(String account,Long userid) {
-        return getBaseMapper().countByAccount(account,userid);
+    public Integer countByAccount(String account, Long userid) {
+        return getBaseMapper().countByAccount(account, userid);
     }
 
     @Override

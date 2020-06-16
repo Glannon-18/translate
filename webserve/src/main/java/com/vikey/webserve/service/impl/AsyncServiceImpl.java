@@ -6,6 +6,7 @@ import com.vikey.webserve.Constant;
 import com.vikey.webserve.config.PersonalConfig;
 import com.vikey.webserve.entity.Annexe;
 import com.vikey.webserve.service.Content;
+import com.vikey.webserve.service.DocxContent;
 import com.vikey.webserve.service.IAnnexeService;
 import com.vikey.webserve.service.IAsyncService;
 import org.apache.http.HttpResponse;
@@ -54,6 +55,8 @@ public class AsyncServiceImpl implements IAsyncService {
             String extend = annexe.getName().split("\\.")[1];
             if (extend.equals("txt")) {
                 content = new TxtContent(new File(personalConfig.getUpload_dir() + File.separator + annexe.getPath()));
+            } else if (extend.equals("docx")) {
+                content = new DocxContent(new File(personalConfig.getUpload_dir() + File.separator + annexe.getPath()));
             }
             try {
                 HttpPost post = new HttpPost(personalConfig.getTranslate_api_url());

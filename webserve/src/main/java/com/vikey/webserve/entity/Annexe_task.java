@@ -3,7 +3,9 @@ package com.vikey.webserve.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.vikey.webserve.Constant;
 
 import java.time.LocalDateTime;
 import java.io.Serializable;
@@ -101,10 +103,21 @@ public class Annexe_task implements Serializable {
         return annexeList;
     }
 
+
     public void setAnnexeList(List<Annexe> annexeList) {
         this.annexeList = annexeList;
     }
 
+
+    @JsonGetter("original_language_zh")
+    public String getOriginal_language_zh() {
+        return Constant.LANGUAGE_ZH.get(getOriginal_language());
+    }
+
+    @JsonGetter("translate_language_zh")
+    public String getTranslate_language_zh() {
+        return Constant.LANGUAGE_ZH.get(getTranslate_language());
+    }
 
     @Override
     public String toString() {

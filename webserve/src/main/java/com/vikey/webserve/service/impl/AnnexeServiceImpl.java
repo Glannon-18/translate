@@ -8,6 +8,7 @@ import com.vikey.webserve.config.PersonalConfig;
 import com.vikey.webserve.entity.Annexe;
 import com.vikey.webserve.mapper.AnnexeMapper;
 import com.vikey.webserve.service.IAnnexeService;
+import com.vikey.webserve.utils.DocxUtils;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 
@@ -88,9 +89,13 @@ public class AnnexeServiceImpl extends ServiceImpl<AnnexeMapper, Annexe> impleme
         if (annexe.getType().equals("txt")) {
             annexe.setOriginal_text(FileUtils.readFileToString(original_file, "utf-8"));
             annexe.setTranslate_text(FileUtils.readFileToString(translate_file, "utf-8"));
-            annexe.setPath(null);
-            annexe.setTranslate_path(null);
+        } else if (annexe.getType().equals("docx")) {
+            annexe.setOriginal_text(DocxUtils.readDocx(original_file));
+            annexe.setTranslate_text(DocxUtils.readDocx(translate_file));
+
         }
+        annexe.setPath(null);
+        annexe.setTranslate_path(null);
         return annexe;
     }
 

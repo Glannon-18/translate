@@ -49,17 +49,18 @@ public class Annexe_taskController {
     public RespBean createAnnexe_Task(@RequestBody String json) {
         JSONObject jsonObject = JSONObject.parseObject(json);
         String language = jsonObject.getString("language");
+        String language_tra = jsonObject.getString("language_tra");
         List<Annexe> annexes = iAnnexe_taskService.createAnnexe_task(jsonObject);
-        iAsyncService.translate(annexes, language, "zh");
+        iAsyncService.translate(annexes, language, language_tra);
         return RespBean.ok("创建文本任务成功");
     }
 
     @GetMapping("/{id}")
-    public RespBean getAnnext_Task(@PathVariable String id) {
+    public RespBean getAnnexe_Task(@PathVariable String id) {
         QueryWrapper<Annexe_task> queryWrapper = new QueryWrapper();
-        queryWrapper.select("id", "name").eq("id", Long.valueOf(id));
-        List<Annexe_task> annexe_tasks = iAnnexe_taskService.getBaseMapper().selectList(queryWrapper);
-        return RespBean.ok(annexe_tasks.get(0));
+        queryWrapper.select("id", "name", "original_language", "translate_language").eq("id", Long.valueOf(id));
+        Annexe_task annexe_task = iAnnexe_taskService.getBaseMapper().selectOne(queryWrapper);
+        return RespBean.ok(annexe_task);
     }
 
 

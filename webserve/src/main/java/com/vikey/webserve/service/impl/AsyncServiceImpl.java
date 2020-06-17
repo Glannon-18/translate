@@ -9,6 +9,7 @@ import com.vikey.webserve.service.Content;
 import com.vikey.webserve.service.DocxContent;
 import com.vikey.webserve.service.IAnnexeService;
 import com.vikey.webserve.service.IAsyncService;
+import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -25,11 +26,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -59,25 +58,7 @@ public class AsyncServiceImpl implements IAsyncService {
                 content = new DocxContent(new File(personalConfig.getUpload_dir() + File.separator + annexe.getPath()));
             }
             try {
-                HttpPost post = new HttpPost(personalConfig.getTranslate_api_url());
-                List<NameValuePair> urlParameters = new ArrayList<>();
-                urlParameters.add(new BasicNameValuePair("method", "translate"));
-                urlParameters.add(new BasicNameValuePair("srcLang", srcLang));
-                urlParameters.add(new BasicNameValuePair("tgtLang", tgtLang));
-                urlParameters.add(new BasicNameValuePair("useSocket", "True"));
-                urlParameters.add(new BasicNameValuePair("text", srcLang.equals("vi") ? "startnmtpy " + content.getContent() : content.getContent()));
-                RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(15000).setConnectTimeout(3000).build();
-                post.setConfig(requestConfig);
-                post.setEntity(new UrlEncodedFormEntity(urlParameters, "utf-8"));
-                HttpResponse response = HTTPCLIENT.execute(post);
-                StringBuffer result = new StringBuffer();
-                BufferedReader rd = new BufferedReader(
-                        new InputStreamReader(response.getEntity().getContent(), "utf-8"));
-                String line = "";
-                while ((line = rd.readLine()) != null) {
-                    result.append(line);
-                }
-                EntityUtils.consume(response.getEntity());
+                String result = translate(content.getContent(), srcLang, tgtLang);
                 String translate_file_name = UUID.randomUUID().toString() + "." + extend;
                 String translate_file_path = personalConfig.getTranslate_dir() + File.separator + translate_file_name;
                 File output = new File(translate_file_path);
@@ -94,5 +75,49 @@ public class AsyncServiceImpl implements IAsyncService {
             }
         }
 
+    }
+
+//    @Override
+//    @Async("fileTranslateExecutor")
+//    public void folder_translate(String src, String tgt, String src_lan, String tat_lan) {
+//        Collection<File> files = FileUtils.listFiles(new File(src), new String[]{"txt"}, false);
+//        files.stream().forEach(f -> {
+//            try {
+//                String name = f.getName();
+//                String content = FileUtils.readFileToString(f, "utf-8");
+//                String result = translate(content, src_lan, tat_lan);
+//
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//        });
+//
+//
+//    }
+
+
+    private String translate(String text, String src_lan, String tat_lan) throws IOException {
+        HttpPost post = new HttpPost(personalConfig.getTranslate_api_url());
+        List<NameValuePair> urlParameters = new ArrayList<>();
+        urlParameters.add(new BasicNameValuePair("method", "translate"));
+        urlParameters.add(new BasicNameValuePair("srcLang", src_lan));
+        urlParameters.add(new BasicNameValuePair("tgtLang", tat_lan));
+        urlParameters.add(new BasicNameValuePair("useSocket", "True"));
+        urlParameters.add(new BasicNameValuePair("text", src_lan.equals("vi") ? "startnmtpy " + text : text));
+        RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(15000).setConnectTimeout(3000).build();
+        post.setConfig(requestConfig);
+        post.setEntity(new UrlEncodedFormEntity(urlParameters, "utf-8"));
+        HttpResponse response = HTTPCLIENT.execute(post);
+        StringBuffer result = new StringBuffer();
+        BufferedReader rd = new BufferedReader(
+                new InputStreamReader(response.getEntity().getContent(), "utf-8"));
+        String line = "";
+        while ((line = rd.readLine()) != null) {
+            result.append(line);
+        }
+        EntityUtils.consume(response.getEntity());
+        return result.toString();
     }
 }

@@ -26,6 +26,13 @@ public class Constant {
         put("th", "泰文");
     }};
 
+    public static final HashMap<String, String> LANGUAGE_COLOR = new HashMap<String, String>() {{
+        put("zh", "#76d8f6");
+        put("en", "#f56969");
+        put("vi", "#a18cff");
+        put("th", "#48d1cc");
+    }};
+
     public static final HashMap<String, String> ANNEXE_STATUS_ZH = new HashMap() {{
         put("0", "未完成");
         put("1", "已完成");

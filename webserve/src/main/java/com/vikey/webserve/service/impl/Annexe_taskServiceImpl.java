@@ -201,6 +201,7 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
         List<Map<String, String>> result = data.entrySet().stream().map((k) -> new HashMap<String, String>() {{
             put("name", Constant.LANGUAGE_ZH.get(k.getKey()));
             put("value", k.getValue().toString());
+            put("color", Constant.LANGUAGE_COLOR.get(k.getKey()));
         }}).collect(Collectors.toList());
         return result;
     }

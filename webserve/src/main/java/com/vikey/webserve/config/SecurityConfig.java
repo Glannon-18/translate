@@ -106,20 +106,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 })).and()
                 .csrf().disable().exceptionHandling()
-                .authenticationEntryPoint(new AuthenticationEntryPoint() {
-                    @Override
-                    public void commence(HttpServletRequest req, HttpServletResponse resp, AuthenticationException authException) throws IOException {
-                        resp.setContentType("application/json;charset=utf-8");
-                        resp.setStatus(401);
-                        PrintWriter out = resp.getWriter();
-                        RespBean respBean = RespBean.error("访问失败!");
-                        if (authException instanceof InsufficientAuthenticationException) {
-                            respBean.setMsg("请先登录！");
-                        }
-                        out.write(new ObjectMapper().writeValueAsString(respBean));
-                        out.flush();
-                        out.close();
+                .authenticationEntryPoint((req, resp, authException) -> {
+                    resp.setContentType("application/json;charset=utf-8");
+                    resp.setStatus(401);
+                    PrintWriter out = resp.getWriter();
+                    RespBean respBean = RespBean.error("访问失败!");
+                    if (authException instanceof InsufficientAuthenticationException) {
+                        respBean.setMsg("请先登录！");
                     }
+                    out.write(new ObjectMapper().writeValueAsString(respBean));
+                    out.flush();
+                    out.close();
                 }).and().logout().logoutUrl("/logout").logoutSuccessHandler(new LogoutSuccessHandler() {
             @Override
             public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {

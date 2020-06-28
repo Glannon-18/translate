@@ -36,6 +36,7 @@ server:
   compression:
     enabled: true
     mime-types: application/javascript,text/css,application/json,application/xml,text/html,text/xml,text/plain
+  port: 8080
 
 
 
@@ -44,5 +45,9 @@ personal-config:
   upload_dir: D:\\translate_dir\\upload
   translate_dir: D:\\translate_dir\\translate
   translate_api_url: http://219.159.152.7:9999/NatureAPI/openapi.do
+#  make_file_dir: /home/translate_dir/file
+#  upload_dir: /home/translate_dir/upload
+#  translate_dir: /home/translate_dir/translate
+#  translate_api_url: http://219.159.152.7:9999/NatureAPI/openapi.do
 
 

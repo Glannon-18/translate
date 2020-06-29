@@ -129,7 +129,21 @@
                 <includes>
                     <include>application.yml</include>
                     <include>application-${package.environment}.yml</include>
-                    <include>static/**</include>
+                    <include>**/*.html</include>
+                    <include>**/*.js</include>
+                    <include>**/*.css</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.ttf</exclude>
+                    <exclude>**/*.woff</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/*.ttf</include>
+                    <include>**/*.woff</include>
                 </includes>
             </resource>
         </resources>

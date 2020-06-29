@@ -49,39 +49,33 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring().antMatchers("/css/**", "/js/**", "/index.html", "/img/**", "/fonts/**", "/favicon.ico");
     }
 
     @Bean
     LoginFilter filter() throws Exception {
         LoginFilter filter = new LoginFilter();
-        filter.setAuthenticationSuccessHandler(new AuthenticationSuccessHandler() {
-            @Override
-            public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse resp, Authentication authentication) throws IOException, ServletException {
-                resp.setContentType("application/json;charset=utf-8");
-                PrintWriter out = resp.getWriter();
-                RespBean respBean = RespBean.ok("登录成功!", authentication);
-                out.write(new ObjectMapper().writeValueAsString(respBean));
-                out.flush();
-                out.close();
-            }
+        filter.setAuthenticationSuccessHandler((req, resp, authentication) -> {
+            resp.setContentType("application/json;charset=utf-8");
+            PrintWriter out = resp.getWriter();
+            RespBean respBean = RespBean.ok("登录成功!", authentication);
+            out.write(new ObjectMapper().writeValueAsString(respBean));
+            out.flush();
+            out.close();
         });
-        filter.setAuthenticationFailureHandler(new AuthenticationFailureHandler() {
-            @Override
-            public void onAuthenticationFailure(HttpServletRequest req, HttpServletResponse resp, AuthenticationException e) throws IOException, ServletException {
-                resp.setContentType("application/json;charset=utf-8");
-                PrintWriter out = resp.getWriter();
-                RespBean respBean;
-                if (e instanceof BadCredentialsException) {
-                    respBean = RespBean.error("账户密码不正确!");
-                } else {
-                    respBean = RespBean.error("登录失败!");
-                }
-                out.write(new ObjectMapper().writeValueAsString(respBean));
-                out.flush();
-                out.close();
+        filter.setAuthenticationFailureHandler((req, resp, e) -> {
+            resp.setContentType("application/json;charset=utf-8");
+            PrintWriter out = resp.getWriter();
+            RespBean respBean;
+            if (e instanceof BadCredentialsException) {
+                respBean = RespBean.error("账户密码不正确!");
+            } else {
+                respBean = RespBean.error("登录失败!");
             }
+            out.write(new ObjectMapper().writeValueAsString(respBean));
+            out.flush();
+            out.close();
         });
         filter.setAuthenticationManager(authenticationManagerBean());
         filter.setFilterProcessesUrl("/doLogin");

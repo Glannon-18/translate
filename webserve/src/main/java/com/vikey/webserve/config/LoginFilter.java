@@ -30,6 +30,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             }
             String username = loginData.get(getUsernameParameter());
             String password = loginData.get(getPasswordParameter());
+            String session_code = (String) request.getSession().getAttribute("verify_code");
+            String input_code = loginData.get("code");
+            checkCode(input_code, session_code);
+
             if (username == null) {
                 username = "";
             }
@@ -37,8 +41,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
                 password = "";
             }
             username = username.trim();
+
+
             UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(
                     username, password);
+
             setDetails(request, authRequest);
             return this.getAuthenticationManager().authenticate(authRequest);
         } else {
@@ -46,4 +53,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         }
     }
 
+    private void checkCode(String code, String verify_code) {
+        if (code == null || verify_code == null || "".equals(code) || !verify_code.toLowerCase().equals(code.toLowerCase())) {
+            //验证码不正确
+            throw new AuthenticationServiceException("验证码不正确");
+        }
+    }
 }

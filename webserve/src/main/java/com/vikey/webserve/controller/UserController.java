@@ -11,12 +11,18 @@ import com.vikey.webserve.entity.RespBean;
 import com.vikey.webserve.entity.RespPageBean;
 import com.vikey.webserve.entity.User;
 import com.vikey.webserve.service.IUserService;
+import com.vikey.webserve.utils.VerificationCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /**
  * <p>
@@ -79,6 +85,16 @@ public class UserController {
         Integer count = iUserService.countByAccount(account, StringUtils.isEmpty(userid) ? null : Long.valueOf(userid));
         return RespBean.ok(count);
 
+    }
+
+    @GetMapping("/verifyCode")
+    public void verifyCode(HttpServletRequest request, HttpServletResponse resp) throws IOException {
+        VerificationCode code = new VerificationCode();
+        BufferedImage image = code.getImage();
+        String text = code.getText();
+        HttpSession session = request.getSession(true);
+        session.setAttribute("verify_code", text);
+        VerificationCode.output(image,resp.getOutputStream());
     }
 
 

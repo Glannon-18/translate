@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/css/**", "/js/**", "/index.html", "/img/**", "/fonts/**", "/favicon.ico");
+        web.ignoring().antMatchers("/css/**", "/js/**", "/index.html", "/img/**", "/fonts/**", "/favicon.ico", "/user/verifyCode");
     }
 
     @Bean
@@ -71,7 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             if (e instanceof BadCredentialsException) {
                 respBean = RespBean.error("账户密码不正确!");
             } else {
-                respBean = RespBean.error("登录失败!");
+                respBean = RespBean.error(e.getMessage());
             }
             out.write(new ObjectMapper().writeValueAsString(respBean));
             out.flush();

@@ -17,9 +17,6 @@ spring:
 #      simple:
 #        acknowledge-mode: manual
 
-
-
-
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: off
@@ -29,7 +26,11 @@ server:
   compression:
     enabled: true
     mime-types: application/javascript,text/css,application/json,application/xml,text/html,text/xml,text/plain
-
+  ssl:
+    key-store: classpath:key/keystore.p12
+    key-store-type: PKCS12
+    key-alias: tomcat
+    key-store-password: 123456
 
 
 

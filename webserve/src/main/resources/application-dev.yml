@@ -1,4 +1,3 @@
-
 spring:
   datasource:
     username: root
@@ -7,13 +6,13 @@ spring:
 
 logging:
   level: {com.vikey.webserve.controller: debug,com.vikey.webserve.service.impl: debug}
-server:
-  port: 8080
 
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
+server:
+  port: 8081
 
 personal-config:
   make_file_dir: D:\\translate_dir\\file

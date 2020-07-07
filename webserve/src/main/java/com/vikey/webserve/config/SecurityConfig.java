@@ -111,16 +111,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     out.write(new ObjectMapper().writeValueAsString(respBean));
                     out.flush();
                     out.close();
-                }).and().logout().logoutUrl("/logout").logoutSuccessHandler(new LogoutSuccessHandler() {
-            @Override
-            public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-                response.setContentType("application/json;charset=utf-8");
-                PrintWriter out = response.getWriter();
-                RespBean respBean = RespBean.ok("注销成功");
-                out.write(new ObjectMapper().writeValueAsString(respBean));
-                out.flush();
-                out.close();
-            }
-        });
+                }).and().logout().logoutUrl("/logout").logoutSuccessHandler((request, response, authentication) -> {
+                    response.setContentType("application/json;charset=utf-8");
+                    PrintWriter out = response.getWriter();
+                    RespBean respBean = RespBean.ok("注销成功");
+                    out.write(new ObjectMapper().writeValueAsString(respBean));
+                    out.flush();
+                    out.close();
+                });
     }
 }

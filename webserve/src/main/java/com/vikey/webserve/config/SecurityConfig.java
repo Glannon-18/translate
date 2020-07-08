@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/css/**", "/js/**", "/index.html", "/img/**", "/fonts/**", "/favicon.ico", "/user/verifyCode");
+        web.ignoring().antMatchers("/css/**", "/js/**", "/index.html", "/img/**", "/fonts/**", "/favicon.ico","/error", "/user/verifyCode");
     }
 
     @Bean
@@ -86,20 +86,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .anyRequest().authenticated().and()
-//                .formLogin()
-//                .loginProcessingUrl("/doLogin")
-//                .loginPage("/login")
-//                .permitAll().and()
                 .addFilterAt(filter(), UsernamePasswordAuthenticationFilter.class).logout().logoutUrl("/logout")
                 .logoutSuccessHandler(((request, response, authentication) -> {
                     response.setContentType("application/json;charset=utf-8");
-                    PrintWriter printWriter = response.getWriter();
-                    printWriter.println("注销成功！");
-                    printWriter.flush();
-                    printWriter.close();
-
-                })).and()
-                .csrf().disable().exceptionHandling()
+                    PrintWriter out = response.getWriter();
+                    RespBean respBean = RespBean.ok("注销成功");
+                    out.write(new ObjectMapper().writeValueAsString(respBean));
+                    out.flush();
+                    out.close();
+                })).and().csrf().disable().exceptionHandling()
                 .authenticationEntryPoint((req, resp, authException) -> {
                     resp.setContentType("application/json;charset=utf-8");
                     resp.setStatus(401);
@@ -108,13 +103,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     if (authException instanceof InsufficientAuthenticationException) {
                         respBean.setMsg("请先登录！");
                     }
-                    out.write(new ObjectMapper().writeValueAsString(respBean));
-                    out.flush();
-                    out.close();
-                }).and().logout().logoutUrl("/logout").logoutSuccessHandler((request, response, authentication) -> {
-                    response.setContentType("application/json;charset=utf-8");
-                    PrintWriter out = response.getWriter();
-                    RespBean respBean = RespBean.ok("注销成功");
                     out.write(new ObjectMapper().writeValueAsString(respBean));
                     out.flush();
                     out.close();

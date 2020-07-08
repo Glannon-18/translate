@@ -146,6 +146,7 @@
                     <include>**/*.ttf</include>
                     <include>**/*.woff</include>
                     <include>**/*.p12</include>
+                    <include>**/*.ico</include>
                 </includes>
             </resource>
         </resources>

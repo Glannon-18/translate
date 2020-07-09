@@ -12,7 +12,7 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 server:
-  port: 8080
+  port: 8082
 
 personal-config:
   make_file_dir: D:\\translate_dir\\file

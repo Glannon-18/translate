@@ -101,7 +101,7 @@
         <profile>
             <id>dev</id>
             <properties>
-                <package.environment>dev</package.environment>
+                <activatedProperties>dev</activatedProperties>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -110,7 +110,7 @@
         <profile>
             <id>prod</id>
             <properties>
-                <package.environment>prod</package.environment>
+                <activatedProperties>prod</activatedProperties>
             </properties>
         </profile>
     </profiles>
@@ -128,7 +128,7 @@
                 <filtering>true</filtering>
                 <includes>
                     <include>application.yml</include>
-                    <include>application-${package.environment}.yml</include>
+                    <include>application-${activatedProperties}.yml</include>
                     <include>**/*.html</include>
                     <include>**/*.js</include>
                     <include>**/*.css</include>

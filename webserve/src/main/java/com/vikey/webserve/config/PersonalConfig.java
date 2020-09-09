@@ -15,6 +15,10 @@ public class PersonalConfig {
 
     private String translate_dir;
 
+    private String translate_api_url_xiaoniu;
+
+    private String apiKey_xiaoniu;
+
     public String getTranslate_dir() {
         return translate_dir;
     }
@@ -45,5 +49,21 @@ public class PersonalConfig {
 
     public void setTranslate_api_url(String translate_api_url) {
         this.translate_api_url = translate_api_url;
+    }
+
+    public String getTranslate_api_url_xiaoniu() {
+        return translate_api_url_xiaoniu;
+    }
+
+    public void setTranslate_api_url_xiaoniu(String translate_api_url_xiaoniu) {
+        this.translate_api_url_xiaoniu = translate_api_url_xiaoniu;
+    }
+
+    public String getApiKey_xiaoniu() {
+        return apiKey_xiaoniu;
+    }
+
+    public void setApiKey_xiaoniu(String apiKey_xiaoniu) {
+        this.apiKey_xiaoniu = apiKey_xiaoniu;
     }
 }

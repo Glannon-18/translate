@@ -19,6 +19,7 @@ import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.vikey.webserve.config.PersonalConfig;
 import com.vikey.webserve.entity.*;
 import com.vikey.webserve.service.*;
+import com.vikey.webserve.service.impl.AsyncServiceImpl;
 import com.vikey.webserve.utils.ZipUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -65,6 +66,9 @@ class WebserveApplicationTests {
 
     @Resource
     private RabbitTemplate rabbitTemplate;
+
+//    @Resource
+//    private AsyncServiceImpl asyncService;
 
 
     @Test
@@ -181,7 +185,7 @@ class WebserveApplicationTests {
     void test11() {
         Integer count =
                 iUserService.countByAccount("admin", 1l);
-        LOGGER.info(count.toString());
+        LOGGER.debug(count.toString());
     }
 
     @Test
@@ -219,7 +223,7 @@ class WebserveApplicationTests {
 
     @Test
     void test16() {
-
+//        asyncService.batch_xiaoniu("12345678",null,null);
 
     }
 
@@ -361,8 +365,8 @@ class WebserveApplicationTests {
 
     @Test
     void test23() throws IOException, MessagingException {
-        Content content=new DocxContent(new File("D:\\wkw\\越南语测试文件\\越南语.docx"));
-        String c=content.getContent();
+        Content content = new DocxContent(new File("D:\\wkw\\越南语测试文件\\越南语.docx"));
+        String c = content.getContent();
         content.write(c, new File("d:\\ss.docx"));
 
 
@@ -501,5 +505,10 @@ class WebserveApplicationTests {
 
     }
 
+    @Test
+    public void test66() throws Exception {
+        String s = iFast_taskService.translate_xiaoniu("中华人民共和国", "zh", "en");
+        System.out.println(s);
+    }
 
 }

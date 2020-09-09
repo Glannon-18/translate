@@ -5,17 +5,28 @@ spring:
     url: jdbc:mysql://localhost:3306/translate?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=True
 
 logging:
-  level: {com.vikey.webserve.controller: debug,com.vikey.webserve.service.impl: debug}
+  level:
+    com:
+      vikey:
+        webserve:
+          service: info
+
 
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 server:
-  port: 8082
+  port: 8080
 
 personal-config:
+  #  导出文件生成文件临时地址
   make_file_dir: D:\\translate_dir\\file
+  #  上传文件保存地址
   upload_dir: D:\\translate_dir\\upload
+  #  生成翻译文件地址
   translate_dir: D:\\translate_dir\\translate
   translate_api_url: http://219.159.152.7:9999/NatureAPI/openapi.do
+
+  translate_api_url_xiaoniu: "http://free.niutrans.com/NiuTransServer/translation"
+  apiKey_xiaoniu: "a682d889705e8ede6b8cf1cf1c9913d7"

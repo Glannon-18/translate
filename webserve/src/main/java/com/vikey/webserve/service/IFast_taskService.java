@@ -42,8 +42,11 @@ public interface IFast_taskService extends IService<Fast_task> {
     Fast_task getFast_TaskById(Long id);
 
 
-
     String translate(String text, String srcLang, String tgtLang) throws Exception;
+
+
+
+    String translate_xiaoniu(String text, String from, String to) throws Exception;
 
 
 }

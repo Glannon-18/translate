@@ -1,7 +1,6 @@
 package com.vikey.webserve.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.vikey.webserve.config.PersonalConfig;
 import com.vikey.webserve.entity.Fast_task;
 import com.vikey.webserve.mapper.Fast_taskMapper;
@@ -22,9 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -110,6 +107,36 @@ public class Fast_taskServiceImpl extends ServiceImpl<Fast_taskMapper, Fast_task
             return result_obj.getString("data").replaceAll("\\$number", "");
         } else {
             throw new Exception("翻译接口返回的success为false");
+        }
+    }
+
+    @Override
+    public String translate_xiaoniu(String text, String from, String to) throws Exception {
+        HttpPost post = new HttpPost(personalConfig.getTranslate_api_url_xiaoniu());
+        List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+        urlParameters.add(new BasicNameValuePair("from", from));
+        urlParameters.add(new BasicNameValuePair("to", to));
+        urlParameters.add(new BasicNameValuePair("src_text", text));
+        urlParameters.add(new BasicNameValuePair("apikey", personalConfig.getApiKey_xiaoniu()));
+        RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(3000).setConnectTimeout(3000).build();
+        post.setConfig(requestConfig);
+        post.setEntity(new UrlEncodedFormEntity(urlParameters, "utf-8"));
+
+        HttpResponse response = HTTPCLIENT.execute(post);
+        StringBuffer result = new StringBuffer();
+        BufferedReader rd = new BufferedReader(
+                new InputStreamReader(response.getEntity().getContent(), "utf-8"));
+        String line = "";
+        while ((line = rd.readLine()) != null) {
+            result.append(line);
+        }
+        LOGGER.info("小牛接口返回数据：" + result);
+        JSONObject result_obj = JSONObject.parseObject(result.toString());
+        EntityUtils.consume(response.getEntity());
+        if (result_obj.containsKey("tgt_text")) {
+            return result_obj.getString("tgt_text");
+        } else {
+            throw new Exception("小牛接口翻译异常，错误代码" + result_obj.get("error_code"));
         }
     }
 }

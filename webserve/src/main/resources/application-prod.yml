@@ -8,7 +8,10 @@ server:
   port: 9991
 
 personal-config:
-  make_file_dir: /home/translate_dir/file
-  upload_dir: /home/translate_dir/upload
-  translate_dir: /home/translate_dir/translate
+  make_file_dir: D:\\translate_dir\\file
+  upload_dir: D:\\translate_dir\\upload
+  translate_dir: D:\\translate_dir\\translate
   translate_api_url: http://219.159.152.7:9999/NatureAPI/openapi.do
+
+  translate_api_url_xiaoniu: "http://free.niutrans.com/NiuTransServer/translation"
+  apiKey_xiaoniu: "a682d889705e8ede6b8cf1cf1c9913d7"

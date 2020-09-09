@@ -24,6 +24,9 @@ public class Constant {
         put("en", "英文");
         put("vi", "越南文");
         put("th", "泰文");
+        put("ur", "乌尔图语");
+        put("ps", "普什图语");
+        put("uy", "维吾尔语");
     }};
 
     public static final HashMap<String, String> LANGUAGE_COLOR = new HashMap<String, String>() {{
@@ -31,6 +34,9 @@ public class Constant {
         put("en", "#f56969");
         put("vi", "#a18cff");
         put("th", "#48d1cc");
+        put("ur", "#00BFFF");
+        put("ps", "#20B2AA");
+        put("uy", "#FF8C00");
     }};
 
     public static final HashMap<String, String> ANNEXE_STATUS_ZH = new HashMap() {{

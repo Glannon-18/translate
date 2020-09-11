@@ -67,8 +67,8 @@ public class AsyncServiceImpl implements IAsyncService {
                 if (!output.getParentFile().exists()) {
                     output.getParentFile().mkdirs();
                 }
-                JSONObject jsonObject = JSONObject.parseObject(result);
-                content.write(jsonObject.getString("data"), output);
+//                JSONObject jsonObject = JSONObject.parseObject(result);
+                content.write(result, output);
                 UpdateWrapper<Annexe> annexeUpdateWrapper = new UpdateWrapper<>();
                 annexeUpdateWrapper.set("translate_path", translate_file_name).set("status", Constant.ANNEXE_STATUS_PROCESSED).eq("id", annexe.getId());
                 iAnnexeService.update(annexeUpdateWrapper);
@@ -143,6 +143,7 @@ public class AsyncServiceImpl implements IAsyncService {
             String batch_text = text.substring((int) (i * LENGTH), end);
             try {
                 String batch_translate = translate_xiaoniu(batch_text, from, to);
+                Thread.sleep(5100);
                 result.append(batch_translate);
             } catch (Exception e) {
                 throw e;

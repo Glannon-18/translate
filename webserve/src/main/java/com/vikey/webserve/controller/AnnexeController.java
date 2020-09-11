@@ -81,7 +81,7 @@ public class AnnexeController {
         JSONObject jsonObject = JSONObject.parseObject(json);
         List<Long> list = convert(jsonObject.getString("ids"));
         QueryWrapper<Annexe> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("name", "path").in("id", list);
+        queryWrapper.select("id","name", "path","translate_path").in("id", list);
         List<Annexe> annexeList = iAnnexeService.getBaseMapper().selectList(queryWrapper);
         try {
             String zip_path = PersonalConfig.getMake_file_dir() + File.separator + "download.zip";
@@ -90,7 +90,8 @@ public class AnnexeController {
                 file.getParentFile().mkdirs();
             }
             FileOutputStream fileOutputStream = new FileOutputStream(file);
-            ZipUtils.toZip(annexeList, fileOutputStream, PersonalConfig.getUpload_dir());
+//            ZipUtils.toZip(annexeList, fileOutputStream, PersonalConfig.getUpload_dir());
+            ZipUtils.toZip(annexeList, fileOutputStream, PersonalConfig.getTranslate_dir());
             HttpHeaders headers = new HttpHeaders();
             headers.setContentDispositionFormData("attachment", "download.zip");
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);

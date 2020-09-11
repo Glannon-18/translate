@@ -18,9 +18,14 @@ public class ZipUtils {
             zos = new ZipOutputStream(out);
             for (Annexe a : as) {
                 byte[] buf = new byte[1024];
-                zos.putNextEntry(new ZipEntry(a.getPath()));
+//                zos.putNextEntry(new ZipEntry(a.getPath()));
+                String name = a.getName();
+                int n_name = name.lastIndexOf(".");
+                if (n_name > 0)
+                    name = name.substring(0, n_name) + "--译文" + name.substring(n_name, name.length());
+                zos.putNextEntry(new ZipEntry(name));
                 int len;
-                FileInputStream in = new FileInputStream(Prefix + File.separator + a.getPath());
+                FileInputStream in = new FileInputStream(Prefix + File.separator + a.getTranslate_path());
                 while ((len = in.read(buf)) != -1) {
                     zos.write(buf, 0, len);
                 }

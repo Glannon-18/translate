@@ -4,6 +4,9 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 100MB
 #  rabbitmq:
 #    host: 127.0.0.1
 #    port: 5672

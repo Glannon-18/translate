@@ -117,9 +117,15 @@ public class Fast_taskController {
 
     @PostMapping("/translate")
     public RespBean fast_translate(@RequestParam String text, @RequestParam String srcLang, @RequestParam String tgtLang) throws Exception {
-        String translate_text = iFast_taskService.translate_xiaoniu(text, srcLang, tgtLang);
-        Map<String,String> map=new HashMap<>();
-        map.put("tr",translate_text);
+        String translate_text = null;
+        if (srcLang.equals("en")) {
+            translate_text = iFast_taskService.translate_xiaoniu(text, srcLang, "zh");
+
+        } else if (srcLang.equals("vi")) {
+            translate_text = iFast_taskService.translate_service(text, srcLang, "zh");
+        }
+        Map<String, String> map = new HashMap<>();
+        map.put("tr", translate_text);
         return RespBean.ok(map);
     }
 

@@ -76,12 +76,12 @@ public class AnnexeController {
 
 
     @PostMapping("/export")
-    public ResponseEntity<byte[]> export(@RequestBody String json) {
+    public ResponseEntity<?> export(@RequestBody String json) throws IOException {
 
         JSONObject jsonObject = JSONObject.parseObject(json);
         List<Long> list = convert(jsonObject.getString("ids"));
         QueryWrapper<Annexe> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id","name", "path","translate_path").in("id", list);
+        queryWrapper.select("id", "name", "path", "translate_path").in("id", list);
         List<Annexe> annexeList = iAnnexeService.getBaseMapper().selectList(queryWrapper);
         try {
             String zip_path = PersonalConfig.getMake_file_dir() + File.separator + "download.zip";
@@ -90,20 +90,25 @@ public class AnnexeController {
                 file.getParentFile().mkdirs();
             }
             FileOutputStream fileOutputStream = new FileOutputStream(file);
-//            ZipUtils.toZip(annexeList, fileOutputStream, PersonalConfig.getUpload_dir());
             ZipUtils.toZip(annexeList, fileOutputStream, PersonalConfig.getTranslate_dir());
             HttpHeaders headers = new HttpHeaders();
             headers.setContentDispositionFormData("attachment", "download.zip");
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
             return new ResponseEntity<>(FileUtils.readFileToByteArray(new File(zip_path)), headers, HttpStatus.CREATED);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            Map<String, String> map = new HashMap<>();
+            map.put("msg", e.getMessage());
+            return new ResponseEntity<Map>(map, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            Map<String, String> map = new HashMap<>();
+            map.put("msg", e.getMessage());
+            return new ResponseEntity<Map>(map, headers, HttpStatus.OK);
         }
-        return null;
     }
-
 
     @GetMapping("/annexeStatus")
     public RespBean annexeStatus() {

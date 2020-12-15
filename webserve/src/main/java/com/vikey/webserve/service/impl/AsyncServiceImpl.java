@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.vikey.webserve.Constant;
 import com.vikey.webserve.config.PersonalConfig;
 import com.vikey.webserve.entity.Annexe;
-import com.vikey.webserve.service.Content;
-import com.vikey.webserve.service.DocxContent;
-import com.vikey.webserve.service.IAnnexeService;
-import com.vikey.webserve.service.IAsyncService;
+import com.vikey.webserve.service.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -47,6 +44,9 @@ public class AsyncServiceImpl implements IAsyncService {
     @Resource
     private IAnnexeService iAnnexeService;
 
+    @Resource
+    private IFast_taskService fast_taskService;
+
     @Override
     @Async("fileTranslateExecutor")
     public void translate(List<Annexe> annexes, String srcLang, String tgtLang) {
@@ -60,14 +60,18 @@ public class AsyncServiceImpl implements IAsyncService {
                 content = new DocxContent(new File(personalConfig.getUpload_dir() + File.separator + annexe.getPath()));
             }
             try {
-                String result = batch_xiaoniu(content.getContent(), srcLang, tgtLang);
+                String result = null;
+                if (srcLang.equals("en")) {
+                    result = batch_xiaoniu(content.getContent(), srcLang, "zh");
+                } else if (srcLang.equals("vi")) {
+                    result = fast_taskService.translate_service(content.getContent(), srcLang, "zh");
+                }
                 String translate_file_name = UUID.randomUUID().toString() + "." + extend;
                 String translate_file_path = personalConfig.getTranslate_dir() + File.separator + translate_file_name;
                 File output = new File(translate_file_path);
                 if (!output.getParentFile().exists()) {
                     output.getParentFile().mkdirs();
                 }
-//                JSONObject jsonObject = JSONObject.parseObject(result);
                 content.write(result, output);
                 UpdateWrapper<Annexe> annexeUpdateWrapper = new UpdateWrapper<>();
                 annexeUpdateWrapper.set("translate_path", translate_file_name).set("status", Constant.ANNEXE_STATUS_PROCESSED).eq("id", annexe.getId());
@@ -82,32 +86,9 @@ public class AsyncServiceImpl implements IAsyncService {
     }
 
 
-    private String translate(String text, String src_lan, String tat_lan) throws IOException {
-        HttpPost post = new HttpPost(personalConfig.getTranslate_api_url());
-        List<NameValuePair> urlParameters = new ArrayList<>();
-        urlParameters.add(new BasicNameValuePair("method", "translate"));
-        urlParameters.add(new BasicNameValuePair("srcLang", src_lan));
-        urlParameters.add(new BasicNameValuePair("tgtLang", tat_lan));
-        urlParameters.add(new BasicNameValuePair("useSocket", "True"));
-        urlParameters.add(new BasicNameValuePair("text", src_lan.equals("vi") ? "startnmtpy " + text : text));
-        RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(15000).setConnectTimeout(3000).build();
-        post.setConfig(requestConfig);
-        post.setEntity(new UrlEncodedFormEntity(urlParameters, "utf-8"));
-        HttpResponse response = HTTPCLIENT.execute(post);
-        StringBuffer result = new StringBuffer();
-        BufferedReader rd = new BufferedReader(
-                new InputStreamReader(response.getEntity().getContent(), "utf-8"));
-        String line = "";
-        while ((line = rd.readLine()) != null) {
-            result.append(line);
-        }
-        EntityUtils.consume(response.getEntity());
-        return result.toString();
-    }
-
     private String translate_xiaoniu(String text, String from, String to) throws Exception {
         HttpPost post = new HttpPost(personalConfig.getTranslate_api_url_xiaoniu());
-        List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+        List<NameValuePair> urlParameters = new ArrayList<>();
         urlParameters.add(new BasicNameValuePair("from", from));
         urlParameters.add(new BasicNameValuePair("to", to));
         urlParameters.add(new BasicNameValuePair("src_text", text));
@@ -124,7 +105,6 @@ public class AsyncServiceImpl implements IAsyncService {
         while ((line = rd.readLine()) != null) {
             result.append(line);
         }
-//        tgt_text
         JSONObject result_obj = JSONObject.parseObject(result.toString());
         EntityUtils.consume(response.getEntity());
         if (result_obj.containsKey("tgt_text")) {

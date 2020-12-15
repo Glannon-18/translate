@@ -19,12 +19,18 @@ import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.vikey.webserve.config.PersonalConfig;
 import com.vikey.webserve.entity.*;
 import com.vikey.webserve.service.*;
-import com.vikey.webserve.service.impl.AsyncServiceImpl;
+import com.vikey.webserve.utils.DocxUtils;
 import com.vikey.webserve.utils.ZipUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +44,6 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -67,8 +71,13 @@ class WebserveApplicationTests {
     @Resource
     private RabbitTemplate rabbitTemplate;
 
-//    @Resource
+    //    @Resource
 //    private AsyncServiceImpl asyncService;
+    @Resource(name = "xiaoNiuTranslateService")
+    private TranslateService translateService_xiaoniu;
+
+    @Resource(name = "pingSoftTranslateService")
+    private TranslateService translateService_pingsoft;
 
 
     @Test
@@ -153,7 +162,7 @@ class WebserveApplicationTests {
     }
 
     @Test
-    void test9() {
+    void test9() throws IOException {
         List<Long> list = convert("44,45");
         QueryWrapper<Annexe> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("name", "path").in("id", list);
@@ -510,5 +519,117 @@ class WebserveApplicationTests {
         String s = iFast_taskService.translate_xiaoniu("中华人民共和国", "zh", "en");
         System.out.println(s);
     }
+
+    @Test
+    public void test67() {
+//        System.out.println(WebserveApplicationTests.class.getResource("/"));
+        System.out.println(WebserveApplicationTests.class.getClassLoader().getResource("com/vikey/webserve/mapper/xml/Annexe_taskMapper.xml"));
+    }
+
+    @Test
+    public void test68() throws Exception {
+        String content = DocxUtils.docx2Html("D:\\docx2html\\[指舞如歌]从零开始,一步步安装虚拟机Mac10.6.x并完美.随意更新官方补丁(VM版)[AMD相.docx");
+        LOGGER.info(content);
+    }
+
+
+    @Test
+    public void test55() throws IOException {
+//        String result = iFast_taskService.translate_service("Thúc đẩy hơn nữa việc xây dựng mạnh mẽ các khu vực phòng thủ tỉnh và thành phố trong tình hình mới", "vi", "zh");
+//        System.out.println(result);
+
+        iFast_taskService.qwqq("Thúc đẩy hơn nữa việc xây dựng mạnh mẽ các. khu vực phòng thủ tỉnh và thành phố trong tình hình mới.");
+    }
+
+
+    @Test
+    public void test335() {
+        double batchNum = Math.ceil(new Double(300l) / 1400);
+        System.out.println(batchNum);
+    }
+
+    @Test
+    public void test888() throws Exception {
+        String s = batch_xiaoniu("sleep fish", "en", "zh");
+        System.out.println(s);
+    }
+
+    private static final double LENGTH = 1400;
+
+    /**
+     * 小牛长文本文件翻译
+     *
+     * @param text
+     * @param from
+     * @param to
+     * @return
+     * @throws Exception
+     */
+    private String batch_xiaoniu(String text, String from, String to) throws Exception {
+        double batchNum = Math.ceil(new Double(text.length()) / LENGTH);
+        StringBuffer result = new StringBuffer();
+        for (int i = 0; i < batchNum; i++) {
+            int end = (i + 1) * LENGTH > text.length() ? text.length() : (int) ((i + 1) * LENGTH);
+            String batch_text = text.substring((int) (i * LENGTH), end);
+            try {
+                String batch_translate = translate_xiaoniu(batch_text, from, to);
+                Thread.sleep(5100);
+                result.append(batch_translate);
+            } catch (Exception e) {
+                throw e;
+            }
+        }
+        return result.toString();
+    }
+
+    private String translate_xiaoniu(String text, String from, String to) throws Exception {
+        HttpPost post = new HttpPost(personalConfig.getTranslate_api_url_xiaoniu());
+        List<NameValuePair> urlParameters = new ArrayList<>();
+        urlParameters.add(new BasicNameValuePair("from", from));
+        urlParameters.add(new BasicNameValuePair("to", to));
+        urlParameters.add(new BasicNameValuePair("src_text", text));
+        urlParameters.add(new BasicNameValuePair("apikey", personalConfig.getApiKey_xiaoniu()));
+        RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(3000).setConnectTimeout(3000).build();
+        post.setConfig(requestConfig);
+        post.setEntity(new UrlEncodedFormEntity(urlParameters, "utf-8"));
+
+        HttpResponse response = HTTPCLIENT.execute(post);
+        StringBuffer result = new StringBuffer();
+        BufferedReader rd = new BufferedReader(
+                new InputStreamReader(response.getEntity().getContent(), "utf-8"));
+        String line = "";
+        while ((line = rd.readLine()) != null) {
+            result.append(line);
+        }
+        JSONObject result_obj = JSONObject.parseObject(result.toString());
+        EntityUtils.consume(response.getEntity());
+        if (result_obj.containsKey("tgt_text")) {
+            return result_obj.getString("tgt_text");
+        } else {
+            throw new Exception("小牛接口翻译异常，错误代码" + result_obj.get("error_code"));
+        }
+    }
+
+
+    @Test
+    public void test69() throws IOException {
+        Map<String, Object> result = translateService_xiaoniu.translate("There are moments in life when you miss someone so much that you just want to pick them from your dreams and hug them for real! Dream what you want to dream;go where you want to go;be what you want to be,because you have only one life and one chance to do all the things you want to do.",
+                "en", "zh");
+        System.out.println(result.toString());
+
+    }
+
+    @Test
+    void test70() {
+        Map<String, Object> translate = translateService_pingsoft.translate("Mới đây, Trung tâm phương tiện truyền thông mới kênh tin tức Đài " +
+                "truyền hình CCTV của Đài Phát thanh và Truyền hình Trung ương Trung" +
+                "Quốc đã đưa ra chương trình phát sóng trực tiếp quy mô lớn “Dạ du Trung " +
+                "Quốc”, đã đi đến Bách Ích – Thượng Hà Thành của quận Giang Nam, thành phố Nam Ninh. " +
+                "Chương trình này đã được phát trực tiếp và đồng bộ trên các kênh như Máy khách kênh t" +
+                "in tức Đài truyền hình CCTV, Weibo chính thức của Đài truyền hình CCTV, Video Đài truyền " +
+                "hình CCTV… đã thu hút được sự quan tâm của hơn 5 triệu cư dân mạng.", "vi", "zh");
+        System.out.println(translate);
+    }
+
 
 }

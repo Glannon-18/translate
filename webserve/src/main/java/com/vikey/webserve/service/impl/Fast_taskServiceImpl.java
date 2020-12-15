@@ -1,6 +1,10 @@
 package com.vikey.webserve.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.pingsoft.segmentation.ISentenceSegmenter;
+import com.pingsoft.segmentation.Rule;
+import com.pingsoft.segmentation.RuleSentenceSegmenter;
+import com.pingsoft.translate.utils.LanguageInfoUtils;
 import com.vikey.webserve.config.PersonalConfig;
 import com.vikey.webserve.entity.Fast_task;
 import com.vikey.webserve.mapper.Fast_taskMapper;
@@ -17,10 +21,12 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -45,6 +51,9 @@ public class Fast_taskServiceImpl extends ServiceImpl<Fast_taskMapper, Fast_task
     @Resource
 
     private PersonalConfig personalConfig;
+
+    @Autowired
+    private PingSoft pingSoft;
 
 
     @Override
@@ -100,7 +109,6 @@ public class Fast_taskServiceImpl extends ServiceImpl<Fast_taskMapper, Fast_task
         while ((line = rd.readLine()) != null) {
             result.append(line);
         }
-
         JSONObject result_obj = JSONObject.parseObject(result.toString());
         EntityUtils.consume(response.getEntity());
         if (result_obj.getString("success").equals("true")) {
@@ -139,4 +147,29 @@ public class Fast_taskServiceImpl extends ServiceImpl<Fast_taskMapper, Fast_task
             throw new Exception("小牛接口翻译异常，错误代码" + result_obj.get("error_code"));
         }
     }
+
+    @Override
+    public String translate_service(String text, String srcLang, String tgtLang) throws IOException {
+        return pingSoft.translate(text, srcLang, tgtLang);
+    }
+
+    @Override
+    public String qwqq(String text) {
+        ISentenceSegmenter segmenter = new RuleSentenceSegmenter();
+        List<StringBuffer> spaces = new ArrayList<StringBuffer>();
+        List<Rule> brules = new ArrayList<Rule>();
+//        String text = "Cu?i n?String text = "Cu?i n?m 2018, Qu?c C??ng Gia Lai ?? thoái 49,9% v?n t?i doanh nghi?p này. Theo báo cáo th??ng niên cùng n?m, B?t ??ng s?n S?ng M? s? h?u qu? ??t d? án Ph??c L?c - Nhà Bè.";
+        List<String> lineList = segmenter.segment(LanguageInfoUtils.getSLLangByName("vi"), text, spaces, brules);
+        for (String line : lineList) {
+            System.out.println(line);
+        }
+        StringBuffer stringBuffer = new StringBuffer();
+        for (String s : lineList) {
+            stringBuffer.append(s + "$#$");
+        }
+
+        return stringBuffer.toString();
+    }
+
+
 }

@@ -19,6 +19,18 @@ public class PersonalConfig {
 
     private String apiKey_xiaoniu;
 
+    private String word_img_dir;
+
+    private String local_ip;
+
+    public String getLocal_ip() {
+        return local_ip;
+    }
+
+    public void setLocal_ip(String local_ip) {
+        this.local_ip = local_ip;
+    }
+
     public String getTranslate_dir() {
         return translate_dir;
     }
@@ -65,5 +77,13 @@ public class PersonalConfig {
 
     public void setApiKey_xiaoniu(String apiKey_xiaoniu) {
         this.apiKey_xiaoniu = apiKey_xiaoniu;
+    }
+
+    public String getWord_img_dir() {
+        return word_img_dir;
+    }
+
+    public void setWord_img_dir(String word_img_dir) {
+        this.word_img_dir = word_img_dir;
     }
 }

@@ -1,7 +1,9 @@
 package com.vikey.webserve.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.vikey.webserve.entity.Fast_task;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.vikey.webserve.entity.RespBean;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -36,6 +38,7 @@ public interface IFast_taskService extends IService<Fast_task> {
 
     /**
      * 根据id查询实体，调用baseMapper里面的方法
+     *
      * @param id
      * @return
      */
@@ -45,8 +48,12 @@ public interface IFast_taskService extends IService<Fast_task> {
     String translate(String text, String srcLang, String tgtLang) throws Exception;
 
 
-
     String translate_xiaoniu(String text, String from, String to) throws Exception;
+
+
+    String translate_service(String text, String srcLang, String tgtLang) throws IOException;
+
+    String qwqq(String text);
 
 
 }

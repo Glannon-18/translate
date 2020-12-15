@@ -51,13 +51,15 @@ public class UserController {
     }
 
     @GetMapping("/")
-    public RespPageBean listUser(@RequestParam String name, @RequestParam Integer currentPage) {
+//    @Log(operModul = "用户模块", operType = "查询", operDesc = "查询用户列表")
+    public RespPageBean listUser(@RequestParam String name, @RequestParam Integer currentPage, HttpServletRequest request) {
         Page<User> page = new Page<>(currentPage, Constant.PAGESIZE);
         IPage<User> userIPage = iUserService.selectUserWithRolesByName(page, name);
         return new RespPageBean(userIPage.getTotal(), userIPage.getRecords(), userIPage.getSize());
     }
 
     @GetMapping("/{id}")
+//    @Log(operModul = "用户模块", operType = "查询", operDesc = "查询单个用户信息")
     public RespBean getUser(@PathVariable String id) {
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
         userQueryWrapper.select("id", "account", "username", "telephone").eq("id", Long.valueOf(id));
@@ -65,6 +67,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+//    @Log(operModul = "用户模块", operType = "更新", operDesc = "更新用户信息")
     public RespBean updateUser(@PathVariable String id, @RequestBody JSONObject jsonObject) {
         iUserService.update(id, jsonObject);
         return RespBean.ok("修改用户成功！");
@@ -94,7 +97,7 @@ public class UserController {
         String text = code.getText();
         HttpSession session = request.getSession(true);
         session.setAttribute("verify_code", text);
-        VerificationCode.output(image,resp.getOutputStream());
+        VerificationCode.output(image, resp.getOutputStream());
     }
 
 

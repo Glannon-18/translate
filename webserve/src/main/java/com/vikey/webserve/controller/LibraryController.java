@@ -32,7 +32,7 @@ import java.time.LocalDateTime;
 public class LibraryController {
 
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoggerFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LibraryController.class);
 
 
     @Resource

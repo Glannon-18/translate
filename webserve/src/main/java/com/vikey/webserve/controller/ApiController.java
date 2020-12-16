@@ -340,7 +340,7 @@ public class ApiController {
 
     //    http://localhost:80/d:/新建文本文档(2).txt
     @PostMapping("/DocUpload2")
-    public Map<String, Object> docUpload2(@RequestBody JSONObject jsonObject) throws Exception {
+    public Map<String, Object> docUpload2(@RequestBody JSONObject jsonObject) {
         HashMap<String, Object> map = new HashMap<>();
 
 
@@ -348,11 +348,12 @@ public class ApiController {
         String srcLang = jsonArg.getString("srcLang");
         String tgtLang = jsonArg.getString("tgtLang");
         String srcFileUrl = jsonArg.getString("srcFileUrl");
-        String srcFileFormat = jsonArg.getString("srcFileFormat");
+//        String srcFileFormat = jsonArg.getString("srcFileFormat");
 
         String dir = personalConfig.getUpload_dir();
         String fileName = srcFileUrl.substring(srcFileUrl.lastIndexOf("/") + 1);
-        String uploadPath = dir + File.separatorChar + fileName;
+        String type = fileName.substring(fileName.indexOf(".") + 1);
+        String uploadPath = UUID.randomUUID().toString() + "." + type;
 
         try {
             HttpClient client = HttpClients.createDefault();
@@ -362,7 +363,7 @@ public class ApiController {
             HttpEntity entity = response.getEntity();
             InputStream is = entity.getContent();
 
-            File file = new File(uploadPath);
+            File file = new File(dir + File.separatorChar + uploadPath);
             file.getParentFile().mkdirs();
             FileOutputStream fileout = new FileOutputStream(file);
             /**
@@ -384,7 +385,7 @@ public class ApiController {
             return map;
 
         }
-        Long task_id = createAnnTask(srcLang, tgtLang, uploadPath);
+        Long task_id = createAnnTask(srcLang, tgtLang, fileName, type,uploadPath);
 
         QueryWrapper<Atask_ann> annexeQueryWrapper = new QueryWrapper<>();
         annexeQueryWrapper.eq("atid", task_id);
@@ -412,7 +413,7 @@ public class ApiController {
      * @param path    上传文件保存路径
      */
     @Transactional
-    public Long createAnnTask(String srcLang, String tgtLang, String path) {
+    public Long createAnnTask(String srcLang, String tgtLang, String name, String type,String path) {
 
         Annexe_task annexe_task = new Annexe_task();
         annexe_task.setCreate_time(LocalDateTime.now());
@@ -425,11 +426,10 @@ public class ApiController {
         annexe_taskService.save(annexe_task);
         Long annexe_taskId = annexe_task.getId();
 
+
         Annexe annexe = new Annexe();
         annexe.setCreate_time(LocalDateTime.now());
-        String fileName = path.substring(path.lastIndexOf(File.separatorChar) + 1);
-        String type = fileName.substring(fileName.lastIndexOf(".") + 1);
-        annexe.setName(fileName);
+        annexe.setName(name);
         annexe.setPath(path);
         annexe.setType(type);
         annexe.setDiscard(Constant.NOT_DELETE);

@@ -632,4 +632,12 @@ class WebserveApplicationTests {
     }
 
 
+    @Test
+    public void test71() {
+        Optional<String> optional = Optional.of("abcd");
+        Optional<StringBuffer> result = optional.map(StringBuffer::new);
+        System.out.println(result.get().toString());
+    }
+
+
 }

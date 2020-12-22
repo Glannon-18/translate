@@ -42,11 +42,10 @@ public class ApiController {
 
     private static HttpClient HTTPCLIENT = HttpClientBuilder.create().setMaxConnTotal(20).setMaxConnPerRoute(10).build();
 
+    private static final double LENGTH = 1400;
     @Resource
     private PersonalConfig personalConfig;
 
-    @Resource
-    private PingSoft pingSoft;
 
     @Resource(name = "xiaoNiuTranslateService")
     private TranslateService translateService_xiaoniu;
@@ -71,276 +70,63 @@ public class ApiController {
     public Map text(@RequestBody JSONObject jsonObject) {
         TranslateService translateService = null;
         JSONObject jsonArg = jsonObject.getJSONObject("jsonArg");
+        String srcText = jsonArg.getString("srcText");
         String srcLang = jsonArg.getString("srcLang");
-        if (srcLang.equals("vi")) {
+        if (srcLang.equals("auto")) {
+            if (isVietnamString(srcText)) {
+                translateService = translateService_pingsoft;
+            } else {
+                translateService = translateService_xiaoniu;
+            }
+        } else if (srcLang.equals("vi")) {
             translateService = translateService_pingsoft;
         } else if (srcLang.equals("en")) {
             translateService = translateService_xiaoniu;
         }
         String tgtLang = jsonArg.getString("tgtLang");
-        String srcText = jsonArg.getString("srcText");
+
         Map<String, Object> result = translateService.translate(srcText, srcLang, tgtLang);
         return result;
     }
 
+    public boolean isVietnamString(String str) {
+        char[] arr = str.toCharArray();
+        for (int i = 0; i < arr.length; i++) {
+            if (isVietnamChar(arr[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-    //    http://localhost:80/d:/新建文本文档(2).txt
+    public boolean isVietnamChar(char ch) {
+        if ((ch >= 0x00C0 && ch <= 0x00C3) ||
+                (ch >= 0x00C8 && ch <= 0x00CA) ||
+                (ch >= 0x00CC && ch <= 0x00CD) ||
+                (ch >= 0x00D2 && ch <= 0x00D5) ||
+                (ch >= 0x00D9 && ch <= 0x00DA) ||
+                (ch >= 0x00DD && ch <= 0x00DD) ||
+                (ch >= 0x00E0 && ch <= 0x00E3) ||
+                (ch >= 0x00E8 && ch <= 0x00EA) ||
+                (ch >= 0x00EC && ch <= 0x00ED) ||
+                (ch >= 0x00F2 && ch <= 0x00F5) ||
+                (ch >= 0x00F9 && ch <= 0x00FA) ||
+                (ch >= 0x00FD && ch <= 0x00FD) ||
+                (ch >= 0x0102 && ch <= 0x0103) ||
+                (ch >= 0x0110 && ch <= 0x0111) ||
+                (ch >= 0x0128 && ch <= 0x0129) ||
+                (ch >= 0x0168 && ch <= 0x0169) ||
+                (ch >= 0x01A0 && ch <= 0x01A1) ||
+                (ch >= 0x01AF && ch <= 0x01B0) ||
+                (ch >= 0x1EA0 && ch <= 0x1EF9))
+            return true;
+
+        return false;
+    }
+
+
     @PostMapping("/DocUpload")
-    public Map<String, Object> docUpload(@RequestBody JSONObject jsonObject) throws Exception {
-
-
-        JSONObject jsonArg = jsonObject.getJSONObject("jsonArg");
-        String srcLang = jsonArg.getString("srcLang");
-        String tgtLang = jsonArg.getString("tgtLang");
-        String srcFileUrl = jsonArg.getString("srcFileUrl");
-        String srcFileFormat = jsonArg.getString("srcFileFormat");
-
-
-        String taskId = UUID.randomUUID().toString() + "_" + srcLang + "-" + tgtLang;
-        String dir = personalConfig.getUpload_dir() + File.separatorChar + taskId;
-        String fileName = srcFileUrl.substring(srcFileUrl.lastIndexOf("/") + 1);
-        String uploadPath = dir + File.separatorChar + fileName;
-
-        try {
-            HttpClient client = HttpClients.createDefault();
-            HttpGet httpget = new HttpGet(srcFileUrl);
-            HttpResponse response = client.execute(httpget);
-
-            HttpEntity entity = response.getEntity();
-            InputStream is = entity.getContent();
-
-            File file = new File(uploadPath);
-            file.getParentFile().mkdirs();
-            FileOutputStream fileout = new FileOutputStream(file);
-            /**
-             * 根据实际运行效果 设置缓冲区大小
-             */
-            byte[] buffer = new byte[1024];
-            int ch = 0;
-            while ((ch = is.read(buffer)) != -1) {
-                fileout.write(buffer, 0, ch);
-            }
-            is.close();
-            fileout.flush();
-            fileout.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        Content content = null;
-        String translateFileName = fileName.split("\\.")[0] + "_translate." + fileName.split("\\.")[1];
-        String translateFilePath = dir + File.separatorChar + translateFileName;
-
-        if (srcFileFormat.equals("txt")) {
-            content = new TxtContent(new File(uploadPath));
-        } else if (srcFileFormat.equals("docx")) {
-            content = new DocxContent(new File(uploadPath));
-        }
-
-        String translateText = null;
-
-        if ((srcLang.equals("vi"))) {
-            Map<String, Object> translate = translate(content.getContent(), srcLang, tgtLang);
-            translateText = ((Map<String, String>) translate.get
-                    ("data")).get("tgtText");
-            content.write(translateText, new File(translateFilePath));
-        } else if (srcLang.equals("en")) {
-            translateText = batch_xiaoniu(content.getContent(), srcLang, tgtLang);
-        }
-
-        content.write(translateText, new File(translateFilePath));
-
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("code", "0");
-        map.put("message", "");
-
-        HashMap<String, String> data = new HashMap<>();
-        data.put("taskId", taskId);
-        map.put("data", data);
-
-        return map;
-    }
-
-
-    @PostMapping("/DocResult")
-    public Map<String, Object> docResult(@RequestBody JSONObject jsonObject) throws FileNotFoundException {
-
-        JSONObject jsonArg = jsonObject.getJSONObject("jsonArg");
-
-        String taskId = jsonArg.getString("taskId");
-
-        HashMap<String, Object> map = new HashMap<>();
-
-        String dir = personalConfig.getUpload_dir() + File.separatorChar + taskId;
-        File file = new File(dir);
-
-        //文件夹不存在
-        if (!file.exists()) {
-            map.put("code", "500");
-            map.put("message", "not found");
-            return map;
-        }
-        String srcLang = taskId.split("_")[1].split("-")[0];
-        String tgtLang = taskId.split("_")[1].split("-")[1];
-
-        map.put("code", "0");
-        map.put("message", "");
-
-        HashMap<String, String> data = new HashMap<>();
-        data.put("srcLang", srcLang);
-        data.put("tgtLang", tgtLang);
-
-        if (file.list().length != 2) {
-            data.put("process", "85");
-            map.put("data", data);
-            return map;
-        } else {
-            data.put("process", "100");
-            data.put("tgtFileUrl", personalConfig.getLocal_ip() + "/mte/service/download/" + taskId);
-            map.put("data", data);
-            return map;
-        }
-
-    }
-
-
-    @GetMapping("/download/{taskId}")
-    public ResponseEntity<?> export(@PathVariable("taskId") String taskId) throws IOException {
-        String filePath = personalConfig.getUpload_dir() + File.separatorChar + taskId;
-        File dir = new File(filePath);
-        String translateFileName = null;
-        for (String s : dir.list()) {
-            if (s.indexOf("translate") != -1) {
-                translateFileName = s;
-            }
-        }
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentDispositionFormData("attachment", URLEncoder.encode(translateFileName, "utf-8"));
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        return new ResponseEntity<>(FileUtils.readFileToByteArray(new File(filePath + File.separatorChar + translateFileName)), headers, HttpStatus.CREATED);
-    }
-
-
-    private Map<String, Object> translate(String text, String srcLang, String tgtLang) throws Exception {
-        HashMap<String, Object> map = new HashMap<>();
-        if (srcLang.equals("en")) {
-            HttpPost post = new HttpPost(personalConfig.getTranslate_api_url_xiaoniu());
-            List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
-            urlParameters.add(new BasicNameValuePair("from", srcLang));
-            urlParameters.add(new BasicNameValuePair("to", tgtLang));
-            urlParameters.add(new BasicNameValuePair("src_text", text));
-            urlParameters.add(new BasicNameValuePair("apikey", personalConfig.getApiKey_xiaoniu()));
-            RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(3000).setConnectTimeout(3000).build();
-            post.setConfig(requestConfig);
-            post.setEntity(new UrlEncodedFormEntity(urlParameters, "utf-8"));
-
-            HttpResponse response = HTTPCLIENT.execute(post);
-            StringBuffer result = new StringBuffer();
-            BufferedReader rd = new BufferedReader(
-                    new InputStreamReader(response.getEntity().getContent(), "utf-8"));
-            String line = "";
-            while ((line = rd.readLine()) != null) {
-                result.append(line);
-            }
-            JSONObject result_obj = JSONObject.parseObject(result.toString());
-            EntityUtils.consume(response.getEntity());
-            if (result_obj.containsKey("tgt_text")) {
-                map.put("code", "0");
-                map.put("message", "");
-                HashMap<String, String> result_ = new HashMap<>();
-                result_.put("srcLang", srcLang);
-                result_.put("tgtLang", tgtLang);
-                result_.put("tgtText", result_obj.getString("tgt_text"));
-                map.put("data", result_);
-            } else {
-//                throw new Exception("小牛接口翻译异常，错误代码" + result_obj.get("error_code"));
-                map.put("code", "500");
-                map.put("message", "error");
-            }
-            return map;
-
-        } else if ((srcLang.equals("vi"))) {
-            String result = pingSoft.translate(text, srcLang, tgtLang);
-            map.put("code", "0");
-            map.put("message", "");
-
-            HashMap<String, String> result_ = new HashMap<>();
-            result_.put("srcLang", srcLang);
-            result_.put("tgtLang", tgtLang);
-            result_.put("tgtText", result);
-//            return tmp = (String) jo.get("tgt");
-            map.put("data", result_);
-
-            return map;
-        }
-
-
-        return null;
-    }
-
-    private static final double LENGTH = 1400;
-
-
-    /**
-     * 小牛长文本文件翻译
-     *
-     * @param text
-     * @param from
-     * @param to
-     * @return
-     * @throws Exception
-     */
-    private String batch_xiaoniu(String text, String from, String to) throws Exception {
-        double batchNum = Math.ceil(new Double(text.length()) / LENGTH);
-        StringBuffer result = new StringBuffer();
-        for (int i = 0; i < batchNum; i++) {
-            int end = (i + 1) * LENGTH > text.length() ? text.length() : (int) ((i + 1) * LENGTH);
-            String batch_text = text.substring((int) (i * LENGTH), end);
-            try {
-                String batch_translate = translate_xiaoniu(batch_text, from, to);
-                Thread.sleep(5100);
-                result.append(batch_translate);
-            } catch (Exception e) {
-                throw e;
-            }
-        }
-        return result.toString();
-    }
-
-    private String translate_xiaoniu(String text, String from, String to) throws Exception {
-        HttpPost post = new HttpPost(personalConfig.getTranslate_api_url_xiaoniu());
-        List<NameValuePair> urlParameters = new ArrayList<>();
-        urlParameters.add(new BasicNameValuePair("from", from));
-        urlParameters.add(new BasicNameValuePair("to", to));
-        urlParameters.add(new BasicNameValuePair("src_text", text));
-        urlParameters.add(new BasicNameValuePair("apikey", personalConfig.getApiKey_xiaoniu()));
-        RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(3000).setConnectTimeout(3000).build();
-        post.setConfig(requestConfig);
-        post.setEntity(new UrlEncodedFormEntity(urlParameters, "utf-8"));
-
-        HttpResponse response = HTTPCLIENT.execute(post);
-        StringBuffer result = new StringBuffer();
-        BufferedReader rd = new BufferedReader(
-                new InputStreamReader(response.getEntity().getContent(), "utf-8"));
-        String line = "";
-        while ((line = rd.readLine()) != null) {
-            result.append(line);
-        }
-        JSONObject result_obj = JSONObject.parseObject(result.toString());
-        EntityUtils.consume(response.getEntity());
-        if (result_obj.containsKey("tgt_text")) {
-            return result_obj.getString("tgt_text");
-        } else {
-            throw new Exception("小牛接口翻译异常，错误代码" + result_obj.get("error_code"));
-        }
-    }
-
-
-    //    http://localhost:80/d:/新建文本文档(2).txt
-    @PostMapping("/DocUpload2")
-    public Map<String, Object> docUpload2(@RequestBody JSONObject jsonObject) {
+    public Map<String, Object> docUpload(@RequestBody JSONObject jsonObject) {
         HashMap<String, Object> map = new HashMap<>();
 
 
@@ -385,7 +171,7 @@ public class ApiController {
             return map;
 
         }
-        Long task_id = createAnnTask(srcLang, tgtLang, fileName, type,uploadPath);
+        Long task_id = createAnnTask(srcLang, tgtLang, fileName, type, uploadPath);
 
         QueryWrapper<Atask_ann> annexeQueryWrapper = new QueryWrapper<>();
         annexeQueryWrapper.eq("atid", task_id);
@@ -413,7 +199,7 @@ public class ApiController {
      * @param path    上传文件保存路径
      */
     @Transactional
-    public Long createAnnTask(String srcLang, String tgtLang, String name, String type,String path) {
+    public Long createAnnTask(String srcLang, String tgtLang, String name, String type, String path) {
 
         Annexe_task annexe_task = new Annexe_task();
         annexe_task.setCreate_time(LocalDateTime.now());
@@ -449,8 +235,8 @@ public class ApiController {
 
     }
 
-    @PostMapping("/DocResult2")
-    public Map<String, Object> docResult2(@RequestBody JSONObject jsonObject) throws IOException {
+    @PostMapping("/DocResult")
+    public Map<String, Object> docResult(@RequestBody JSONObject jsonObject) throws IOException {
 
         JSONObject jsonArg = jsonObject.getJSONObject("jsonArg");
 
@@ -476,24 +262,31 @@ public class ApiController {
             return map;
         } else {
             data.put("process", "100");
-            data.put("tgtFileUrl", personalConfig.getLocal_ip() + "/mte/service/download2/" + taskId);
+            data.put("tgtFileUrl", personalConfig.getLocal_ip() + "/mte/service/download/" + taskId);
             map.put("data", data);
             return map;
         }
     }
 
-    @GetMapping("/download2/{taskId}")
-    public ResponseEntity<?> export2(@PathVariable("taskId") String taskId) throws IOException {
+    @GetMapping("/download/{taskId}")
+    public ResponseEntity<?> export(@PathVariable("taskId") String taskId) throws IOException {
 
         QueryWrapper<Atask_ann> annexeQueryWrapper = new QueryWrapper<>();
         annexeQueryWrapper.eq("atid", taskId);
         Atask_ann one = atask_annService.getOne(annexeQueryWrapper);
         Annexe annexe = annexeService.getById(one.getAid());
-        String filePath = personalConfig.getUpload_dir() + File.separatorChar + annexe.getTranslate_path();
+        String filePath = personalConfig.getTranslate_dir() + File.separatorChar + annexe.getTranslate_path();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentDispositionFormData("attachment", URLEncoder.encode(annexe.getName(), "utf-8"));
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         return new ResponseEntity<>(FileUtils.readFileToByteArray(new File(filePath)), headers, HttpStatus.CREATED);
+    }
+
+
+    @PostMapping("/BatchDocUpload")
+    public Map<String, Object> batchDocUpload(@RequestBody JSONObject jsonObject) {
+
+        return null;
     }
 
 }

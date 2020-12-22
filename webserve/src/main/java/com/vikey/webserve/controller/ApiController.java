@@ -1,5 +1,6 @@
 package com.vikey.webserve.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.vikey.webserve.Constant;
@@ -286,7 +287,123 @@ public class ApiController {
     @PostMapping("/BatchDocUpload")
     public Map<String, Object> batchDocUpload(@RequestBody JSONObject jsonObject) {
 
-        return null;
+
+        HashMap<String, Object> result = new HashMap<>();
+
+        JSONObject jsonArg = jsonObject.getJSONObject("jsonArg");
+        String srcLang = jsonArg.getString("srcLang");
+        String tgtLang = jsonArg.getString("tgtLang");
+        JSONArray srcFileInfo = jsonArg.getJSONArray("srcFileInfo");
+
+        ArrayList<Map<String, String>> maps = new ArrayList<>();
+
+        for (int i = 0; i < srcFileInfo.size(); i++) {
+            JSONObject info = srcFileInfo.getJSONObject(i);
+            String srcFileUrl = info.getString("srcFileUrl");
+            String dir = personalConfig.getUpload_dir();
+            String fileName = srcFileUrl.substring(srcFileUrl.lastIndexOf("/") + 1);
+            String type = fileName.substring(fileName.indexOf(".") + 1);
+            String uploadPath = UUID.randomUUID().toString() + "." + type;
+
+
+            try {
+                HttpClient client = HttpClients.createDefault();
+                HttpGet httpget = new HttpGet(srcFileUrl);
+                HttpResponse response = client.execute(httpget);
+
+                HttpEntity entity = response.getEntity();
+                InputStream is = entity.getContent();
+
+                File file = new File(dir + File.separatorChar + uploadPath);
+                file.getParentFile().mkdirs();
+                FileOutputStream fileout = new FileOutputStream(file);
+                /**
+                 * 根据实际运行效果 设置缓冲区大小
+                 */
+                byte[] buffer = new byte[1024];
+                int ch = 0;
+                while ((ch = is.read(buffer)) != -1) {
+                    fileout.write(buffer, 0, ch);
+                }
+                is.close();
+                fileout.flush();
+                fileout.close();
+
+
+                HashMap<String, String> map = new HashMap<>();
+                map.put("fileName", fileName);
+                map.put("type", type);
+                map.put("uploadPath", uploadPath);
+
+                maps.add(map);
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+
+
+            }
+
+        }
+
+        Long task_id = createAnnTask(srcLang, tgtLang, maps);
+
+        //todo 还需调用异步文件翻译
+
+
+
+        result.put("code", "0");
+        result.put("message", "");
+
+        HashMap<String, String> data = new HashMap<>();
+        data.put("taskId", task_id.toString());
+        result.put("data", data);
+
+        return result;
+    }
+
+    @Transactional
+    public Long createAnnTask(String srcLang, String tgtLang, List<Map<String, String>> annexe_info) {
+
+        Annexe_task annexe_task = new Annexe_task();
+        annexe_task.setCreate_time(LocalDateTime.now());
+        annexe_task.setDiscard(Constant.NOT_DELETE);
+        annexe_task.setName("接口上传");
+        annexe_task.setOriginal_language(srcLang);
+        annexe_task.setTranslate_language(tgtLang);
+        //接口创建用户外键为5
+        annexe_task.setUid(5l);
+        annexe_taskService.save(annexe_task);
+        Long annexe_taskId = annexe_task.getId();
+
+        for (Map<String, String> map : annexe_info) {
+            String name = map.get("fileName");
+            String type = map.get("type");
+            String path = map.get("uploadPath");
+
+
+            Annexe annexe = new Annexe();
+            annexe.setCreate_time(LocalDateTime.now());
+            annexe.setName(name);
+            annexe.setPath(path);
+            annexe.setType(type);
+            annexe.setDiscard(Constant.NOT_DELETE);
+            annexe.setOriginal_language(srcLang);
+            annexe.setStatus(Constant.ANNEXE_STATUS_UNPROCESSED);
+            annexeService.save(annexe);
+            Long annexeId = annexe.getId();
+
+            Atask_ann atask_ann = new Atask_ann();
+            atask_ann.setAtid(annexe_taskId);
+            atask_ann.setAid(annexeId);
+            atask_annService.save(atask_ann);
+
+
+        }
+
+
+        return annexe_taskId;
+
     }
 
 }

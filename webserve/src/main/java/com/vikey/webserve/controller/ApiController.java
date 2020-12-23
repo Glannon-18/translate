@@ -9,21 +9,13 @@ import com.vikey.webserve.entity.Annexe;
 import com.vikey.webserve.entity.Annexe_task;
 import com.vikey.webserve.entity.Atask_ann;
 import com.vikey.webserve.service.*;
-import com.vikey.webserve.service.impl.PingSoft;
-import com.vikey.webserve.service.impl.TxtContent;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,7 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -340,17 +335,25 @@ public class ApiController {
 
             } catch (Exception e) {
                 e.printStackTrace();
-
-
+                result.put("code", "500");
+                result.put("message", e.getMessage());
+                return result;
             }
 
         }
 
         Long task_id = createAnnTask(srcLang, tgtLang, maps);
 
-        //todo 还需调用异步文件翻译
+        QueryWrapper<Atask_ann> annexeQueryWrapper = new QueryWrapper<>();
+        annexeQueryWrapper.eq("atid", task_id);
+        List<Atask_ann> atask_anns = atask_annService.getBaseMapper().selectList(annexeQueryWrapper);
 
-
+        for (Atask_ann atask_ann : atask_anns) {
+            Annexe annexe = annexeService.getById(atask_ann.getAid());
+            ArrayList<Annexe> annexes = new ArrayList<>();
+            annexes.add(annexe);
+            iAsyncService.translate(annexes, srcLang, tgtLang);
+        }
 
         result.put("code", "0");
         result.put("message", "");
@@ -406,4 +409,57 @@ public class ApiController {
 
     }
 
+    @RequestMapping("/BatchDocResult")
+    public Map<String, Object> batchDocResult(@RequestBody JSONObject jsonObject) {
+        HashMap<String, Object> result = new HashMap<>();
+
+        HashMap<String, Object> data = new HashMap<>();
+
+        JSONObject jsonArg = jsonObject.getJSONObject("jsonArg");
+        String taskId = jsonArg.getString("taskId");
+        Annexe_task annexe_task = annexe_taskService.getById(new Long(taskId));
+        String srcLang = annexe_task.getOriginal_language();
+        String tgtLang = annexe_task.getTranslate_language();
+
+        data.put("srcLang", srcLang);
+        data.put("tgtLang", tgtLang);
+
+        QueryWrapper<Atask_ann> atask_annQueryWrapper = new QueryWrapper<>();
+        atask_annQueryWrapper.eq("atid", new Long(taskId));
+        List<Atask_ann> anns = atask_annService.list(atask_annQueryWrapper);
+        ArrayList<Map<String, String>> transResult = new ArrayList<>();
+
+        for (Atask_ann ann : anns) {
+            HashMap<String, String> map = new HashMap<>();
+            Annexe annexe = annexeService.getBaseMapper().selectById(ann.getAid());
+            map.put("process", annexe.getStatus().equals(Constant.ANNEXE_STATUS_PROCESSED) ? "100" : "85");
+            map.put("srcFileUrl", personalConfig.getLocal_ip() + "/mte/service/download/" + annexe.getId() + "/src");
+            map.put("tgtFileUrl", personalConfig.getLocal_ip() + "/mte/service/download/" + annexe.getId() + "/tgt");
+            transResult.add(map);
+
+        }
+
+        data.put("transResult", transResult);
+
+        result.put("code", "0");
+        result.put("message", "");
+        result.put("dara", data);
+        return result;
+    }
+
+
+    @GetMapping("/download/{annexeId}/{type}")
+    public ResponseEntity<?> export(@PathVariable("annexeId") String annexeId, @PathVariable String type) throws IOException {
+        Annexe annexe = annexeService.getById(new Long(annexeId));
+        String filePath = null;
+        if (type.equals("src")) {
+            filePath = personalConfig.getUpload_dir() + File.separatorChar + annexe.getPath();
+        } else if (type.equals("tgt")) {
+            filePath = personalConfig.getTranslate_dir() + File.separatorChar + annexe.getTranslate_path();
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentDispositionFormData("attachment", URLEncoder.encode(annexe.getName(), "utf-8"));
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        return new ResponseEntity<>(FileUtils.readFileToByteArray(new File(filePath)), headers, HttpStatus.CREATED);
+    }
 }

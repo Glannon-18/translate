@@ -22,21 +22,21 @@ server:
 personal-config:
   #  导出文件生成文件临时地址
   make_file_dir: D:\translate_dir\file
-#  make_file_dir: /home/translate_dir/file
+  #  make_file_dir: /home/translate_dir/file
   #  上传文件保存地址
   upload_dir: D:\translate_dir\upload
-#  upload_dir: /home/translate_dir/upload
+  #  upload_dir: /home/translate_dir/upload
   #  生成翻译文件地址
   translate_dir: D:\translate_dir\translate
-#  translate_dir: /home/translate_dir/translate
+  #  translate_dir: /home/translate_dir/translate
   #  "http://"+url+":"+port+"/translator/translate"
   translate_api_url: http://219.159.152.7:22224/translator/translate
   #  外网ip
-  local_ip: 127.0.0.1:8080
+  local_ip: 127.0.0.1:${server.port}
 
   #上传word文档时，图片保存的文件夹
   word_img_dir: D:\\translate_dir\\word_img
-#  word_img_dir: /home/translate_dir/word_img
+  #  word_img_dir: /home/translate_dir/word_img
 
   translate_api_url_xiaoniu: "http://free.niutrans.com/NiuTransServer/translation"
   apiKey_xiaoniu: "a682d889705e8ede6b8cf1cf1c9913d7"

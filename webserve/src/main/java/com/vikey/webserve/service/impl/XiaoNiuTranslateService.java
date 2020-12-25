@@ -10,10 +10,12 @@ import com.vikey.webserve.service.TranslateService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Component;
 
@@ -48,19 +50,19 @@ public class XiaoNiuTranslateService implements TranslateService {
         String result = "";
         for (String sentence : segmentation) {
 
-            JSONObject input = new JSONObject();
-            input.put("from", srcLang);
-            input.put("to", tgtLang);
-            input.put("src_text", sentence);
-            input.put("apikey", personalConfig.getApiKey_xiaoniu());
+            List<NameValuePair> urlParameters = new ArrayList<>();
+            urlParameters.add(new BasicNameValuePair("from", srcLang));
+            urlParameters.add(new BasicNameValuePair("to", tgtLang));
+            urlParameters.add(new BasicNameValuePair("src_text", sentence));
+            urlParameters.add(new BasicNameValuePair("apikey", personalConfig.getApiKey_xiaoniu()));
 
 
-            StringEntity info = new StringEntity(input.toString(), "utf-8");
-            info.setContentEncoding("utf-8");
-            HttpPost httpPost = new HttpPost(personalConfig.getTranslate_api_url_xiaoniu());
-            httpPost.setHeader("Content-type", "application/json");
-            httpPost.setEntity(info);
             try {
+
+                UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(urlParameters, "utf-8");
+                HttpPost httpPost = new HttpPost(personalConfig.getTranslate_api_url_xiaoniu());
+                httpPost.setHeader("Content-type", "x-www-form-urlencoded");
+                httpPost.setEntity(urlEncodedFormEntity);
                 HttpResponse httpResponse = HTTPCLIENT.execute(httpPost);
                 if ((httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK)) {
                     String temp = EntityUtils.toString(httpResponse.getEntity());

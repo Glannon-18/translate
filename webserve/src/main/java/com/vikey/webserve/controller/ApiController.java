@@ -16,6 +16,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,7 +40,7 @@ public class ApiController {
 
     private static HttpClient HTTPCLIENT = HttpClientBuilder.create().setMaxConnTotal(20).setMaxConnPerRoute(10).build();
 
-    private static final double LENGTH = 1400;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApiController.class);
 
     @Resource
     private PersonalConfig personalConfig;
@@ -65,6 +67,7 @@ public class ApiController {
 
     @PostMapping("/Text")
     public Map text(@RequestBody JSONObject jsonObject) {
+        LOGGER.info("接收参数：" + jsonObject.toString());
         TranslateService translateService = null;
         JSONObject jsonArg = jsonObject.getJSONObject("jsonArg");
         String srcText = jsonArg.getString("srcText");
@@ -80,7 +83,6 @@ public class ApiController {
         } else if (srcLang.equals("en")) {
             translateService = translateService_xiaoniu;
         }
-        String tgtLang = jsonArg.getString("tgtLang");
 
         Map<String, Object> result = translateService.translate(srcText, srcLang, "zh");
         return result;
@@ -124,8 +126,8 @@ public class ApiController {
 
     @PostMapping("/DocUpload")
     public Map<String, Object> docUpload(@RequestBody JSONObject jsonObject) {
+        LOGGER.info("接收参数：" + jsonObject.toString());
         HashMap<String, Object> map = new HashMap<>();
-
 
         JSONObject jsonArg = jsonObject.getJSONObject("jsonArg");
         String srcLang = jsonArg.getString("srcLang");
@@ -233,7 +235,8 @@ public class ApiController {
     }
 
     @PostMapping("/DocResult")
-    public Map<String, Object> docResult(@RequestBody JSONObject jsonObject) throws IOException {
+    public Map<String, Object> docResult(@RequestBody JSONObject jsonObject) {
+        LOGGER.info("接收参数：" + jsonObject.toString());
 
         JSONObject jsonArg = jsonObject.getJSONObject("jsonArg");
 
@@ -268,6 +271,8 @@ public class ApiController {
     @GetMapping("/download/{taskId}")
     public ResponseEntity<?> export(@PathVariable("taskId") String taskId) throws IOException {
 
+        LOGGER.info("接收参数taskId：" + taskId);
+
         QueryWrapper<Atask_ann> annexeQueryWrapper = new QueryWrapper<>();
         annexeQueryWrapper.eq("atid", taskId);
         Atask_ann one = atask_annService.getOne(annexeQueryWrapper);
@@ -282,7 +287,7 @@ public class ApiController {
 
     @PostMapping("/BatchDocUpload")
     public Map<String, Object> batchDocUpload(@RequestBody JSONObject jsonObject) {
-
+        LOGGER.info("接收参数：" + jsonObject.toString());
 
         HashMap<String, Object> result = new HashMap<>();
 
@@ -412,6 +417,7 @@ public class ApiController {
 
     @RequestMapping("/BatchDocResult")
     public Map<String, Object> batchDocResult(@RequestBody JSONObject jsonObject) {
+        LOGGER.info("接收参数：" + jsonObject.toString());
         HashMap<String, Object> result = new HashMap<>();
 
         HashMap<String, Object> data = new HashMap<>();
@@ -451,6 +457,7 @@ public class ApiController {
 
     @GetMapping("/download/{annexeId}/{type}")
     public ResponseEntity<?> export(@PathVariable("annexeId") String annexeId, @PathVariable String type) throws IOException {
+        LOGGER.info(String.format("接收参数：annexeId=%s,type=%s", annexeId, type));
         Annexe annexe = annexeService.getById(new Long(annexeId));
         String filePath = null;
         if (type.equals("src")) {

@@ -39,6 +39,7 @@ public class ApiController {
     private static HttpClient HTTPCLIENT = HttpClientBuilder.create().setMaxConnTotal(20).setMaxConnPerRoute(10).build();
 
     private static final double LENGTH = 1400;
+
     @Resource
     private PersonalConfig personalConfig;
 
@@ -81,7 +82,7 @@ public class ApiController {
         }
         String tgtLang = jsonArg.getString("tgtLang");
 
-        Map<String, Object> result = translateService.translate(srcText, srcLang, tgtLang);
+        Map<String, Object> result = translateService.translate(srcText, srcLang, "zh");
         return result;
     }
 

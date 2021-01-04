@@ -10,10 +10,6 @@ public class TxtContent implements Content {
 
     private File translate_file;
 
-    private TxtContent() {
-
-    }
-
     public TxtContent(File translate_file) {
         this.translate_file = translate_file;
     }

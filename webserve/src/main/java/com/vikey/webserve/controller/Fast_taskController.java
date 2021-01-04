@@ -8,6 +8,7 @@ import com.vikey.webserve.entity.Fast_task;
 import com.vikey.webserve.entity.RespBean;
 import com.vikey.webserve.entity.User;
 import com.vikey.webserve.service.IFast_taskService;
+import com.vikey.webserve.service.TranslateService;
 import com.vikey.webserve.utils.SecurityUtils;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -47,6 +48,12 @@ public class Fast_taskController {
 
     @Resource
     private PersonalConfig personalConfig;
+
+    @Resource(name = "xiaoNiuTranslateService")
+    private TranslateService translateService_xiaoniu;
+
+    @Resource(name = "pingSoftTranslateService")
+    private TranslateService translateService_pingsoft;
 
     private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
@@ -116,14 +123,20 @@ public class Fast_taskController {
     }
 
     @PostMapping("/translate")
-    public RespBean fast_translate(@RequestParam String text, @RequestParam String srcLang, @RequestParam String tgtLang) throws Exception {
-        String translate_text = null;
+    public RespBean fast_translate(@RequestParam String text, @RequestParam String srcLang, @RequestParam String tgtLang) {
+        String translate_text;
+        Map<String, Object> result = null;
         if (srcLang.equals("en")) {
-            translate_text = iFast_taskService.translate_xiaoniu(text, srcLang, "zh");
-
+            result = translateService_xiaoniu.translate(text, srcLang, "zh");
         } else if (srcLang.equals("vi")) {
-            translate_text = iFast_taskService.translate_service(text, srcLang, "zh");
+            result = translateService_pingsoft.translate(text, srcLang, "zh");
         }
+        if ((Integer) result.get("code") == 0) {
+            translate_text = ((HashMap<String,String>) result.get("data")).get("tgtText");
+        } else {
+            translate_text = (String) result.get("message");
+        }
+
         Map<String, String> map = new HashMap<>();
         map.put("tr", translate_text);
         return RespBean.ok(map);

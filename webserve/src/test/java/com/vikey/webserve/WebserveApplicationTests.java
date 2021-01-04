@@ -36,6 +36,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -78,6 +80,9 @@ class WebserveApplicationTests {
 
     @Resource(name = "pingSoftTranslateService")
     private TranslateService translateService_pingsoft;
+
+    @Resource
+    private CacheManager cacheManager;
 
 
     @Test

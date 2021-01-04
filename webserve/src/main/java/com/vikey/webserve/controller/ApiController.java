@@ -38,8 +38,6 @@ import java.util.*;
 @RequestMapping("/mte/service")
 public class ApiController {
 
-    private static HttpClient HTTPCLIENT = HttpClientBuilder.create().setMaxConnTotal(20).setMaxConnPerRoute(10).build();
-
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiController.class);
 
     @Resource
@@ -70,13 +68,15 @@ public class ApiController {
         LOGGER.info("接收参数：" + jsonObject.toString());
         TranslateService translateService = null;
         JSONObject jsonArg = jsonObject.getJSONObject("jsonArg");
-        String srcText = jsonArg.getString("srcText");
+        String srcText = jsonArg.getString("srcText");//zh-cn
         String srcLang = jsonArg.getString("srcLang");
         if (srcLang.equals("auto")) {
             if (isVietnamString(srcText)) {
                 translateService = translateService_pingsoft;
+                srcLang = "vi";
             } else {
                 translateService = translateService_xiaoniu;
+                srcLang = "en";
             }
         } else if (srcLang.equals("vi")) {
             translateService = translateService_pingsoft;
@@ -88,7 +88,7 @@ public class ApiController {
         return result;
     }
 
-    public boolean isVietnamString(String str) {
+    private boolean isVietnamString(String str) {
         char[] arr = str.toCharArray();
         for (int i = 0; i < arr.length; i++) {
             if (isVietnamChar(arr[i])) {
@@ -98,7 +98,7 @@ public class ApiController {
         return false;
     }
 
-    public boolean isVietnamChar(char ch) {
+    private boolean isVietnamChar(char ch) {
         if ((ch >= 0x00C0 && ch <= 0x00C3) ||
                 (ch >= 0x00C8 && ch <= 0x00CA) ||
                 (ch >= 0x00CC && ch <= 0x00CD) ||

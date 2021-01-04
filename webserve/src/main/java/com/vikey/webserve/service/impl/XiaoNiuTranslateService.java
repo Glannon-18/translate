@@ -56,9 +56,7 @@ public class XiaoNiuTranslateService implements TranslateService {
             urlParameters.add(new BasicNameValuePair("src_text", sentence));
             urlParameters.add(new BasicNameValuePair("apikey", personalConfig.getApiKey_xiaoniu()));
 
-
             try {
-
                 UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(urlParameters, "utf-8");
                 HttpPost httpPost = new HttpPost(personalConfig.getTranslate_api_url_xiaoniu());
                 httpPost.setHeader("Content-type", "x-www-form-urlencoded");
@@ -117,11 +115,8 @@ public class XiaoNiuTranslateService implements TranslateService {
                 all.add(temp);
                 temp = lineList.get(i);
             }
-
-            if (i == lineList.size() - 1) {
-                all.add(temp);
-            }
         }
+        all.add(temp);
         return all.stream().filter(t -> !StringUtils.isEmpty(t)).collect(Collectors.toList());
     }
 

@@ -93,9 +93,6 @@ public class PingSoftTranslateService implements TranslateService {
         List<StringBuffer> spaces = new ArrayList<>();
         List<Rule> brules = new ArrayList<>();
         List<String> lineList = segmenter.segment(LanguageInfoUtils.getSLLangByName("vi"), text, spaces, brules);
-        for (String line : lineList) {
-            System.out.println(line);
-        }
         StringBuffer stringBuffer = new StringBuffer();
         for (String s : lineList) {
             stringBuffer.append(s + "$#$");

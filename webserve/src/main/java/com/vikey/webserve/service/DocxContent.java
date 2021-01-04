@@ -14,10 +14,6 @@ public class DocxContent implements Content {
 
     private File docxFile;
 
-    private DocxContent() {
-
-    }
-
     public DocxContent(File docxFile) {
         this.docxFile = docxFile;
     }

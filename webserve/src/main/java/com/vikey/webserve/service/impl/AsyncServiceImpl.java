@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,6 +49,11 @@ public class AsyncServiceImpl implements IAsyncService {
     @Resource
     private IFast_taskService fast_taskService;
 
+    private static final List<String> XIAONIU_LANGUAGE = new ArrayList<String>() {{
+        add("zh");
+        add("en");
+    }};
+
     @Override
     @Async("fileTranslateExecutor")
     public void translate(List<Annexe> annexes, String srcLang, String tgtLang) {
@@ -62,9 +68,9 @@ public class AsyncServiceImpl implements IAsyncService {
             }
             try {
                 String result = null;
-                if (srcLang.equals("en")) {
+                if (isXiaoniuLanguage(srcLang, tgtLang)) {
                     result = batch_xiaoniu(content.getContent(), srcLang, "zh");
-                } else if (srcLang.equals("vi")) {
+                } else {
                     result = fast_taskService.translate_service(content.getContent(), srcLang, "zh");
                 }
                 String translate_file_name = UUID.randomUUID().toString() + "." + extend;
@@ -131,5 +137,13 @@ public class AsyncServiceImpl implements IAsyncService {
             }
         }
         return result.toString();
+    }
+
+    private boolean isXiaoniuLanguage(String srcLang, String tgtLang) {
+        HashSet<String> strings = new HashSet<String>() {{
+            add(srcLang);
+            add(tgtLang);
+        }};
+        return XIAONIU_LANGUAGE.containsAll(strings);
     }
 }

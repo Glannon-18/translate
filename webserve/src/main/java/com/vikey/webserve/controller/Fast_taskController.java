@@ -9,6 +9,7 @@ import com.vikey.webserve.entity.RespBean;
 import com.vikey.webserve.entity.User;
 import com.vikey.webserve.service.IFast_taskService;
 import com.vikey.webserve.service.TranslateService;
+import com.vikey.webserve.utils.LanguageUtils;
 import com.vikey.webserve.utils.SecurityUtils;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -126,13 +127,23 @@ public class Fast_taskController {
     public RespBean fast_translate(@RequestParam String text, @RequestParam String srcLang, @RequestParam String tgtLang) {
         String translate_text;
         Map<String, Object> result = null;
+
+        if (srcLang.equals("auto")) {
+            if (LanguageUtils.isVietnamString(text)) {
+                srcLang = "vi";
+            } else {
+                srcLang = "en";
+            }
+        }
+
+
         if (srcLang.equals("en")) {
             result = translateService_xiaoniu.translate(text, srcLang, "zh");
         } else if (srcLang.equals("vi")) {
             result = translateService_pingsoft.translate(text, srcLang, "zh");
         }
         if ((Integer) result.get("code") == 0) {
-            translate_text = ((HashMap<String,String>) result.get("data")).get("tgtText");
+            translate_text = ((HashMap<String, String>) result.get("data")).get("tgtText");
         } else {
             translate_text = (String) result.get("message");
         }

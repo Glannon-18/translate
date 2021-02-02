@@ -13,7 +13,7 @@ public class PersonalConfig {
 
     private String upload_dir;
 
-    private Map<String,String> translate_api_url;
+    private String translate_api_url;
 
     private String translate_dir;
 
@@ -81,11 +81,11 @@ public class PersonalConfig {
         this.word_img_dir = word_img_dir;
     }
 
-    public Map<String, String> getTranslate_api_url() {
+    public String getTranslate_api_url() {
         return translate_api_url;
     }
 
-    public void setTranslate_api_url(Map<String, String> translate_api_url) {
+    public void setTranslate_api_url(String translate_api_url) {
         this.translate_api_url = translate_api_url;
     }
 }

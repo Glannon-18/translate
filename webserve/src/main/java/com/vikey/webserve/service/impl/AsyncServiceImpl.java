@@ -49,11 +49,6 @@ public class AsyncServiceImpl implements IAsyncService {
     @Resource
     private IFast_taskService fast_taskService;
 
-    private static final List<String> XIAONIU_LANGUAGE = new ArrayList<String>() {{
-        add("zh");
-        add("en");
-    }};
-
     @Override
     @Async("fileTranslateExecutor")
     public void translate(List<Annexe> annexes, String srcLang, String tgtLang) {
@@ -67,12 +62,8 @@ public class AsyncServiceImpl implements IAsyncService {
                 content = new DocxContent(new File(personalConfig.getUpload_dir() + File.separator + annexe.getPath()));
             }
             try {
-                String result = null;
-                if (isXiaoniuLanguage(srcLang, tgtLang)) {
-                    result = batch_xiaoniu(content.getContent(), srcLang, "zh");
-                } else {
-                    result = fast_taskService.translate_service(content.getContent(), srcLang, "zh");
-                }
+                String result;
+                result = fast_taskService.translate(content.getContent(), srcLang, tgtLang);
                 String translate_file_name = UUID.randomUUID().toString() + "." + extend;
                 String translate_file_path = personalConfig.getTranslate_dir() + File.separator + translate_file_name;
                 File output = new File(translate_file_path);
@@ -90,60 +81,5 @@ public class AsyncServiceImpl implements IAsyncService {
             }
         }
 
-    }
-
-
-    private String translate_xiaoniu(String text, String from, String to) throws Exception {
-        HttpPost post = new HttpPost(personalConfig.getTranslate_api_url_xiaoniu());
-        List<NameValuePair> urlParameters = new ArrayList<>();
-        urlParameters.add(new BasicNameValuePair("from", from));
-        urlParameters.add(new BasicNameValuePair("to", to));
-        urlParameters.add(new BasicNameValuePair("src_text", text));
-        urlParameters.add(new BasicNameValuePair("apikey", personalConfig.getApiKey_xiaoniu()));
-        RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(3000).setConnectTimeout(3000).build();
-        post.setConfig(requestConfig);
-        post.setEntity(new UrlEncodedFormEntity(urlParameters, "utf-8"));
-
-        HttpResponse response = HTTPCLIENT.execute(post);
-        StringBuffer result = new StringBuffer();
-        BufferedReader rd = new BufferedReader(
-                new InputStreamReader(response.getEntity().getContent(), "utf-8"));
-        String line = "";
-        while ((line = rd.readLine()) != null) {
-            result.append(line);
-        }
-        JSONObject result_obj = JSONObject.parseObject(result.toString());
-        EntityUtils.consume(response.getEntity());
-        if (result_obj.containsKey("tgt_text")) {
-            return result_obj.getString("tgt_text");
-        } else {
-            throw new Exception("小牛接口翻译异常，错误代码" + result_obj.get("error_code"));
-        }
-    }
-
-
-    private String batch_xiaoniu(String text, String from, String to) throws Exception {
-        double batchNum = Math.ceil(new Double(text.length()) / LENGTH);
-        StringBuffer result = new StringBuffer();
-        for (int i = 0; i < batchNum; i++) {
-            int end = (i + 1) * LENGTH > text.length() ? text.length() : (int) ((i + 1) * LENGTH);
-            String batch_text = text.substring((int) (i * LENGTH), end);
-            try {
-                String batch_translate = translate_xiaoniu(batch_text, from, to);
-                Thread.sleep(5100);
-                result.append(batch_translate);
-            } catch (Exception e) {
-                throw e;
-            }
-        }
-        return result.toString();
-    }
-
-    private boolean isXiaoniuLanguage(String srcLang, String tgtLang) {
-        HashSet<String> strings = new HashSet<String>() {{
-            add(srcLang);
-            add(tgtLang);
-        }};
-        return XIAONIU_LANGUAGE.containsAll(strings);
     }
 }

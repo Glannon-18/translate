@@ -45,15 +45,39 @@ public interface IFast_taskService extends IService<Fast_task> {
     Fast_task getFast_TaskById(Long id);
 
 
+    /**
+     * 旧版本公司翻译
+     *
+     * @param text
+     * @param srcLang
+     * @param tgtLang
+     * @return
+     * @throws Exception
+     */
     String translate(String text, String srcLang, String tgtLang) throws Exception;
 
 
+    /**
+     * 小牛翻译
+     *
+     * @param text
+     * @param from
+     * @param to
+     * @return
+     * @throws Exception
+     */
     String translate_xiaoniu(String text, String from, String to) throws Exception;
 
-
+    /**
+     * 新本版公司翻译
+     *
+     * @param text
+     * @param srcLang
+     * @param tgtLang
+     * @return
+     * @throws IOException
+     */
     String translate_service(String text, String srcLang, String tgtLang) throws IOException;
-
-    String qwqq(String text);
 
 
 }

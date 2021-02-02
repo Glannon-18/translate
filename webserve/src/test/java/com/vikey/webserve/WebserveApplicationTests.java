@@ -36,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,11 +71,6 @@ class WebserveApplicationTests {
 
     @Resource
     private RabbitTemplate rabbitTemplate;
-
-    //    @Resource
-//    private AsyncServiceImpl asyncService;
-    @Resource(name = "xiaoNiuTranslateService")
-    private TranslateService translateService_xiaoniu;
 
     @Resource(name = "pingSoftTranslateService")
     private TranslateService translateService_pingsoft;
@@ -539,15 +533,6 @@ class WebserveApplicationTests {
 
 
     @Test
-    public void test55() throws IOException {
-//        String result = iFast_taskService.translate_service("Thúc đẩy hơn nữa việc xây dựng mạnh mẽ các khu vực phòng thủ tỉnh và thành phố trong tình hình mới", "vi", "zh");
-//        System.out.println(result);
-
-        iFast_taskService.qwqq("Thúc đẩy hơn nữa việc xây dựng mạnh mẽ các. khu vực phòng thủ tỉnh và thành phố trong tình hình mới.");
-    }
-
-
-    @Test
     public void test335() {
         double batchNum = Math.ceil(new Double(300l) / 1400);
         System.out.println(batchNum);
@@ -616,13 +601,7 @@ class WebserveApplicationTests {
     }
 
 
-    @Test
-    public void test69() throws IOException {
-        Map<String, Object> result = translateService_xiaoniu.translate("There are moments in life when you miss someone so much that you just want to pick them from your dreams and hug them for real! Dream what you want to dream;go where you want to go;be what you want to be,because you have only one life and one chance to do all the things you want to do.",
-                "en", "zh");
-        System.out.println(result.toString());
 
-    }
 
     @Test
     void test70() {

@@ -46,12 +46,6 @@ public class Fast_taskController {
     @Resource
     private PersonalConfig personalConfig;
 
-    @Resource(name = "xiaoNiuTranslateService")
-    private TranslateService translateService_xiaoniu;
-
-    @Resource(name = "pingSoftTranslateService")
-    private TranslateService translateService_pingsoft;
-
     private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
 
@@ -121,15 +115,9 @@ public class Fast_taskController {
     }
 
     @PostMapping("/translate")
-    public RespBean fast_translate(@RequestParam String text, @RequestParam String srcLang, @RequestParam String tgtLang) {
+    public RespBean fast_translate(@RequestParam String text, @RequestParam String srcLang, @RequestParam String tgtLang) throws Exception {
         String translate_text;
-        Map<String, Object> result;
-        result = translateService_pingsoft.translate(text, srcLang, tgtLang);
-        if ((Integer) result.get("code") == 0) {
-            translate_text = ((HashMap<String, String>) result.get("data")).get("tgtText");
-        } else {
-            translate_text = (String) result.get("message");
-        }
+        translate_text = iFast_taskService.translate(text, srcLang, tgtLang);
         Map<String, String> map = new HashMap<>();
         map.put("tr", translate_text);
         return RespBean.ok(map);
@@ -139,7 +127,6 @@ public class Fast_taskController {
     private String creatNameByTime(LocalDateTime localDateTime) {
         return Constant.FAST_TASK_NAME_PREFIX + dtf.format(localDateTime);
     }
-
 
 
 }

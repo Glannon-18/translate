@@ -1,5 +1,6 @@
 package com.vikey.webserve.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.pingsoft.segmentation.ISentenceSegmenter;
 import com.pingsoft.segmentation.Rule;
@@ -16,6 +17,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -52,9 +54,6 @@ public class Fast_taskServiceImpl extends ServiceImpl<Fast_taskMapper, Fast_task
 
     private PersonalConfig personalConfig;
 
-    @Autowired
-    private PingSoft pingSoft;
-
 
     @Override
     public List<Fast_task> getLastFast_task(Long uid) {
@@ -89,8 +88,7 @@ public class Fast_taskServiceImpl extends ServiceImpl<Fast_taskMapper, Fast_task
 
     @Override
     public String translate(String text, String srcLang, String tgtLang) throws Exception {
-        String language = srcLang + "_" + tgtLang;
-        HttpPost post = new HttpPost(personalConfig.getTranslate_api_url().get(language));
+        HttpPost post = new HttpPost(personalConfig.getTranslate_api_url());
         List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
         urlParameters.add(new BasicNameValuePair("method", "translate"));
         urlParameters.add(new BasicNameValuePair("srcLang", srcLang));
@@ -151,15 +149,43 @@ public class Fast_taskServiceImpl extends ServiceImpl<Fast_taskMapper, Fast_task
 
     @Override
     public String translate_service(String text, String srcLang, String tgtLang) throws IOException {
-        return pingSoft.translate(text, srcLang, tgtLang);
+        String[] strings = text.split("\n");
+
+        String last_result = "";
+        for (String string : strings) {
+            string = string.trim().replaceAll("\"", "\\\"");
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id", 300);
+            jsonObject.put("src", segmentation(string));
+            JSONArray array = new JSONArray();
+            array.add(jsonObject);
+            HttpPost post = new HttpPost(personalConfig.getTranslate_api_url());
+            post.setHeader("Content-type", "application/json");
+            post.setEntity(new StringEntity(array.toString(), "UTF-8"));
+            HttpResponse response = HTTPCLIENT.execute(post);
+            StringBuffer result = new StringBuffer();
+            BufferedReader rd = new BufferedReader(
+                    new InputStreamReader(response.getEntity().getContent(), "utf-8"));
+            String line = "";
+            while ((line = rd.readLine()) != null) {
+                result.append(line);
+            }
+
+            JSONArray ja = JSONArray.parseArray(result.toString()).getJSONArray(0);
+            JSONObject jo = ja.getJSONObject(0);
+
+            String tmp_result = ((String) jo.get("tgt")).replace(" ", "");
+            last_result += tmp_result + "\n";
+        }
+
+        return last_result;
     }
 
-    @Override
-    public String qwqq(String text) {
+
+    public String segmentation(String text) {
         ISentenceSegmenter segmenter = new RuleSentenceSegmenter();
-        List<StringBuffer> spaces = new ArrayList<StringBuffer>();
-        List<Rule> brules = new ArrayList<Rule>();
-//        String text = "Cu?i n?String text = "Cu?i n?m 2018, Qu?c C??ng Gia Lai ?? thoái 49,9% v?n t?i doanh nghi?p này. Theo báo cáo th??ng niên cùng n?m, B?t ??ng s?n S?ng M? s? h?u qu? ??t d? án Ph??c L?c - Nhà Bè.";
+        List<StringBuffer> spaces = new ArrayList<>();
+        List<Rule> brules = new ArrayList<>();
         List<String> lineList = segmenter.segment(LanguageInfoUtils.getSLLangByName("vi"), text, spaces, brules);
         for (String line : lineList) {
             System.out.println(line);
@@ -168,9 +194,6 @@ public class Fast_taskServiceImpl extends ServiceImpl<Fast_taskMapper, Fast_task
         for (String s : lineList) {
             stringBuffer.append(s + "$#$");
         }
-
         return stringBuffer.toString();
     }
-
-
 }

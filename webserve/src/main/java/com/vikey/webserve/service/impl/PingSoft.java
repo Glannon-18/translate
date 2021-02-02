@@ -42,7 +42,8 @@ public class PingSoft {
             jsonObject.put("src", segmentation(string));
             JSONArray array = new JSONArray();
             array.add(jsonObject);
-            HttpPost post = new HttpPost(personalConfig.getTranslate_api_url());
+            String language = src + "_" + tgt;
+            HttpPost post = new HttpPost(personalConfig.getTranslate_api_url().get(language));
             post.setHeader("Content-type", "application/json");
             post.setEntity(new StringEntity(array.toString(), "UTF-8"));
             HttpResponse response = HTTPCLIENT.execute(post);

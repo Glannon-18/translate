@@ -48,7 +48,9 @@ public class PingSoftTranslateService implements TranslateService {
             JSONArray array = new JSONArray();
             array.add(jsonObject);
 
-            HttpPost post = new HttpPost(personalConfig.getTranslate_api_url());
+            String language = srcLang + "_" + tgtLang;
+
+            HttpPost post = new HttpPost(personalConfig.getTranslate_api_url().get(language));
             post.setHeader("Content-type", "application/json");
             post.setEntity(new StringEntity(array.toString(), "UTF-8"));
             try {

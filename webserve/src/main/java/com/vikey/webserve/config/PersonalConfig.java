@@ -3,6 +3,8 @@ package com.vikey.webserve.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 @Component
 @ConfigurationProperties(prefix = "personal-config")
 public class PersonalConfig {
@@ -11,7 +13,7 @@ public class PersonalConfig {
 
     private String upload_dir;
 
-    private String translate_api_url;
+    private Map<String,String> translate_api_url;
 
     private String translate_dir;
 
@@ -55,14 +57,6 @@ public class PersonalConfig {
         this.upload_dir = upload_dir;
     }
 
-    public String getTranslate_api_url() {
-        return translate_api_url;
-    }
-
-    public void setTranslate_api_url(String translate_api_url) {
-        this.translate_api_url = translate_api_url;
-    }
-
     public String getTranslate_api_url_xiaoniu() {
         return translate_api_url_xiaoniu;
     }
@@ -85,5 +79,13 @@ public class PersonalConfig {
 
     public void setWord_img_dir(String word_img_dir) {
         this.word_img_dir = word_img_dir;
+    }
+
+    public Map<String, String> getTranslate_api_url() {
+        return translate_api_url;
+    }
+
+    public void setTranslate_api_url(Map<String, String> translate_api_url) {
+        this.translate_api_url = translate_api_url;
     }
 }

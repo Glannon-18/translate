@@ -89,7 +89,8 @@ public class Fast_taskServiceImpl extends ServiceImpl<Fast_taskMapper, Fast_task
 
     @Override
     public String translate(String text, String srcLang, String tgtLang) throws Exception {
-        HttpPost post = new HttpPost(personalConfig.getTranslate_api_url());
+        String language = srcLang + "_" + tgtLang;
+        HttpPost post = new HttpPost(personalConfig.getTranslate_api_url().get(language));
         List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
         urlParameters.add(new BasicNameValuePair("method", "translate"));
         urlParameters.add(new BasicNameValuePair("srcLang", srcLang));

@@ -54,10 +54,6 @@ public class Fast_taskController {
 
     private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    private static final List<String> XIAONIU_LANGUAGE = new ArrayList<String>() {{
-        add("zh");
-        add("en");
-    }};
 
     @PostMapping("/")
     public RespBean postFast_task(@RequestBody JSONObject jsonObject) {
@@ -128,11 +124,7 @@ public class Fast_taskController {
     public RespBean fast_translate(@RequestParam String text, @RequestParam String srcLang, @RequestParam String tgtLang) {
         String translate_text;
         Map<String, Object> result;
-        if (isXiaoniuLanguage(srcLang, tgtLang)) {
-            result = translateService_xiaoniu.translate(text, srcLang, tgtLang);
-        } else {
-            result = translateService_pingsoft.translate(text, srcLang, tgtLang);
-        }
+        result = translateService_pingsoft.translate(text, srcLang, tgtLang);
         if ((Integer) result.get("code") == 0) {
             translate_text = ((HashMap<String, String>) result.get("data")).get("tgtText");
         } else {
@@ -148,13 +140,6 @@ public class Fast_taskController {
         return Constant.FAST_TASK_NAME_PREFIX + dtf.format(localDateTime);
     }
 
-    private boolean isXiaoniuLanguage(String srcLang, String tgtLang) {
-        HashSet<String> strings = new HashSet<String>() {{
-            add(srcLang);
-            add(tgtLang);
-        }};
-        return XIAONIU_LANGUAGE.containsAll(strings);
-    }
 
 
 }

@@ -38,7 +38,13 @@
     </select>
 
     <select id="getCountAtByLanguage" resultType="map">
-        select original_language , COUNT(*) as count from annexe_task where create_time>#{time} group by original_language
+        select original_language , COUNT(*) as count from annexe_task
+
+        <if test="time!=null">
+        where create_time>#{time}
+        </if>
+
+        group by original_language
     </select>
 
 </mapper>

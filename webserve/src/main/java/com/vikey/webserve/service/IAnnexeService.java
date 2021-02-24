@@ -45,4 +45,7 @@ public interface IAnnexeService extends IService<Annexe> {
 
 
     Annexe getAnnexeById(Long id) throws IOException;
+
+
+    LocalDateTime minDateTime();
 }

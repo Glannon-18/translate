@@ -7,6 +7,7 @@ import com.vikey.webserve.entity.RespBean;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -54,6 +55,9 @@ public interface IFast_taskService extends IService<Fast_task> {
     String translate_service(String text, String srcLang, String tgtLang) throws IOException;
 
     String qwqq(String text);
+
+
+    LocalDateTime minDateTime();
 
 
 }

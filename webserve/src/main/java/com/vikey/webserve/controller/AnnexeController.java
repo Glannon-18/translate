@@ -121,11 +121,17 @@ public class AnnexeController {
         Integer Ap24h = iAnnexeService.getAnnexeCount(time.minusHours(24l), Constant.ANNEXE_STATUS_PROCESSED);
         //30天内文档接入量
         Integer Ap30d = iAnnexeService.getAnnexeCount(time.minusDays(30l), Constant.ANNEXE_STATUS_PROCESSED);
+        //所有时间文档接入量
+        Integer AuAll = iAnnexeService.getAnnexeCount(null, Constant.ANNEXE_STATUS_UNPROCESSED);
+        //所有时间文档处理量
+        Integer ApAll = iAnnexeService.getAnnexeCount(null, Constant.ANNEXE_STATUS_PROCESSED);
         Map<String, Integer> map = new HashMap<String, Integer>() {{
             put("Au24h", Au24h);
             put("Au30d", Au30d);
             put("Ap24h", Ap24h);
             put("Ap30d", Ap30d);
+            put("AuAll", AuAll);
+            put("ApAll", ApAll);
         }};
         return RespBean.ok(map);
     }
@@ -153,6 +159,16 @@ public class AnnexeController {
             for (int i = 29; i >= 0; i--) {
                 localDateTimes.add(now_day.minusDays(i));
             }
+        } else if ("all".equals(type)) {
+            format = "%Y-%m";
+            x_format = "yyyy年MM月";
+            LocalDateTime minDateTime = minDateTime();
+            LocalDateTime now_day = LocalDateTime.of(now.getYear(), now.getMonth(), 1, 0, 0, 0);
+            do {
+                localDateTimes.add(now_day);
+                now_day = now_day.minusMonths(1);
+            } while (now_day.compareTo(minDateTime) >= 0);
+
         }
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(x_format);
@@ -163,15 +179,11 @@ public class AnnexeController {
         ).collect(Collectors.toList());
 
 
-        List<Long> txt = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "txt", format).stream().map(change()).collect(Collectors.toList());
-        List<Long> pdf = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "pdf", format).stream().map(change()).collect(Collectors.toList());
-        List<Long> eml = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "eml", format).stream().map(change()).collect(Collectors.toList());
-        List<Long> word = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "docx", format).stream().map(change()).collect(Collectors.toList());
+        List<Long> txt = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "txt", format).stream().map(map -> ((BigDecimal) map.get("count")).longValue()).collect(Collectors.toList());
+        List<Long> word = iAnnexeService.getAnnexeCountByPeriod(localDateTimes, "docx", format).stream().map(map -> ((BigDecimal) map.get("count")).longValue()).collect(Collectors.toList());
 
         Map<String, Object> result = new HashMap<>();
         result.put("txt", txt);
-        result.put("pdf", pdf);
-        result.put("eml", eml);
         result.put("word", word);
         result.put("x_string", x_string);
         return RespBean.ok(result);
@@ -185,6 +197,8 @@ public class AnnexeController {
             after = LocalDateTime.now().minusHours(24l);
         } else if ("30d".equals(type)) {
             after = LocalDateTime.now().minusDays(30l);
+        } else if ("all".equals(type)) {
+            after = null;
         }
 
         List<Map> right = iAnnexeService.getAnnexeCountByType(after);
@@ -217,11 +231,6 @@ public class AnnexeController {
     }
 
 
-    private Function<Map, Long> change() {
-        return map -> ((BigDecimal) map.get("count")).longValue();
-    }
-
-
     private List<Long> convert(String content) {
         List<Long> list = new ArrayList<>();
         Arrays.stream(content.split(",")).forEach(i ->
@@ -229,6 +238,10 @@ public class AnnexeController {
             list.add(Long.valueOf(i));
         });
         return list;
+    }
+
+    private LocalDateTime minDateTime() {
+        return iAnnexeService.minDateTime();
     }
 
 }

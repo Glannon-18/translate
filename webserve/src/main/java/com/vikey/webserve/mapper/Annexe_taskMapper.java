@@ -3,6 +3,7 @@ package com.vikey.webserve.mapper;
 import com.vikey.webserve.entity.Annexe_task;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,4 +28,7 @@ public interface Annexe_taskMapper extends BaseMapper<Annexe_task> {
     Map<String, Object> getLastAtUseLanguage(@Param("userid") Long id, @Param("time") LocalDateTime after);
 
     List<Map> getCountAtByLanguage(@Param("time") LocalDateTime after);
+
+    @Select("SELECT MIN(create_time) FROM annexe_task")
+    LocalDateTime minDateTime();
 }

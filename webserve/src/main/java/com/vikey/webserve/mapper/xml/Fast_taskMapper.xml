@@ -17,7 +17,10 @@
 
 
     <select id="selectLastFast_task" resultMap="BaseResultMap">
-        select id,name, original_text,translate_text,original_language,translate_language from fast_task where uid=#{uid} order by create_time desc limit 5
+        select id, name, original_text, translate_text, original_language, translate_language
+        from fast_task
+        where uid = #{uid}
+        order by create_time desc limit 5
     </select>
 
 
@@ -31,20 +34,32 @@
 
 
     <select id="getMostFtUseLanguage" resultType="map">
-        select original_language,count(*) as count from fast_task where uid=#{userid} and create_time>#{time}
+        select original_language, count(*) as count
+        from fast_task
+        where uid = #{userid}
+          and create_time > #{time}
         group by original_language
     </select>
 
     <select id="getLastFtUseLanguage" resultType="map">
 
-        select original_language,create_time as time from fast_task where uid=#{userid} and create_time=(
-         select MAX(create_time) from fast_task
-            where uid=#{userid} and create_time>#{time}
-            )
+        select original_language, create_time as time
+        from fast_task
+        where uid = #{userid}
+          and create_time = (
+            select MAX(create_time)
+            from fast_task
+            where uid = #{userid}
+              and create_time > #{time}
+        )
     </select>
 
     <select id="getCountFtByLanguage" resultType="map">
-        select original_language , COUNT(*) as count from fast_task where create_time>#{time} group by original_language
+        select original_language , COUNT(*) as count from fast_task
+        <if test="time!=null">
+            where create_time>#{time}
+        </if>
+        group by original_language
     </select>
 
 </mapper>

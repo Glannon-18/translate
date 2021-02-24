@@ -17,10 +17,14 @@
 
 
     <select id="getAnnexeByAtid" resultMap="BaseResultMap">
-        select a.id as id,a.status as status, a.name as name,
-        a.original_language as original_language
-        from annexe a left join atask_ann at_a on at_a.aid=a.id
-        where a.discard='0' and at_a.atid=#{atid}
+        select a.id                as id,
+               a.status            as status,
+               a.name              as name,
+               a.original_language as original_language
+        from annexe a
+                 left join atask_ann at_a on at_a.aid = a.id
+        where a.discard = '0'
+          and at_a.atid = #{atid}
     </select>
 
     <select id="getAnnexeCount" resultType="integer">
@@ -54,18 +58,30 @@
     <select id="getAnnexeCountByType" resultType="map">
         select c.type as type,SUM(c.count) as count from
         (
-        select  type ,COUNT(*) as count from annexe where create_time>#{time} group by type
-            UNION (SELECT 'txt', 0)
-            UNION (SELECT 'pdf', 0)
-            UNION (SELECT 'word', 0)
-            UNION (SELECT 'eml', 0)
+        select type ,COUNT(*) as count from annexe
+        <trim prefix="where">
+            <if test="time!=null">
+                create_time>#{time}
+            </if>
+        </trim>
+        group by type
+        UNION (SELECT 'txt', 0)
+        UNION (SELECT 'docx', 0)
         ) c group by type order by type desc
     </select>
 
     <select id="getAnnexeCountByUserid" resultType="integer">
-        select COUNT(*) FROM annexe a left join atask_ann at on a.id=at.aid left join annexe_task atask on at.atid=atask.id
-        where
-        atask.uid=#{userid} and a.create_time>#{time}
+        select COUNT(*)
+        FROM annexe a
+                 left join atask_ann at on a.id = at.aid
+                 left join annexe_task atask on at.atid = atask.id
+        where atask.uid = #{userid}
+          and a.create_time > #{time}
+    </select>
+
+    <select id="minDateTime" resultType="java.time.LocalDateTime">
+        SELECT MIN(create_time)
+        FROM annexe
     </select>
 
 

@@ -206,5 +206,10 @@ public class Annexe_taskServiceImpl extends ServiceImpl<Annexe_taskMapper, Annex
         return result;
     }
 
+    @Override
+    public LocalDateTime minDateTime() {
+        return getBaseMapper().minDateTime();
+    }
+
 
 }

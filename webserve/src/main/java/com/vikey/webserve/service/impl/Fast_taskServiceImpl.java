@@ -28,6 +28,7 @@ import javax.annotation.Resource;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -169,6 +170,11 @@ public class Fast_taskServiceImpl extends ServiceImpl<Fast_taskMapper, Fast_task
         }
 
         return stringBuffer.toString();
+    }
+
+    @Override
+    public LocalDateTime minDateTime() {
+        return getBaseMapper().minDateTime();
     }
 
 

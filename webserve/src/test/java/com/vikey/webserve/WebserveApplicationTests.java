@@ -81,9 +81,6 @@ class WebserveApplicationTests {
     @Resource(name = "pingSoftTranslateService")
     private TranslateService translateService_pingsoft;
 
-    @Resource
-    private CacheManager cacheManager;
-
 
     @Test
     void test() {
@@ -205,8 +202,8 @@ class WebserveApplicationTests {
     @Test
     void test12() {
         LocalDateTime time = LocalDateTime.now();
-        Integer count = iAnnexeService.getAnnexeCount(time.minusDays(30l), "0");
-        System.out.println(count);
+        Integer count = iAnnexeService.getAnnexeCount(null, Constant.ANNEXE_STATUS_PROCESSED);
+        LOGGER.info(count.toString());
     }
 
     @Test
@@ -642,6 +639,11 @@ class WebserveApplicationTests {
         Optional<String> optional = Optional.of("abcd");
         Optional<StringBuffer> result = optional.map(StringBuffer::new);
         System.out.println(result.get().toString());
+    }
+
+    @Test
+    public void test72() {
+        System.out.println(iFast_taskService.minDateTime());
     }
 
 

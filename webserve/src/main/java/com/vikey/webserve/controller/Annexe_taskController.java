@@ -7,6 +7,7 @@ import com.vikey.webserve.config.PersonalConfig;
 import com.vikey.webserve.entity.*;
 import com.vikey.webserve.service.IAnnexe_taskService;
 import com.vikey.webserve.service.IAsyncService;
+import com.vikey.webserve.service.IFast_taskService;
 import com.vikey.webserve.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,9 @@ public class Annexe_taskController {
 
     @Resource
     private IAnnexe_taskService iAnnexe_taskService;
+
+    @Resource
+    private IFast_taskService iFast_taskService;
 
 
     @Resource
@@ -102,6 +106,11 @@ public class Annexe_taskController {
             after = LocalDateTime.now().minusHours(24l);
         } else if ("30d".equals(type)) {
             after = LocalDateTime.now().minusDays(30l);
+        } else if ("all".equals(type)) {
+//            取两个任务表的时间最小值，取两项最小的
+            LocalDateTime at_min = iAnnexe_taskService.minDateTime();
+            LocalDateTime ft_min = iFast_taskService.minDateTime();
+            after = at_min.compareTo(ft_min) <= 0 ? at_min : ft_min;
         } else {
             return RespBean.ok();
         }
@@ -117,6 +126,8 @@ public class Annexe_taskController {
             after = LocalDateTime.now().minusHours(24l);
         } else if ("30d".equals(type)) {
             after = LocalDateTime.now().minusDays(30l);
+        } else if ("all".equals(type)) {
+            after = null;
         } else {
             return RespBean.ok();
         }

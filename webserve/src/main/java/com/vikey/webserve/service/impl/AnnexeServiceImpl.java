@@ -99,4 +99,9 @@ public class AnnexeServiceImpl extends ServiceImpl<AnnexeMapper, Annexe> impleme
         return annexe;
     }
 
+    @Override
+    public LocalDateTime minDateTime() {
+        return getBaseMapper().minDateTime();
+    }
+
 }

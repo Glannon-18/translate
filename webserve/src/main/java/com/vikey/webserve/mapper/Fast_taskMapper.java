@@ -3,6 +3,7 @@ package com.vikey.webserve.mapper;
 import com.vikey.webserve.entity.Fast_task;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,5 +29,9 @@ public interface Fast_taskMapper extends BaseMapper<Fast_task> {
     Map<String, Object> getLastFtUseLanguage(@Param("userid") Long id, @Param("time") LocalDateTime after);
 
     List<Map> getCountFtByLanguage(@Param("time") LocalDateTime after);
+
+
+    @Select("SELECT MIN(create_time) FROM fast_task")
+    LocalDateTime minDateTime();
 
 }
